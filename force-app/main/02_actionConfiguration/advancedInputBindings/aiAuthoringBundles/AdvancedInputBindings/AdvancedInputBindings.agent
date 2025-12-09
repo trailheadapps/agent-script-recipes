@@ -60,7 +60,7 @@ topic report_generation:
                description: "Output format for the report (pdf, csv, excel, or html)"
             include_charts: boolean
                description: "Whether to include visual charts and graphs in the report output"
-            options: object
+            options: string
                description: "Additional report configuration options such as filters, groupings, and custom parameters"
          outputs:
             report_url: string
