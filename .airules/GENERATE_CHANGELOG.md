@@ -13,7 +13,7 @@ Follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standard.
 ### Section Header
 
 Create a header for the new changes. If a version number is not provided, use the date.
-`## [Unreleased] - YYYY-MM-DD`
+`## YYYY-MM-DD`
 
 ### Categories
 
