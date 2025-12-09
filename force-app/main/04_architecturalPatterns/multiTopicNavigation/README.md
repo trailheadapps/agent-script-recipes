@@ -202,7 +202,7 @@ topic hotel_confirmation:
            - Hotel: {!@variables.hotel_name}
            - Check-in: {!@variables.check_in_date}
            - Check-out: {!@variables.check_out_date}
-  
+
            Provide these details to the customer and ask if they need anything else.
            If they want to make another booking, use start_new_booking action.
 
