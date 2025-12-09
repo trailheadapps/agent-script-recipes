@@ -1,6 +1,12 @@
-engines:
+rules:
     flow:
-        disable_engine: true
+        # Disabled HardCodedId rule for flow as a temporary workaround for
+        # https://github.com/forcedotcom/code-analyzer/issues/1947
+        HardCodedId:
+            severity: Critical
+            tags: []
+
+engines:
     eslint:
         auto_discover_eslint_config: true
         disable_javascript_base_config: true

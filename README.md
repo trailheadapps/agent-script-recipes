@@ -9,7 +9,7 @@ A collection of easy-to-digest [Agent Script](https://developer.salesforce.com/d
 
 ## Table of contents
 
-- [Salesforce CLI prerequisite](#salesforce-cli-prerequisite)
+- [Prerequisites](#prerequisites)
 
 - Install the app with either one of these options:
     - **Option 1:** [Developer Edition Org installation](#installing-the-app-using-a-developer-edition-org) - Use this option if you want the app deployed to a more permanent environment than a Scratch org.
@@ -17,7 +17,11 @@ A collection of easy-to-digest [Agent Script](https://developer.salesforce.com/d
 
 - [Optional installation instructions](#optional-installation-instructions)
 
-## Salesforce CLI prerequisite
+## Prerequisites
+
+Regardless of the installation type you chose, make sure to review the following prerequisites.
+
+### Salesforce CLI Version
 
 > [!IMPORTANT]
 > This project requires Salesforce CLI with version `2.113.6` or greater.
@@ -26,6 +30,20 @@ A collection of easy-to-digest [Agent Script](https://developer.salesforce.com/d
 
 If you need to [update the Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_update_cli.htm), either run `sf update` or `npm install --global @salesforce/cli` depending on how you installed the CLI.
 
+### Feature Activation
+
+1. **Einstein:** Enable Einstein in your org. From **Setup**, search for **Einstein Setup** in Quick Find. Click on that entry and turn on the **Einstein** toggle.
+
+1. **Agentforce:** Enable Agentforce in your org. From **Setup**, search for **Agentforce** in Quick Find. Click on **Agentforce Agents**, and turn on the **Agentforce** toggle.
+
+### User Permissions
+
+**Prompt Template Manager:** Assign yourself the `Prompt Template Manager` permission set. You can either do this from **Setup** or with the Salesforce CLI by running this command:
+
+```bash
+sf org assign permset -n EinsteinGPTPromptTemplateManager
+```
+
 ## Installing the app using a Developer Edition Org
 
 Follow this set of instructions if you want to deploy the app to a more permanent environment than a Scratch org.
@@ -33,10 +51,6 @@ This includes non source-tracked orgs such as a free [Developer Edition Org](htt
 
 > [!IMPORTANT]
 > Make sure to start from a brand-new environment to avoid conflicts with previous work you may have done.
-
-1. Enable Einstein in your org. Do this via **Setup**, then search for **Einstein Setup** in Quick Find. Click on that entry and turn on the **Einstein** toggle.
-
-2. Enable Agentforce in your org. In Quick Find search for **Agentforce**, click on **Agentforce Agents**, and turn on the **Agentforce** toggle.
 
 3. Clone this repository:
 
@@ -78,6 +92,8 @@ This includes non source-tracked orgs such as a free [Developer Edition Org](htt
 
 > [!TIP]
 > **Agentforce Studio** can be reached from the App Launcher. From there, click **View All** then select the **Agentforce Studio** app.
+
+**Post installation:** when working with the recipes, assign the **Agent Script Recipes Data** permission set to your agent user to avoid access issues.
 
 ## Installing the app using a Scratch Org
 
@@ -130,6 +146,8 @@ This includes non source-tracked orgs such as a free [Developer Edition Org](htt
 
 > [!TIP]
 > **Agentforce Studio** can be reached from the App Launcher. From there, click **View All** then select the **Agentforce Studio** app.
+
+**Post installation:** when working with the recipes, assign the **Agent Script Recipes Data** permission set to your agent user to avoid access issues.
 
 ## Optional Installation Instructions
 
