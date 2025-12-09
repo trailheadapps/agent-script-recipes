@@ -34,39 +34,43 @@ This includes non source-tracked orgs such as a free [Developer Edition Org](htt
 > [!IMPORTANT]
 > Make sure to start from a brand-new environment to avoid conflicts with previous work you may have done.
 
-1. Clone this repository:
+1. Enable Einstein in your org. Do this via **Setup**, then search for **Einstein Setup** in Quick Find. Click on that entry and turn on the **Einstein** toggle.
+
+2. Enable Agentforce in your org. In Quick Find search for **Agentforce**, click on **Agentforce Agents**, and turn on the **Agentforce** toggle.
+
+3. Clone this repository:
 
     ```bash
     git clone https://github.com/trailheadapps/agent-script-recipes
     cd agent-script-recipes
     ```
 
-1. Authorize your Trailhead Playground or Developer Edition org and provide it with an alias (**agent-script-recipes** in the command below):
+4. Authorize your Trailhead Playground or Developer Edition org and provide it with an alias (**agent-script-recipes** in the command below):
 
     ```bash
     sf org login web -s -a agent-script-recipes
     ```
 
-1. Deploy the app to your org:
+5. Deploy the app to your org:
 
     ```bash
     sf project deploy start -d force-app
     ```
 
-1. Assign the `Agent_Script_Recipes_Data` and `Agent_Script_Recipes_App` permission sets to the default user:
+6. Assign the `Agent_Script_Recipes_Data` and `Agent_Script_Recipes_App` permission sets to the default user:
 
     ```bash
     sf org assign permset -n Agent_Script_Recipes_Data
     sf org assign permset -n Agent_Script_Recipes_App
     ```
 
-1. Import some sample data:
+7. Import some sample data:
 
     ```bash
     sf data import tree --plan data/data-plan.json
     ```
 
-1. Open your org with the **Agentforce Studio** app displayed:
+8. Open your org with the **Agentforce Studio** app displayed:
 
     ```bash
     sf org open -p "/lightning/n/standard-AgentforceStudio?c__nav=agents"
