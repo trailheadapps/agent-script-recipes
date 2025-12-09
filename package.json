@@ -10,6 +10,7 @@
         "url": "git+https://github.com/trailheadapps/agent-script-recipes"
     },
     "scripts": {
+        "code-analyzer": "sf code-analyzer run --workspace force-app/main --view detail --output-file \"sca-results.csv\" --config-file \"code-analyzer.yml\"",
         "lint": "eslint .",
         "test": "npm run test:unit",
         "test:unit": "sfdx-lwc-jest",
