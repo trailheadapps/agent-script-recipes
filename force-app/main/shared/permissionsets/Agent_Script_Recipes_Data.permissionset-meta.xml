@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <!--
-    <classAccesses>
-        <apexClass>IssueClassifier</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    -->
     <classAccesses>
         <apexClass>PaymentGatewayController</apexClass>
         <enabled>true</enabled>
@@ -74,7 +68,7 @@
         <field>ASR_Cart_Item__c.Quantity__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <!-- <fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>ASR_Customer_Onboarding__c.Customer_ID__c</field>
         <readable>true</readable>
@@ -113,7 +107,7 @@
         <editable>true</editable>
         <field>ASR_Customer_Onboarding__c.Verification_Token__c</field>
         <readable>true</readable>
-    </fieldPermissions> -->
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>ASR_Financial_Account__c.Account_Number__c</field>
@@ -189,26 +183,6 @@
         <field>ASR_Hotel__c.Location__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <!-- <fieldPermissions>
-        <editable>true</editable>
-        <field>ASR_Interaction_Log__c.Channel__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ASR_Interaction_Log__c.Session_ID__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ASR_Interaction_Log__c.Timestamp__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>ASR_Interaction_Log__c.User_ID__c</field>
-        <readable>true</readable>
-    </fieldPermissions> -->
     <fieldPermissions>
         <editable>true</editable>
         <field>ASR_Itinerary__c.Email__c</field>
@@ -389,35 +363,11 @@
         <field>ASR_Transaction_Log__c.To_Account__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <!--
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Account.Churn_Risk_Score__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Case.Analysis__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Case.Assigned_Agent__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    -->
     <fieldPermissions>
         <editable>true</editable>
         <field>Case.Description</field>
         <readable>true</readable>
     </fieldPermissions>
-    <!--
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Case.Escalation_Reason__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    -->
     <fieldPermissions>
         <editable>false</editable>
         <field>Case.Priority</field>
@@ -433,48 +383,6 @@
         <field>Case.Type</field>
         <readable>true</readable>
     </fieldPermissions>
-    <!--
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Contact.Customer_ID__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Contact.Language__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Contact.Lifetime_Value__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Contact.Loyalty_Status__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Contact.Loyalty_Tier__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Contact.Timezone__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Contact.User_ID__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Order.Tracking_Number__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    -->
     <hasActivationRequired>false</hasActivationRequired>
     <label>Agent Script Recipes Data</label>
     <objectPermissions>
@@ -507,18 +415,16 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
-    <!--
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>ASR_Customer_Onboarding__c</object>
-        <viewAllFields>false</viewAllFields>
-        <viewAllRecords>true</viewAllRecords>
+        <viewAllFields>true</viewAllFields>
+        <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
-    -->
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>
@@ -559,18 +465,6 @@
         <viewAllFields>false</viewAllFields>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
-    <!--
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
-        <object>ASR_Interaction_Log__c</object>
-        <viewAllFields>false</viewAllFields>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
-    -->
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>

@@ -2,48 +2,44 @@
 
 ## Overview
 
-This recipe demonstrates how to orchestrate **multi-step workflows** where actions are chained together in sequence. Learn how to build onboarding processes with multiple steps, pass data between actions, and track progress.
+This recipe demonstrates how to orchestrate **multi-step workflows** where actions are chained together in sequence. Learn how to build onboarding processes with multiple steps, pass data between actions, and track progress through boolean state flags.
 
 ## Agent Flow
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start Onboarding] --> B{Step 1: Account Created?}
-    B -->|No| C[Collect Email + Name]
-    C --> D[create_account Action]
+    A[Start Onboarding] --> B[Ask for Email + Name]
+    B --> C{Email + Name Provided?}
+    C -->|No| B
+    C -->|Yes| D[Call create_account Action]
     D --> E[Chain: send_verification]
-    E --> F[Set: account_created = True]
-    B -->|Yes| G{Step 2: Profile Complete?}
-    F --> G
-    G -->|No| H[Collect Preferences]
-    H --> I[setup_profile Action]
-    I --> J[Set: profile_completed = True]
-    G -->|Yes| K{Step 3: Settings Done?}
-    J --> K
-    K -->|No| L[Configure Settings]
-    L --> M[configure_settings Action]
-    M --> N[Set: preferences_set = True]
-    K -->|Yes| O{Step 4: Complete?}
-    N --> O
-    O -->|No| P[finalize_onboarding Action]
-    P --> Q[Set: onboarding_complete = True]
-    O -->|Yes| R[All Steps Complete]
+    E --> F[Set account_created = True]
+    F --> G[Ask for Preferences]
+    G --> H{Preferences Provided?}
+    H -->|No| G
+    H -->|Yes| I[Call setup_profile Action]
+    I --> J[Set profile_completed = True]
+    J --> K[Call configure_settings Action]
+    K --> L[Set preferences_set = True]
+    L --> M[Call finalize_onboarding Action]
+    M --> N[Set onboarding_complete = True]
+    N --> O[Onboarding Complete]
 ```
 
 ## Key Concepts
 
-- **Action chaining**: Using `run` to execute follow-up actions
-- **Step-by-step workflows**: Guided multi-step processes
-- **Progress tracking**: Boolean flags for each step
-- **Data flow**: Outputs from one step feed into next
-- **Procedural instructions**: Guide the LLM through steps
+- **Action chaining**: Using `run` to execute follow-up actions automatically
+- **Step-by-step workflows**: Guided multi-step processes with clear progression
+- **Progress tracking**: Boolean flags to track completion of each step
+- **Data flow**: Outputs from one action feed into subsequent actions
+- **Procedural instructions**: Step-by-step rules that guide the LLM through the workflow
 
 ## How It Works
 
 ### Workflow State Variables
 
-Track progress with boolean flags:
+Track progress with boolean flags and store data needed across steps:
 
 ```agentscript
 variables:
@@ -59,7 +55,7 @@ variables:
 
 ### Step-by-Step Instructions
 
-Use procedural instructions to guide the workflow:
+Use procedural instructions to guide the workflow through each step:
 
 ```agentscript
 reasoning:
@@ -94,6 +90,8 @@ reasoning:
 
 ### Action with Chained Follow-up
 
+The `run` keyword chains a follow-up action immediately after the primary action completes:
+
 ```agentscript
 actions:
    create_account: @actions.create_account
@@ -111,7 +109,7 @@ actions:
 
 ## Key Code Snippets
 
-### Complete Action Definitions
+### Action Definitions
 
 ```agentscript
 actions:
@@ -216,145 +214,103 @@ actions:
 
 ## Try It Out
 
-### Step 1: Account Creation
+### Example Interaction
 
 ```text
-Agent: Welcome! Let's get you set up. Please provide your email and name.
+Agent: Welcome! Let's get you onboarded step by step to our platform. I'll guide you
+       through the process. Please provide your email and name to begin the onboarding
+       process.
 
-User: john@example.com, John Smith
+User: john.smith@gmail.com, John Smith
 
-[Agent calls create_account]
-  → create_account(email="john@example.com", name="John Smith")
-  → Returns: customer_id="CUST-789"
-  → Chains: send_verification(customer_id="CUST-789", email="...")
-  → Returns: token="VERIFY-ABC"
+Agent: Step 1 of 4: Account Creation
 
-Agent: Great! I've created your account and sent a verification email.
+       Your account is being created with the following details:
+       Name: John Smith
+       Email: john.smith@gmail.com
 
-       Progress: Step 1 of 4 complete ✓
-       Next: Let's set up your profile.
+       Step 1 is complete!
+
+       Step 2 of 4: Please share any preferences you have (for example, communication
+       preferences, interests, or anything you'd like us to know to personalize your
+       experience).
+
+User: communication preferences - keep everything private
+      No other preference
+
+Agent: Step 2 of 4: Preferences Set
+
+       Your communication preference has been noted: everything will be kept private.
+
+       Step 3 of 4: Your privacy settings are now configured to "all private" for
+       maximum confidentiality.
+
+       Step 4 of 4: Onboarding is complete! A welcome message has been sent to your
+       email.
+
+       You are all set. If you have any questions or need further assistance, feel
+       free to ask!
 ```
 
-### Step 2: Profile Setup
+### Behind the Scenes
 
-```text
-Agent: What are your preferences for:
-       1. Notifications (email, SMS, or both)?
-       2. Preferred language?
-       3. Timezone?
-
-User: Email only, English, Pacific Time
-
-[Agent calls setup_profile]
-  → setup_profile(customer_id="CUST-789", preferences="...")
-
-Agent: Profile configured!
-
-       Progress: Step 2 of 4 complete ✓
-       Next: Configure your account settings.
-```
-
-### Step 3: Settings
-
-```text
-Agent: What are your preferences for:
-       1. Default notification settings?
-       2. Privacy preferences?
-
-User: All notifications on, standard privacy
-
-[Agent calls configure_settings]
-
-Agent: Settings saved!
-
-       Progress: Step 3 of 4 complete ✓
-       Next: Finalizing your account...
-```
-
-### Step 4: Completion
-
-```text
-[Agent calls finalize_onboarding]
-
-Agent: ✓ Onboarding complete!
-
-       Your account is fully set up.
-       Customer ID: CUST-789
-       A welcome email has been sent.
-```
+1. **Step 1**: Agent calls `create_account` with email and name, then chains `send_verification`
+2. **Step 2**: Agent calls `setup_profile` with collected preferences
+3. **Step 3**: Agent calls `configure_settings` with privacy settings
+4. **Step 4**: Agent calls `finalize_onboarding` to complete the process
 
 ## Workflow Patterns
 
 ### Linear Workflow
 
-Steps in fixed order:
+Steps execute in a fixed order:
 
 ```text
-Step 1 → Step 2 → Step 3 → Complete
+Step 1 → Step 2 → Step 3 → Step 4 → Complete
 ```
 
 ### Action Chaining with `run`
 
-Execute follow-up after primary action:
+Execute a follow-up action immediately after the primary action:
 
 ```agentscript
 primary: @actions.primary_action
-   with input=...
+   with input = ...
    set @variables.result = @outputs.value
    run @actions.follow_up
-      with data=@variables.result
+      with data = @variables.result
 ```
 
-**Note**: Only one level of nesting allowed.
+**Note**: Only one level of nesting is allowed for chained actions.
 
 ## Best Practices
 
-### Track State Clearly
-
-```agentscript
-variables:
-   account_created: mutable boolean = False
-   profile_completed: mutable boolean = False
-```
-
-Use descriptive boolean flags.
-
-### Provide Progress Feedback
-
-```text
-Progress: Step 2 of 4 complete ✓
-Next: Configure your account settings.
-```
-
-### Validate Before Each Step
-
-The instructions guide the LLM to collect all needed info before calling actions.
-
-### Handle Partial Completion
-
-Allow users to resume where they left off.
+- **Track State Clearly**: Use descriptive boolean flags like `account_created` and `profile_completed`
+- **Provide Progress Feedback**: Show users which step they're on (e.g., "Step 2 of 4")
+- **Validate Before Each Step**: Ensure required data is collected before calling actions
+- **Handle Partial Completion**: Allow users to resume where they left off
 
 ## What's Next
 
-- **ActionCallbacks**: More on the `run` keyword
-- **MultiTopicOrchestration**: Split workflows across topics
-- **ErrorHandling**: Handle step failures
+- **ActionCallbacks**: Learn more about the `run` keyword for chaining actions
+- **MultiTopicOrchestration**: Split complex workflows across multiple topics
+- **ErrorHandling**: Handle step failures gracefully
 
 ## Testing
 
 ### Test Case 1: Complete Happy Path
 
-- Execute all 4 steps
-- Verify state updates at each
-- Confirm final completion
+- Execute all 4 steps in sequence
+- Verify state updates correctly at each step
+- Confirm final completion message
 
 ### Test Case 2: Resume from Step 2
 
-- Set account_created=True, customer_id="..."
+- Set `account_created=True` and `customer_id="..."`
 - Start conversation
-- Should continue at step 2
+- Agent should continue at step 2
 
-### Test Case 3: Data Flow
+### Test Case 3: Data Flow Verification
 
-- Verify customer_id from step 1 used in steps 2-4
-- Check all state persists
+- Verify `customer_id` from step 1 is used in steps 2-4
+- Confirm all state persists across the conversation
