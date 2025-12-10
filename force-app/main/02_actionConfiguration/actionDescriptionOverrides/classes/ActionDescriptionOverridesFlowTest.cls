@@ -52,9 +52,11 @@ private class ActionDescriptionOverridesFlowTest {
         // Set input variables for the flow
         Map<String, Object> inputs = new Map<String, Object>();
         inputs.put('report_type', 'Sales Report');
-        inputs.put('start_date', Date.newInstance(2024, 1, 1));
-        inputs.put('end_date', Date.newInstance(2024, 12, 31));
         inputs.put('include_charts', true);
+        inputs.put('user_id', UserInfo.getUserId());
+        inputs.put('format', 'PDF');
+        inputs.put('start_date', '2024-01-01');
+        inputs.put('end_date', '2024-12-31');
 
         // Run the flow
         Test.startTest();
