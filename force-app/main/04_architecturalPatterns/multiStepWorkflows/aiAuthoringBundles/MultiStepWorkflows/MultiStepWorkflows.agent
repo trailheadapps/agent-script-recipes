@@ -50,11 +50,11 @@ topic onboarding:
                  b. NEVER ask the customer to set password. We will set the password in the background.
             if @variables.step == 1:
                 | Ask for name and email to create account.
-            if @variables.step == 2 and @variables.profile_completed == True:
+            if @variables.step == 2 and @variables.account_created == True:
                 | Collect the customer's profile preferences by asking about: (1) Notification Preferences (e.g., email, SMS, push), (2) Preferred Language, and (3) Timezone. Once all preferences are gathered, format them as a JSON string (e.g., {"notifications": "email", "language": "en", "timezone": "PST"}) and pass it to the `preferences` input of setup_profile action.
-            if @variables.step == 3 and @variables.preferences_set == True:
+            if @variables.step == 3 and @variables.profile_completed == True:
                 | Collect the customer's privacy settings by asking about: (1) Data Sharing preferences, (2) Marketing Communications opt-in/out, and (3) Profile Visibility. Once all settings are gathered, format them as a JSON string (e.g., {"dataSharing": false, "marketing": true, "visibility": "private"}) and pass it to the `settings` input of configure_settings action.
-            if @variables.step == 4:
+            if @variables.step == 4 and @variables.preferences_set == True:
                 | Run the {!@actions.finalize_onboarding} action to inform customer onboarding is complete.
         actions:
             create_account: @actions.create_account
