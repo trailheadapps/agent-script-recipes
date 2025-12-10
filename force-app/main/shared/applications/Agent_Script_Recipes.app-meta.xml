@@ -13,27 +13,24 @@
     <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
     <label>Agent Script Recipes</label>
     <navType>Standard</navType>
-    <!-- <tabs>standard-Account</tabs>
+    <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
     <tabs>standard-Case</tabs>
-    <tabs>standard-Order</tabs> -->
-    <!-- <tabs>ASR_Agent_Event_Log__c</tabs> -->
-    <!-- <tabs>ASR_Car_Rental__c</tabs> -->
-    <!-- <tabs>ASR_Cart_Item__c</tabs> -->
-    <!-- <tabs>ASR_Customer_Onboarding__c</tabs> -->
-    <!-- <tabs>ASR_Financial_Account__c</tabs>
+    <tabs>ASR_Agent_Event_Log__c</tabs>
+    <tabs>ASR_Product__c</tabs>
+    <tabs>ASR_Shopping_Cart__c</tabs>
+    <tabs>ASR_Cart_Item__c</tabs>
+    <tabs>ASR_Itinerary__c</tabs>
+    <tabs>ASR_Car_Rental__c</tabs>
     <tabs>ASR_Flight_Booking__c</tabs>
     <tabs>ASR_Hotel__c</tabs>
     <tabs>ASR_Hotel_Booking__c</tabs>
-    <tabs>ASR_Interaction_Log__c</tabs>
-    <tabs>ASR_Itinerary__c</tabs> -->
-    <!-- <tabs>ASR_Order__c</tabs> -->
-    <!-- <tabs>ASR_Payment_Transaction__c</tabs>
-    <tabs>ASR_Product__c</tabs>
+    <tabs>ASR_Customer_Onboarding__c</tabs>
+    <tabs>ASR_Financial_Account__c</tabs>
+    <tabs>ASR_Payment_Transaction__c</tabs>
+    <tabs>ASR_Transaction_Log__c</tabs>
     <tabs>ASR_Report_Log__c</tabs>
-    <tabs>ASR_Shopping_Cart__c</tabs>
     <tabs>ASR_Survey_Log__c</tabs>
     <tabs>ASR_Task__c</tabs>
-    <tabs>ASR_Transaction_Log__c</tabs> -->
     <uiType>Lightning</uiType>
 </CustomApplication>
