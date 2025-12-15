@@ -1,0 +1,27 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Account",
+                "referenceId": "acc_adv_reasoning"
+            },
+            "Name": "Pinnacle Solutions Inc",
+            "Churn_Risk_Score__c": 0.5,
+            "Contacts": {
+                "records": [
+                    {
+                        "attributes": {
+                            "type": "Contact",
+                            "referenceId": "con_adv_reasoning"
+                        },
+                        "FirstName": "Sarah",
+                        "LastName": "Mitchell",
+                        "User_ID__c": "USER-12345",
+                        "Loyalty_Status__c": "Gold",
+                        "Lifetime_Value__c": 1500.0
+                    }
+                ]
+            }
+        }
+    ]
+}

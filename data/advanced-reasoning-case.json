@@ -1,0 +1,22 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Case",
+                "referenceId": "case_adv1"
+            },
+            "Subject": "Unable to access premium features",
+            "Status": "Open",
+            "ContactId": "@con_adv_reasoning"
+        },
+        {
+            "attributes": {
+                "type": "Case",
+                "referenceId": "case_adv2"
+            },
+            "Subject": "Subscription renewal inquiry",
+            "Status": "Closed",
+            "ContactId": "@con_adv_reasoning"
+        }
+    ]
+}

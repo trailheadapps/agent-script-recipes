@@ -1,0 +1,22 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "ASR_Order__c",
+                "referenceId": "order_adv1"
+            },
+            "AccountId__c": "@acc_adv_reasoning",
+            "TotalAmount__c": 500.0,
+            "EffectiveDate__c": "2024-12-15"
+        },
+        {
+            "attributes": {
+                "type": "ASR_Order__c",
+                "referenceId": "order_adv2"
+            },
+            "AccountId__c": "@acc_adv_reasoning",
+            "TotalAmount__c": 750.0,
+            "EffectiveDate__c": "2024-11-15"
+        }
+    ]
+}

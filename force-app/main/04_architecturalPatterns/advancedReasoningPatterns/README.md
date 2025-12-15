@@ -320,9 +320,9 @@ This lets the LLM extract the user_id from conversation and store it.
 ### Example: Customer Intelligence
 
 ```text
-User: Show insights for my customer U001
+User: Show insights for my customer USER-12345
 
-[LLM calls set_user_id with user_id="U001"]
+[LLM calls set_user_id with user_id="USER-12345"]
 
 [before_reasoning triggers data loading:]
   - fetch_user_profile → profile data
