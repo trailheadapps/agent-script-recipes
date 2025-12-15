@@ -17,3 +17,4 @@ delete [SELECT Id FROM ASR_Shopping_Cart__c];
 delete [SELECT Id FROM ASR_Survey_Log__c];
 delete [SELECT Id FROM ASR_Task__c];
 delete [SELECT Id FROM ASR_Transaction_Log__c];
+delete [SELECT Id FROM ASR_Order__c];
