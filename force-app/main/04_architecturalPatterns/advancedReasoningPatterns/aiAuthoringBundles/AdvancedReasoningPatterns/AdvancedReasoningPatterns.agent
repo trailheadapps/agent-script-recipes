@@ -83,7 +83,7 @@ topic intelligent_insights:
 
    reasoning:
       # Build dynamic instructions based on loaded data
-      instructions:->
+      instructions: ->
          | Customer Intelligence Dashboard
          
          if @variables.user_id=="":
