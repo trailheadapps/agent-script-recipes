@@ -38,6 +38,8 @@ start_agent topic_selector:
    description: "Welcome users and begin task management"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_task_management: @utils.transition to @topic.task_management
             description: "Start managing tasks with complex state operations"

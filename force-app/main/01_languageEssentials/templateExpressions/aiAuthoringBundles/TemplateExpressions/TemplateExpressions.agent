@@ -35,6 +35,8 @@ start_agent topic_selector:
    description: "Welcome customers and begin personalized shopping assistance"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          start_shopping: @utils.transition to @topic.shopping_assistant
             description: "Begin the personalized shopping session"

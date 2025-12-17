@@ -24,6 +24,8 @@ start_agent topic_selector:
    description: "Welcome users and demonstrate reasoning lifecycle events. Transition to the conversation topic to get started."
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_conversation: @utils.transition to @topic.conversation
 

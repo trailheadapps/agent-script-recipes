@@ -31,6 +31,8 @@ start_agent topic_selector:
    description: "Welcome customers and route them to the appropriate support specialist"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          general_support: @utils.transition to @topic.general_support
             description: "Start with general customer support"

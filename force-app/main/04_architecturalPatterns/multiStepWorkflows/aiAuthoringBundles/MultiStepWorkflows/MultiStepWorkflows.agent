@@ -33,6 +33,8 @@ start_agent topic_selector:
     description: "Welcome new customers and begin onboarding workflow"
 
     reasoning:
+        instructions:|
+            Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
         actions:
             begin_onboarding: @utils.transition to @topic.onboarding
                 description: "Start the multi-step customer onboarding workflow"

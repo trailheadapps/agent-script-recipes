@@ -62,6 +62,8 @@ start_agent topic_selector:
    description: "Welcome customers and begin issue triage and resolution"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_triage: @utils.transition to @topic.triage
             description: "Start the customer service triage process"

@@ -36,6 +36,8 @@ start_agent topic_selector:
    description: "Welcome users and begin payment processing"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_payment: @utils.transition to @topic.payment_processing
             description: "Start processing payments with post-action callbacks"

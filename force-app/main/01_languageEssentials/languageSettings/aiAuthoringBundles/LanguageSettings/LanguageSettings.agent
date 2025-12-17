@@ -29,6 +29,8 @@ start_agent topic_selector:
            If they speak German, say "Hallo".
            Otherwise, use English.
 
+           Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+
       actions:
          pass: @utils.transition to @topic.main_topic
             description: "Continue to main topic"

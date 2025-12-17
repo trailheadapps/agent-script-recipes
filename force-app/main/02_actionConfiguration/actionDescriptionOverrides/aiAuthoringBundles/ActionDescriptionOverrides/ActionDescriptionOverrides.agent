@@ -20,6 +20,8 @@ start_agent topic_selector:
    description: "Welcome users and determine their expertise level"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          beginner_mode: @utils.transition to @topic.beginner_mode
             description: "Use simplified interface for beginners. Choose this for general questions or when no specific search context (like Accounts or Cases) is mentioned."

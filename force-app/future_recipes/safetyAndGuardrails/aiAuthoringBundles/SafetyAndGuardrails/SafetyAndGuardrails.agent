@@ -36,6 +36,8 @@ start_agent topic_selector:
    description: "Welcome users and begin data management with safety protocols"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_data_management: @utils.transition to @topic.data_management
             description: "Start data management with safety guardrails"

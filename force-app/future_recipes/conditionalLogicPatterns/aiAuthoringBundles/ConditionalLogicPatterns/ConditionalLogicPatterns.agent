@@ -42,11 +42,8 @@ start_agent topic_selector:
    description: "Welcome applicants and begin loan evaluation process"
    
    reasoning:
-      instructions: ->
-         | Welcome to the loan application process. I'll help evaluate your loan application
-           using comprehensive conditional logic to assess eligibility fairly and consistently.
-           Let's start by gathering your information.
-      
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          start_evaluation: @utils.transition to @topic.loan_evaluation
             description: "Begin the loan evaluation with conditional logic"

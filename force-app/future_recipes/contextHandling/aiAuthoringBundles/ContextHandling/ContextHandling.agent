@@ -44,6 +44,8 @@ start_agent topic_selector:
    description: "Welcome users with personalized greeting based on context"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_service: @utils.transition to @topic.personalized_service
             description: "Start providing personalized service"

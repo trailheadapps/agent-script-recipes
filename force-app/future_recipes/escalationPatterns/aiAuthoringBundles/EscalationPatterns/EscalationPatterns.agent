@@ -27,6 +27,8 @@ start_agent topic_selector:
    description: "Routes the conversation"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          support: @utils.transition to @topic.general_support
             description: "General support topic"

@@ -20,6 +20,8 @@ start_agent topic_selector:
    description: "Start topic"
    
    reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          start: @utils.transition to @topic.case_management
 
