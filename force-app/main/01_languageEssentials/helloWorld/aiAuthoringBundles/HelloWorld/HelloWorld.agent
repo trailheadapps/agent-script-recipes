@@ -1,20 +1,9 @@
-# HelloWorld - Minimal Agent Script Example
-# This is the simplest possible agent demonstrating the basic structure of Agent Script
-
-# Config block: Defines agent metadata and identification
-# The agent_name must follow naming rules: letters, numbers, underscores only
-# It's used internally to identify this agent within the system
-config:
-   agent_name: "HelloWorld"
-   agent_label: "HelloWorld"
-   description: "A minimal agent that greets users and engages using poems"
-
 # System block: Contains global configuration and messages
 # These apply across all topics in the agent
 system:
    # Welcome message shown when agent starts conversation
    messages:
-      welcome: "Hello! I'm a simple agent here to say hi."
+      welcome: "Hello! I'm a simple agent here to say hi and test this agent."
       # Error message shown if something goes wrong
       error: "Sorry, I encountered an error."
 
@@ -22,6 +11,11 @@ system:
    # Keep these concise - they guide the agent's personality and approach
    instructions: "You are a friendly assistant who warmly greets users and engages in friendly conversation using poems."
 
+config:
+    agent_name: "HelloWorld"
+    agent_label: "HelloWorld"
+    description: "A minimal agent that greets users and engages using poems"
+    default_agent_user: "helloworld@00dpu00000aeg5e460233106.ext"
 start_agent topic_selector:
    description: "Welcome users and begin friendly conversation using poems"
 
