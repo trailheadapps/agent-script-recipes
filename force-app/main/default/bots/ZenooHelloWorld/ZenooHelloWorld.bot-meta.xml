@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bot xmlns="http://soap.sforce.com/2006/04/metadata">
+    <agentDSLEnabled>true</agentDSLEnabled>
+    <agentType>EinsteinServiceAgent</agentType>
+    <botMlDomain>
+        <label>Zenoo Hello World</label>
+        <name>ZenooHelloWorld</name>
+    </botMlDomain>
+    <botSource>None</botSource>
+    <botUser>helloworld@00dpu00000aeg5e460233106.ext</botUser>
+    <description>A minimal agent that greets users and engages using poems (Zenoo variant)</description>
+    <label>Zenoo Hello World</label>
+    <logPrivateConversationData>false</logPrivateConversationData>
+    <richContentEnabled>true</richContentEnabled>
+    <sessionTimeout>0</sessionTimeout>
+    <type>ExternalCopilot</type>
+</Bot>
