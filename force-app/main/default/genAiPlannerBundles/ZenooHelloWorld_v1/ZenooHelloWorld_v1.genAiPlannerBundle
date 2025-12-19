@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>A minimal agent that greets users and engages using poems (Zenoo variant)</description>
+    <localTopicLinks>
+        <genAiPluginName>greeting_16jPu000001iWur</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>topic_selector_16jPu000001iWur</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>greeting_16jPu000001iWur</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Greets the user and engages in friendly conversation using a poem</description>
+        <developerName>greeting_16jPu000001iWur</developerName>
+        <genAiPluginInstructions>
+            <description>You are a friendly assistant who warmly greets users and engages in friendly conversation using poems.</description>
+            <developerName>instruction0_179Pu0000014aNi</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Pu0000014aNi</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>greeting</localDeveloperName>
+        <masterLabel>Greeting</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>topic_selector_16jPu000001iWur</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Welcome users and begin friendly conversation using poems</description>
+        <developerName>topic_selector_16jPu000001iWur</developerName>
+        <genAiPluginInstructions>
+            <description>You are a friendly assistant who warmly greets users and engages in friendly conversation using poems.</description>
+            <developerName>instruction0_179Pu0000014aNh</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Pu0000014aNh</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>topic_selector</localDeveloperName>
+        <masterLabel>Topic Selector</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <masterLabel>Zenoo Hello World</masterLabel>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__CustomerWebClient</surface>
+        <surfaceType>CustomerWebClient</surfaceType>
+    </plannerSurfaces>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__Messaging</surface>
+        <surfaceType>Messaging</surfaceType>
+    </plannerSurfaces>
+    <plannerType>Atlas__ConcurrentMultiAgentOrchestration</plannerType>
+</GenAiPlannerBundle>
