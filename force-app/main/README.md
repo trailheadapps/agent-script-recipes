@@ -49,10 +49,10 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 
 - **ReasoningInstructions** - Procedural instructions with `instructions:->` and `run` actions
 - **ContextHandling** - Leverage context data and `readonly` linked variables effectively
-- **BeforeAfterReasoning** - Use lifecycle hooks for pre/post-reasoning logic
+- **AfterReasoning** - Use lifecycle hooks for pre/post-reasoning logic
 - **AdvancedReasoningPatterns** - Complex multi-step reasoning and data aggregation
 
-**Recommended order:** ReasoningInstructions → ContextHandling → BeforeAfterReasoning → AdvancedReasoningPatterns
+**Recommended order:** ReasoningInstructions → ContextHandling → AfterReasoning → AdvancedReasoningPatterns
 
 ### 📁 04_architecturalPatterns
 
@@ -111,7 +111,7 @@ Production-ready patterns and real-world applications.
 
 | Recipe                         | Concept             | What You'll Learn                             |
 | ------------------------------ | ------------------- | --------------------------------------------- |
-| **BeforeAfterReasoning**       | Lifecycle events    | `before_reasoning`, `after_reasoning` hooks   |
+| **AfterReasoning**             | Lifecycle events    | `after_reasoning` hook                        |
 | **MultiTopicOrchestration**    | Complex flows       | 3+ topic coordination, handoff strategies     |
 | **BidirectionalNavigation**    | Supervision         | Transitions to specialist topics and return   |
 | **AdvancedReasoningPatterns**  | Complex reasoning   | Multi-step flows, data aggregation            |

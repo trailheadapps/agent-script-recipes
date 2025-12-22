@@ -305,14 +305,13 @@ run @actions.step_c
 ### Don't use callbacks when:
 
 - Actions are independent (use separate reasoning actions)
-- Complex conditional logic needed (use `before_reasoning` instead)
 - Need deep nesting (refactor into separate actions)
 
 ## What's Next
 
 - **MultiStepWorkflows**: Build complex workflows with callbacks
 - **ErrorHandling**: Add validation between actions
-- **BeforeAfterReasoning**: Run actions outside of reasoning block
+- **AfterReasoning**: Run actions outside of reasoning block
 - **ActionDefinitions**: Learn how to define the actions being called
 
 ## Testing

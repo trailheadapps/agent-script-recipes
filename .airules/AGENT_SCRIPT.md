@@ -109,9 +109,8 @@ topic my_topic:
 1. `description` (required)
 2. `system` (optional - for instruction overrides)
 3. `actions` (optional - action definitions)
-4. `before_reasoning` (optional)
-5. `reasoning` (required)
-6. `after_reasoning` (optional)
+4. `reasoning` (required)
+5. `after_reasoning` (optional)
 
 ### Within `reasoning` blocks:
 
@@ -256,12 +255,6 @@ topic my_topic:
          outputs:
             result: string
          target: "flow://MyFlow"
-
-   # Optional: Runs before each reasoning cycle
-   before_reasoning:
-      run @actions.some_action
-         with param=@variables.value
-         set @variables.result = @outputs.result
 
    # Required: Reasoning configuration
    reasoning:
@@ -420,7 +413,7 @@ go_next: @utils.transition to @topic.target_topic
    description: "Description for LLM"
 ```
 
-### In Directive Blocks (`before_reasoning`, `after_reasoning`):
+### In Directive Blocks (`after_reasoning`):
 
 ```agentscript
 transition to @topic.target_topic
@@ -453,13 +446,6 @@ Note: `else if` is not currently supported.
 ### Transitions in Directive Blocks
 
 ```agentscript
-before_reasoning:
-   if @variables.not_authenticated:
-      transition to @topic.login
-
-   if @variables.session_expired:
-      transition to @topic.session_expired
-
 after_reasoning:
    if @variables.completed:
       transition to @topic.summary
@@ -612,15 +598,13 @@ topic customer_service:
             email: string
          target: "flow://FetchCustomer"
 
-   before_reasoning:
-      if @variables.customer_id and not @variables.customer_loaded:
-         run @actions.fetch_customer
-            with id=@variables.customer_id
-            set @variables.customer_name = @outputs.name
-            set @variables.customer_loaded = True
-
    reasoning:
       instructions:->
+         if @variables.customer_id and not @variables.customer_loaded:
+            run @actions.fetch_customer
+               with id=@variables.customer_id
+               set @variables.customer_name = @outputs.name
+               set @variables.customer_loaded = True
          if @variables.customer_name:
             | Hello, {!@variables.customer_name}!
          else:

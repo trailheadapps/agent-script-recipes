@@ -47,48 +47,48 @@ start_agent topic_selector:
 topic intelligent_insights:
    description: "Provides intelligent insights by synthesizing multiple data sources including your profile, account data, order history, and support tickets. Let me know your customer ID to load your complete customer intelligence dashboard."
 
-   before_reasoning:
-      # Fetch profile if we have user_id
-      if @variables.user_id!="":
-         run @actions.fetch_user_profile
-            with user_id=@variables.user_id
-            set @variables.user_profile = @outputs.profile
-         # Chain additional data fetches
-         run @actions.fetch_account_data
-            with user_id=@variables.user_id
-            set @variables.account_data = @outputs.account
-         run @actions.fetch_order_history
-            with user_id=@variables.user_id
-            with limit=10
-            set @variables.recent_orders = @outputs.orders
-         run @actions.fetch_support_history
-            with user_id=@variables.user_id
-            set @variables.support_history = @outputs.tickets
-         # Compute insights
-         run @actions.calculate_customer_value
-            with user_id=@variables.user_id
-            with orders=@variables.recent_orders
-            set @variables.customer_lifetime_value = @outputs.clv
-            set @variables.loyalty_status = @outputs.loyalty_tier
-         run @actions.assess_churn_risk
-            with account=@variables.account_data
-            with orders=@variables.recent_orders
-            with support_tickets=@variables.support_history
-            set @variables.churn_risk_score = @outputs.risk_score
-         run @actions.generate_recommendations
-            with profile=@variables.user_profile
-            with clv=@variables.customer_lifetime_value
-            with churn_risk=@variables.churn_risk_score
-            set @variables.recommended_actions = @outputs.recommendations
-
    reasoning:
       # Build dynamic instructions based on loaded data
       instructions: ->
-         | Customer Intelligence Dashboard
-         
+         # Ask for user_id if we don't have it
          if @variables.user_id=="":
             | Ask the user for customer ID to view personalized insights. Do not proceed until you have the customer ID.
-              Use {!@actions.set_user_id} to update the user_id variable and set context. Once you have the user Id use {!@actions.load_customer_data} to refresh the dashboard.
+              Use {!@actions.set_user_id} to update the user_id variable and set context.
+         
+         # Fetch customer data if we have user_id
+         if @variables.user_id!="":
+            run @actions.fetch_user_profile
+               with user_id=@variables.user_id
+               set @variables.user_profile = @outputs.profile
+            # Chain additional data fetches
+            run @actions.fetch_account_data
+               with user_id=@variables.user_id
+               set @variables.account_data = @outputs.account
+            run @actions.fetch_order_history
+               with user_id=@variables.user_id
+               with limit=10
+               set @variables.recent_orders = @outputs.orders
+            run @actions.fetch_support_history
+               with user_id=@variables.user_id
+               set @variables.support_history = @outputs.tickets
+            # Compute insights
+            run @actions.calculate_customer_value
+               with user_id=@variables.user_id
+               with orders=@variables.recent_orders
+               set @variables.customer_lifetime_value = @outputs.clv
+               set @variables.loyalty_status = @outputs.loyalty_tier
+            run @actions.assess_churn_risk
+               with account=@variables.account_data
+               with orders=@variables.recent_orders
+               with support_tickets=@variables.support_history
+               set @variables.churn_risk_score = @outputs.risk_score
+            run @actions.generate_recommendations
+               with profile=@variables.user_profile
+               with clv=@variables.customer_lifetime_value
+               with churn_risk=@variables.churn_risk_score
+               set @variables.recommended_actions = @outputs.recommendations
+
+            | Customer Intelligence Dashboard
 
          if @variables.user_id!="" and @variables.user_profile:
             | Customer Profile:
@@ -122,13 +122,18 @@ topic intelligent_insights:
          | What would you like to know more about?
 
       actions:
-         # Load all data sources before reasoning
-         load_customer_data: @actions.fetch_user_profile
-            with user_id=...
-
+         # Load all data sources during reasoning
          set_user_id: @utils.setVariables
             description: "Set the user ID to load customer data"
             with user_id=...
+         fetch_user_profile: @actions.fetch_user_profile
+         fetch_account_data: @actions.fetch_account_data
+         fetch_order_history: @actions.fetch_order_history
+         fetch_support_history: @actions.fetch_support_history
+         calculate_customer_value: @actions.calculate_customer_value
+         assess_churn_risk: @actions.assess_churn_risk
+         generate_recommendations: @actions.generate_recommendations
+
    actions:
       fetch_user_profile:
          description: "Fetch complete user profile"
@@ -215,5 +220,3 @@ topic intelligent_insights:
             recommendations: list[string]
                description: "List of personalized action recommendations for engaging and retaining the customer"
          target: "flow://GenerateRecommendations"
-
-        

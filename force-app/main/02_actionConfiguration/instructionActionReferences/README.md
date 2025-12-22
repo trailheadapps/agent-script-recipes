@@ -125,4 +125,4 @@ Your Case Number is 00001234. Our support team will follow up with you when we r
 
 - **PromptTemplateActions**: Use Salesforce Prompt Templates for more complex generation scenarios.
 - **AdvancedInputBindings**: Learn more ways to bind inputs to actions dynamically.
-- **BeforeAfterReasoning**: Explore pre- and post-action reasoning patterns.
+- **AfterReasoning**: Explore pre- and post-action reasoning patterns.

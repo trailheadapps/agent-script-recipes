@@ -56,7 +56,7 @@ topic order_status:
 
    reasoning:
       # Procedural instructions: Use -> to create a procedure
-      # This runs BEFORE the agent starts reasoning
+      # This runs when the agent starts reasoning
       # It allows you to call actions and build instructions dynamically
       instructions:->
          # First, check if we have an order ID

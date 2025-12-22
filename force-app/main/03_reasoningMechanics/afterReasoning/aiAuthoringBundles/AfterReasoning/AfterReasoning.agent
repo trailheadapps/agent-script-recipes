@@ -1,9 +1,9 @@
-# BeforeAfterReasoning
-# Demonstrates before_reasoning and after_reasoning lifecycle events
+# AfterReasoning
+# Demonstrates after_reasoning lifecycle event
 
 config:
-   agent_name: "BeforeAfterReasoning"
-   agent_label: "BeforeAfterReasoning"
+   agent_name: "AfterReasoning"
+   agent_label: "AfterReasoning"
    description: "Demonstrates reasoning lifecycle events"
 
 # Variables to track lifecycle execution
@@ -16,9 +16,9 @@ variables:
 
 system:
    messages:
-      welcome: "Welcome! I demonstrate reasoning lifecycle events. This recipe is a simple example of how to use the before reasoning and after reasoning events. Simply ask anything to get started."
+      welcome: "Welcome! I demonstrate reasoning lifecycle events. This recipe is a simple example of how to use the after reasoning event. Simply ask anything to get started."
       error: "I encountered an issue during processing. Please try again."
-   instructions: "You are a helpful assistant that demonstrates before reasoning and after reasoning events."
+   instructions: "You are a helpful assistant that demonstrates after reasoning event."
 
 start_agent topic_selector:
    description: "Welcome users and demonstrate reasoning lifecycle events. Transition to the conversation topic to get started."
@@ -31,7 +31,7 @@ start_agent topic_selector:
 
 # Main conversation topic
 topic conversation:
-   description: "Provides a conversation with lifecycle event tracking. Your job is to run the before reasoning and after reasoning events as applicable on every request."
+   description: "Provides a conversation with lifecycle event tracking. Your job is to run the after reasoning event as applicable on every request."
 
    actions:
       get_timestamp:
@@ -53,23 +53,20 @@ topic conversation:
                description: "Indicates whether the event was successfully logged to the system"
          target: "flow://LogEvent"
 
-   # BEFORE_REASONING: Runs before every reasoning step
-   # Use for: Initialization, validation, logging, state setup
-   before_reasoning:
-      # Increment turn counter
-      set @variables.turn_count = @variables.turn_count + 1
-      # Initialize session start time on first turn
-      if @variables.turn_count == 1:
-         run @actions.get_timestamp
-            set @variables.session_start_time = @outputs.current_timestamp
-      # Log the reasoning start
-      run @actions.log_event
-         with event_type="reasoning_started"
-         with event_data="Turn: {!@variables.turn_count}"
-
    # Main reasoning block
    reasoning:
       instructions:->
+         # Increment turn counter
+         set @variables.turn_count = @variables.turn_count + 1
+         # Initialize session start time on first turn
+         if @variables.turn_count == 1:
+            run @actions.get_timestamp
+               set @variables.session_start_time = @outputs.current_timestamp
+         # Log the reasoning start
+         run @actions.log_event
+            with event_type="reasoning_started"
+            with event_data="Turn: {!@variables.turn_count}"
+
          | Every time you interact with the user, respond to their message and append the session info with turn count to your response.
            
            Session Start: {!@variables.session_start_time}

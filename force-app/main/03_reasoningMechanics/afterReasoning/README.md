@@ -1,34 +1,32 @@
-# BeforeAfterReasoning
+# AfterReasoning
 
 ## Overview
 
-Learn how to use **reasoning lifecycle events** with `before_reasoning` and `after_reasoning`. These hooks let you execute code before and after every reasoning step, enabling initialization, logging, cleanup, and state management patterns.
+Learn how to use **reasoning lifecycle events** with `after_reasoning`. This hook let you execute code after every reasoning step, enabling logging, cleanup, and state management patterns.
 
 ## Agent Flow
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[User Sends Message] --> B[before_reasoning Executes]
-    B --> C[Increment turn_count]
-    C --> D{First Turn?}
-    D -->|Yes| E[Run get_timestamp]
-    E --> F[Set session_start_time]
-    D -->|No| G[Run log_event: reasoning_started]
-    F --> G
-    G --> H[Main reasoning.instructions Execute]
-    H --> I[Build Response with Turn Count]
-    I --> J[after_reasoning Executes]
-    J --> K[Run log_event: reasoning_completed]
-    K --> L[Response Delivered to User]
-    L --> M{Another Message?}
-    M -->|Yes| A
-    M -->|No| N[End Session]
+    A[User Sends Message] --> B[Increment turn_count]
+    B --> C{First Turn?}
+    C -->|Yes| D[Run get_timestamp]
+    D --> E[Set session_start_time]
+    C -->|No| F[Run log_event: reasoning_started]
+    E --> F
+    F --> G[Main reasoning.instructions Execute]
+    G --> H[Build Response with Turn Count]
+    H --> I[after_reasoning Executes]
+    I --> J[Run log_event: reasoning_completed]
+    J --> K[Response Delivered to User]
+    K --> L{Another Message?}
+    L -->|Yes| A
+    L -->|No| M[End Session]
 ```
 
 ## Key Concepts
 
-- **`before_reasoning`**: Executes before every reasoning step
 - **`after_reasoning`**: Executes after every reasoning step
 - **Lifecycle hooks**: Automatic execution on every turn
 - **Initialization patterns**: Setup state on first turn
@@ -36,34 +34,6 @@ graph TD
 - **State updates**: Modify variables at lifecycle points
 
 ## How It Works
-
-### before_reasoning Block
-
-Runs **before** the agent processes each user message:
-
-```agentscript
-topic conversation:
-   before_reasoning:
-      # Increment turn counter
-      set @variables.turn_count = @variables.turn_count + 1
-
-      # Initialize on first turn
-      if @variables.turn_count == 1:
-         run @actions.get_timestamp
-            set @variables.session_start_time = @outputs.current_timestamp
-
-      # Log the reasoning start
-      run @actions.log_event
-         with event_type="reasoning_started"
-         with event_data="Turn: {!@variables.turn_count}"
-```
-
-**Use for:**
-
-- Incrementing counters
-- Initializing session state
-- Loading required data
-- Logging start of operations
 
 ### after_reasoning Block
 
@@ -88,45 +58,52 @@ topic conversation:
 
 ```agentscript
 topic conversation:
-   description: "Provides a conversation with lifecycle event tracking"
+   description: "Provides a conversation with lifecycle event tracking. Your job is to run the after reasoning event as applicable on every request."
 
    actions:
       get_timestamp:
          description: "Get current timestamp"
          outputs:
             current_timestamp: string
-               description: "Current timestamp in ISO 8601 format"
+               description: "Current timestamp in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)"
          target: "flow://GetCurrentTimestamp"
 
       log_event:
          description: "Log an event to the system"
          inputs:
             event_type: string
-               description: "Type of event being logged"
+               description: "Type of event being logged (e.g., reasoning_started, reasoning_completed, user_greeted)"
             event_data: string
-               description: "Additional data or context about the event"
+               description: "Additional data or context about the event being logged"
          outputs:
             logged: boolean
-               description: "Indicates whether the event was successfully logged"
+               description: "Indicates whether the event was successfully logged to the system"
          target: "flow://LogEvent"
 
-   before_reasoning:
-      set @variables.turn_count = @variables.turn_count + 1
-      if @variables.turn_count == 1:
-         run @actions.get_timestamp
-            set @variables.session_start_time = @outputs.current_timestamp
-      run @actions.log_event
-         with event_type="reasoning_started"
-         with event_data="Turn: {!@variables.turn_count}"
-
+   # Main reasoning block
    reasoning:
       instructions:->
-         | Every time you interact with the user, respond to their message and append the session info with turn count to your response.
-         |
-         | Session Start: {!@variables.session_start_time}
-         | Current Turn Count: {!@variables.turn_count}
+         # Increment turn counter
+         set @variables.turn_count = @variables.turn_count + 1
+         # Initialize session start time on first turn
+         if @variables.turn_count == 1:
+            run @actions.get_timestamp
+               set @variables.session_start_time = @outputs.current_timestamp
+         # Log the reasoning start
+         run @actions.log_event
+            with event_type="reasoning_started"
+            with event_data="Turn: {!@variables.turn_count}"
 
+         | Every time you interact with the user, respond to their message and append the session info with turn count to your response.
+
+           Session Start: {!@variables.session_start_time}
+           Current Turn Count: {!@variables.turn_count}
+
+
+   # AFTER_REASONING: Runs after every reasoning step
+   # Use for: Cleanup, final logging, state updates, analytics
    after_reasoning:
+      # Log the reasoning completion
       run @actions.log_event
          with event_type="reasoning_completed"
          with event_data="Turn {!@variables.turn_count} completed"
@@ -141,27 +118,34 @@ variables:
    turn_count: mutable number = 0
       description: "Number of conversation turns"
 
-topic conversation:
-   before_reasoning:
+reasoning:
+   instructions:->
+      # Increment turn counter
       set @variables.turn_count = @variables.turn_count + 1
 ```
 
 ### Session Initialization Pattern
 
 ```agentscript
-before_reasoning:
-   if @variables.turn_count == 1:
-      run @actions.get_timestamp
-         set @variables.session_start_time = @outputs.current_timestamp
+reasoning:
+   instructions:->
+      # [Turn counter initialization omitted for brevity]
+      # Initialize session start time on first turn
+      if @variables.turn_count == 1:
+         run @actions.get_timestamp
+            set @variables.session_start_time = @outputs.current_timestamp
 ```
 
 ### Logging Pattern
 
 ```agentscript
-before_reasoning:
-   run @actions.log_event
-      with event_type="reasoning_started"
-      with event_data="Turn: {!@variables.turn_count}"
+reasoning:
+   instructions:->
+      # [Session Initialization omitted for brevity]
+      # Log the reasoning start
+      run @actions.log_event
+         with event_type="reasoning_started"
+         with event_data="Turn: {!@variables.turn_count}"
 
 after_reasoning:
    run @actions.log_event
@@ -177,12 +161,10 @@ after_reasoning:
 [Turn 1]
 User: Hello
 
-[before_reasoning executes:]
+[reasoning executes:]
   - turn_count = 1
   - get_timestamp → session_start_time set
   - log_event("reasoning_started", "Turn: 1")
-
-[reasoning executes:]
   - Instructions built with turn count
 
 Agent: Hello! Welcome to the conversation. Current Turn Count: 1
@@ -195,11 +177,9 @@ Agent: Hello! Welcome to the conversation. Current Turn Count: 1
 [Turn 2]
 User: How are you?
 
-[before_reasoning executes:]
+[reasoning executes:]
   - turn_count = 2
   - log_event("reasoning_started", "Turn: 2")
-
-[reasoning executes:]
   - Instructions built with turn count
 
 Agent: I'm great! Current Turn Count: 2
@@ -213,20 +193,22 @@ Agent: I'm great! Current Turn Count: 2
 ### Session Initialization
 
 ```agentscript
-before_reasoning:
-   if @variables.turn_count == 1:
-      run @actions.init_session
-         with session_id=@variables.session_id
+reasoning:
+   instructions:->
+      if @variables.turn_count == 1:
+         run @actions.init_session
+            with session_id=@variables.session_id
 ```
 
 ### Pre-loading Data
 
 ```agentscript
-before_reasoning:
-   if @variables.user_id and not @variables.user_profile:
-      run @actions.fetch_user_profile
-         with user_id=@variables.user_id
-         set @variables.user_profile = @outputs.profile
+reasoning:
+   instructions:->
+      if @variables.user_id and not @variables.user_profile:
+         run @actions.fetch_user_profile
+            with user_id=@variables.user_id
+            set @variables.user_profile = @outputs.profile
 ```
 
 ### Activity Tracking
@@ -240,10 +222,11 @@ after_reasoning:
 ### Comprehensive Logging
 
 ```agentscript
-before_reasoning:
-   run @actions.log_event
-      with event_type="turn_started"
-      with event_data="Turn {!@variables.turn_count}"
+reasoning:
+   instructions:->
+      run @actions.log_event
+         with event_type="turn_started"
+         with event_data="Turn {!@variables.turn_count}"
 
 after_reasoning:
    run @actions.log_event
@@ -253,7 +236,7 @@ after_reasoning:
 
 ## Best Practices
 
-✅ **Keep before_reasoning fast** - Avoid slow operations that delay responses
+✅ **Keep reasoning fast** - Avoid slow operations that delay responses
 
 ✅ **Use after_reasoning for logging** - Don't block the response
 
@@ -267,18 +250,17 @@ after_reasoning:
 
 ## Lifecycle vs Instructions
 
-| Aspect               | before_reasoning | instructions:->    | after_reasoning |
-| -------------------- | ---------------- | ------------------ | --------------- |
-| **When**             | Before reasoning | During reasoning   | After reasoning |
-| **Purpose**          | Setup, init      | Build instructions | Cleanup, log    |
-| **Actions**          | Yes              | Yes                | Yes             |
-| **Templates**        | No               | Yes                | No              |
-| **Affects response** | Indirectly       | Directly           | No              |
+| Aspect               | instructions:->                 | after_reasoning |
+| -------------------- | ------------------------------- | --------------- |
+| **When**             | During reasoning                | After reasoning |
+| **Purpose**          | Setup, init, build instructions | Cleanup, log    |
+| **Actions**          | Yes                             | Yes             |
+| **Templates**        | Yes                             | No              |
+| **Affects response** | Directly                        | No              |
 
 ## What's Next
 
 - **AdvancedReasoningPatterns**: Combine lifecycle with complex logic
-- **ContextHandling**: Load context in before_reasoning
 - **ReasoningInstructions**: Master procedural instructions
 
 ## Testing
@@ -287,7 +269,6 @@ Test lifecycle execution:
 
 ### Test Case 1: First Turn
 
-- Verify before_reasoning initializes correctly
 - Check turn counter starts at 1
 - Confirm session_start_time is set
 - Verify after_reasoning executes
@@ -302,5 +283,5 @@ Test lifecycle execution:
 ### Test Case 3: Logging Sequence
 
 - Verify log events in correct order:
-    1. reasoning_started (in before_reasoning)
+    1. reasoning_started (in reasoning)
     2. reasoning_completed (in after_reasoning)

@@ -1,9 +1,9 @@
 /**
- * @description Test class for Before/After Reasoning Flows
- * Tests all flows used in the before/after reasoning recipe
+ * @description Test class for After Reasoning Flows
+ * Tests all flows used in the after reasoning recipe
  */
 @IsTest
-private class BeforeAfterReasoningFlowTest {
+private class AfterReasoningFlowTest {
     @IsTest
     static void testGetCurrentTimestamp() {
         // Run the flow (no inputs required)

@@ -148,14 +148,13 @@ graph TD
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[User Message] --> B[before_reasoning Hook]
-    B --> C[Execute Initialization]
-    C --> D[Main Reasoning Instructions]
-    D --> E[Process User Input]
-    E --> F[Generate Response]
-    F --> G[after_reasoning Hook]
-    G --> H[Execute Cleanup]
-    H --> I[Response Delivered]
+    A[User Message] --> B[Execute Initialization]
+    B --> C[Main Reasoning Instructions]
+    C --> D[Process User Input]
+    D --> E[Generate Response]
+    E --> F[after_reasoning Hook]
+    F --> G[Execute Cleanup]
+    G --> H[Response Delivered]
 ```
 
 ### 5. Multi-Step Workflow Pattern
@@ -211,8 +210,8 @@ graph TD
 
 ### Lifecycle Events
 
-- Format: `[before_reasoning Hook]`, `[after_reasoning Hook]`
-- Example: `[before_reasoning: Initialize Session]`
+- Format: `[after_reasoning Hook]`
+- Example: `[after_reasoning: Save state]`
 
 ### Data Loading
 

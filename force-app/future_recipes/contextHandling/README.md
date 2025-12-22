@@ -313,7 +313,7 @@ Agent: ¡Hola! Veo que prefieres español.
 ## What's Next
 
 - **VariableManagement**: Deep dive into mutable variables
-- **BeforeAfterReasoning**: Load context in lifecycle events
+- **AfterReasoning**: Load context in lifecycle events
 - **TemplateExpressions**: Use context in dynamic templates
 - **AdvancedReasoningPatterns**: Combine context with complex logic
 

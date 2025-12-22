@@ -314,7 +314,7 @@ instructions:->
 
 ## What's Next
 
-- **BeforeAfterReasoning**: Use `before_reasoning` and `after_reasoning` lifecycle events
+- **AfterReasoning**: Use `after_reasoning` lifecycle event
 - **AdvancedReasoningPatterns**: Build complex multi-source reasoning
 - **ContextHandling**: Work with platform context data
 
