@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>An onboarding agent that collects personal information from users</description>
+    <localTopicLinks>
+        <genAiPluginName>onboarding_16jQz0000005Gs9</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>topic_selector_16jQz0000005Gs9</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>onboarding_16jQz0000005Gs9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Collects personal information from users</description>
+        <developerName>onboarding_16jQz0000005Gs9</developerName>
+        <genAiPluginInstructions>
+            <description>You are a friendly onboarding assistant for Zenoo. Collect exactly 4 pieces of information: first name, last name, mobile phone number, and email address. NEVER ask for anything else.</description>
+            <developerName>instruction0_179Qz0000002FKk</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Qz0000002FKk</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>save_contact_179Qz0000002FKk</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>save_contact_179Qz0000002FKk</fullName>
+            <description>Saves the user&apos;s contact information. MUST be called as soon as all 4 fields are collected.</description>
+            <developerName>save_contact_179Qz0000002FKk</developerName>
+            <invocationTarget>ZenooSaveContact</invocationTarget>
+            <invocationTargetType>flow</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>save_contact</localDeveloperName>
+            <masterLabel>Save Contact</masterLabel>
+        </localActions>
+        <localDeveloperName>onboarding</localDeveloperName>
+        <masterLabel>onboarding</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>topic_selector_16jQz0000005Gs9</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Welcome users and begin the onboarding process</description>
+        <developerName>topic_selector_16jQz0000005Gs9</developerName>
+        <genAiPluginInstructions>
+            <description>You are a friendly onboarding assistant for Zenoo. Collect exactly 4 pieces of information: first name, last name, mobile phone number, and email address. NEVER ask for anything else.</description>
+            <developerName>instruction0_179Qz0000002FKj</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Qz0000002FKj</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>topic_selector</localDeveloperName>
+        <masterLabel>Topic Selector</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <masterLabel>Zenoo Onboarding Agent</masterLabel>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__CustomerWebClient</surface>
+        <surfaceType>CustomerWebClient</surfaceType>
+    </plannerSurfaces>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__Messaging</surface>
+        <surfaceType>Messaging</surfaceType>
+    </plannerSurfaces>
+    <plannerType>Atlas__ConcurrentMultiAgentOrchestration</plannerType>
+</GenAiPlannerBundle>

@@ -1,0 +1,68 @@
+# ZenooOnboardingAgent - Customer Onboarding Agent
+# Collects personal information from users: firstname, lastname, mobile, and email
+
+system:
+    instructions: "You are a friendly onboarding assistant for Zenoo. Collect exactly 4 pieces of information: first name, last name, mobile phone number, and email address. NEVER ask for anything else."
+
+    messages:
+        welcome: "Welcome to Zenoo! I'm here to help you get started. Let's collect some basic information to set up your profile. What is your first name?"
+        error: "I'm sorry, I encountered an issue. Let's try that again."
+
+config:
+    agent_name: "ZenooOnboardingAgent"
+    agent_label: "Zenoo Onboarding Agent"
+    description: "An onboarding agent that collects personal information from users"
+
+variables:
+    contact_id: mutable string = ""
+        description: "The unique identifier assigned after contact is created"
+
+start_agent topic_selector:
+    description: "Welcome users and begin the onboarding process"
+
+    reasoning:
+        instructions:|
+            ALWAYS call {!@actions.begin_onboarding} immediately to start the onboarding process. This is the only action available and must be called on the first user message.
+        actions:
+            begin_onboarding: @utils.transition to @topic.onboarding
+                description: "Start the onboarding process to collect user information. ALWAYS call this action immediately."
+
+topic onboarding:
+    label: "onboarding"
+
+    description: "Collects personal information from users and saves to Salesforce"
+
+    reasoning:
+        instructions:|
+            Collect exactly 4 pieces of information from the user: first name, last name, mobile phone number, and email address.
+            NEVER ask for date of birth, nationality, address, or any other field.
+            Once you have ALL 4 pieces of information, call {!@actions.save_user_contact} to save the contact to Salesforce.
+            After saving, thank the user and confirm their profile has been created with the contact ID.
+
+        actions:
+            save_user_contact: @actions.save_contact
+                description: "Save the contact to Salesforce. Call this action when you have collected all 4 pieces of information: first name, last name, mobile, and email."
+                with first_name = ...
+                with last_name = ...
+                with mobile = ...
+                with email = ...
+                set @variables.contact_id = @outputs.contact_id
+
+    actions:
+        save_contact:
+            description: "Saves the user's contact information to Salesforce"
+            inputs:
+                first_name: string
+                    description: "The user's first name"
+                last_name: string
+                    description: "The user's last name"
+                mobile: string
+                    description: "The user's mobile phone number"
+                email: string
+                    description: "The user's email address"
+            outputs:
+                contact_id: string
+                    description: "The unique identifier of the created contact record"
+                success: boolean
+                    description: "Whether the contact was created successfully"
+            target: "flow://ZenooSaveContact"

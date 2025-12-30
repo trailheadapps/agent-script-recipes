@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bot xmlns="http://soap.sforce.com/2006/04/metadata">
+    <agentDSLEnabled>true</agentDSLEnabled>
+    <agentType>EinsteinServiceAgent</agentType>
+    <botMlDomain>
+        <label>ZenooOnboardingAgent</label>
+        <name>ZenooOnboardingAgent</name>
+    </botMlDomain>
+    <botSource>None</botSource>
+    <botUser>null@00dqz000009ahxl9933167.ext</botUser>
+    <description>An onboarding agent that collects personal information from users</description>
+    <label>Zenoo Onboarding Agent</label>
+    <logPrivateConversationData>false</logPrivateConversationData>
+    <richContentEnabled>true</richContentEnabled>
+    <sessionTimeout>0</sessionTimeout>
+    <type>ExternalCopilot</type>
+</Bot>
