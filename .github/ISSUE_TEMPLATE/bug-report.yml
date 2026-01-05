@@ -6,6 +6,7 @@ body:
       attributes:
           value: |
               **NOTICE:** Please use this form only for reporting bugs on the application itself.
+              This repository IS NOT a channel to obtain support for Agent Script or Agentforce Builder.
 
               For general questions about our technologies (Apex, Lightning Web Components...) use the existing channels:
 
