@@ -3,19 +3,6 @@
     <apiVersion>65.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Set_Failure</name>
-        <label>Set Failure</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>success</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
         <name>Set_Success</name>
         <label>Set Success</label>
         <locationX>0</locationX>
@@ -28,31 +15,7 @@
             </value>
         </assignmentItems>
     </assignments>
-    <decisions>
-        <name>Check_Confirmed</name>
-        <label>Check Confirmed</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Set_Failure</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Not Confirmed</defaultConnectorLabel>
-        <rules>
-            <name>Is_Confirmed</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>confirmed</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Delete_Account</targetReference>
-            </connector>
-            <label>Is Confirmed</label>
-        </rules>
-    </decisions>
+    <description>Deletes the record with the provided ID</description>
     <environments>Default</environments>
     <interviewLabel>DeleteRecord {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Delete Record</label>
@@ -77,10 +40,6 @@
         <connector>
             <targetReference>Set_Success</targetReference>
         </connector>
-        <faultConnector>
-            <isGoTo>true</isGoTo>
-            <targetReference>Set_Failure</targetReference>
-        </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -96,17 +55,10 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Check_Confirmed</targetReference>
+            <targetReference>Delete_Account</targetReference>
         </connector>
     </start>
     <status>Active</status>
-    <variables>
-        <name>confirmed</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-    </variables>
     <variables>
         <name>record_id</name>
         <dataType>String</dataType>

@@ -4,6 +4,9 @@
 
 Learn essential **safety patterns** for production agents. This recipe demonstrates multi-stage validation, explicit confirmations, dependency checking, and permissions for record deletion operations.
 
+> [!IMPORTANT]
+> This recipe doesn't grant permissions that let the service agent user remove the records. It is your responsibility to configure those permissions otherwise the delete operation will fail.
+
 ## Agent Flow
 
 ```mermaid
@@ -46,18 +49,15 @@ The agent enforces a strict sequence of validation steps. Each stage must comple
 instructions:->
    # Stage 1: Collect record ID
    if @variables.record_id == "":
-      | Ask for the record ID to delete.
-      | Use {!@actions.set_record_id} to set the record ID.
+      | Ask for the record ID to delete. Use {!@actions.set_record_id} to save the ID.
 
    # Stage 2: Request confirmation
-   if @variables.user_confirmed_deletion == False:
-      | Ask for the user's confirmation to delete the record.
-      | Use {!@actions.set_user_confirmation} to set the confirmation received.
+   if @variables.record_id != "" and @variables.user_confirmed_deletion == False:
+      | Ask for the user's confirmation to delete the record. Use {!@actions.set_user_confirmation} to save the answer.
 
    # Stage 3: Check dependencies and proceed
-      | If the confirmation is received, check the dependencies using {!@actions.check_dependencies}.
-      | If there are no dependencies, delete the record using {!@actions.delete_record}.
-      | If there are dependencies, display a warning: {!@variables.dependency_count} dependent records found.
+   | If the confirmation is received ({!@variables.user_confirmed_deletion}), check the dependencies using {!@actions.check_dependencies}.
+   | If dependencies are checked and if there are no dependencies, delete the record using {!@actions.delete_record}.
 ```
 
 ### Explicit Confirmation Pattern
@@ -72,22 +72,36 @@ instructions:->
       | If the confirmation is received, check the dependencies using {!@actions.check_dependencies}.
 ```
 
-### Action Bindings with Variable Mapping
+### Dynamic Action Availability with Conditions
 
-Action outputs are mapped to variables to track the state of the deletion process. This allows the agent to make decisions based on the results of previous actions.
+Actions are dynamically made available thanks to `available when` conditions. This helps to prevent undesired action calls by the agent.
 
 ```agentscript
 actions:
-   delete_record: @actions.delete_record
-      with record_id = @variables.record_id
-      with confirmed = @variables.user_confirmed_deletion
-      set @variables.deletion_success = @outputs.success
-
    check_dependencies: @actions.check_dependencies
+      available when @variables.delete_state == "check_dependencies" and @variables.user_confirmed_deletion == True
       with record_id = @variables.record_id
-      set @variables.has_dependencies = @outputs.has_dependencies
       set @variables.dependency_count = @outputs.count
-      set @variables.dependency_check_done = True
+      set @variables.delete_state = "check_dependencies_ran"
+```
+
+### Action Bindings with Variable Mapping
+
+Action outputs are mapped to variables to track the state of the deletion process (`delete_state`). This allows the agent to make decisions based on the results of previous actions.
+
+```agentscript
+actions:
+   check_dependencies: @actions.check_dependencies
+      available when @variables.delete_state == "check_dependencies" and @variables.user_confirmed_deletion == True
+      with record_id = @variables.record_id
+      set @variables.dependency_count = @outputs.count
+      set @variables.delete_state = "check_dependencies_ran"
+
+   delete_record: @actions.delete_record
+      available when @variables.delete_state == "check_dependencies_ran" and @variables.dependency_count == 0
+      with record_id = @variables.record_id
+      set @variables.delete_succeeded = @outputs.success
+      set @variables.delete_state = "delete_ran"
 ```
 
 ## Key Code Snippets
@@ -102,20 +116,14 @@ variables:
    user_confirmed_deletion: mutable boolean = False
       description: "Whether user confirmed deletion"
 
-   is_admin: mutable boolean = True
-      description: "Whether user has admin privileges. Defaulting to True for demonstration."
-
-   has_dependencies: mutable boolean = False
-      description: "Whether record has dependencies"
-
    dependency_count: mutable number = 0
       description: "Number of dependent records"
 
-   deletion_success: mutable boolean = False
-      description: "Flag that indicates the deletion was success"
+   delete_succeeded: mutable boolean = False
+      description: "Flag that indicates whether the deletion was successful"
 
-   dependency_check_done: mutable boolean = False
-      description: "Flag that indicates the dependency check is done"
+   delete_state: mutable string = "check_dependencies"
+      description: "Flag that indicates the state of the deletion process"
 ```
 
 ### Complete Action Definitions
@@ -127,7 +135,6 @@ actions:
       inputs:
          record_id: string
       outputs:
-         has_dependencies: boolean
          count: number
       target: "flow://CheckDependencies"
 
@@ -135,7 +142,6 @@ actions:
       description: "Deletes a record permanently"
       inputs:
          record_id: string
-         confirmed: boolean
       outputs:
          success: boolean
       target: "flow://DeleteRecord"

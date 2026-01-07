@@ -23,8 +23,9 @@ private class SafetyAndGuardrailsFlowTest {
         Account testAccount = [SELECT Id FROM Account LIMIT 1];
 
         // Set input variables for the flow
-        Map<String, Object> inputs = new Map<String, Object>();
-        inputs.put('record_id', testAccount.Id);
+        Map<String, Object> inputs = new Map<String, Object>{
+            'record_id' => testAccount.Id
+        };
 
         // Run the flow
         Test.startTest();
@@ -36,12 +37,7 @@ private class SafetyAndGuardrailsFlowTest {
 
         // Verify the expected outcome
         Decimal count = (Decimal) flowInterview.getVariableValue('count');
-        Boolean hasDependencies = (Boolean) flowInterview.getVariableValue(
-            'has_dependencies'
-        );
-
         Assert.areEqual(1, count, 'Should find 1 contact');
-        Assert.areEqual(true, hasDependencies, 'Should have dependencies');
     }
 
     @IsTest
@@ -51,8 +47,9 @@ private class SafetyAndGuardrailsFlowTest {
         insert testAccount;
 
         // Set input variables for the flow
-        Map<String, Object> inputs = new Map<String, Object>();
-        inputs.put('record_id', testAccount.Id);
+        Map<String, Object> inputs = new Map<String, Object>{
+            'record_id' => testAccount.Id
+        };
 
         // Run the flow
         Test.startTest();
@@ -64,12 +61,7 @@ private class SafetyAndGuardrailsFlowTest {
 
         // Verify the expected outcome
         Decimal count = (Decimal) flowInterview.getVariableValue('count');
-        Boolean hasDependencies = (Boolean) flowInterview.getVariableValue(
-            'has_dependencies'
-        );
-
         Assert.areEqual(0, count, 'Should find 0 contacts');
-        Assert.areEqual(false, hasDependencies, 'Should not have dependencies');
     }
 
     @IsTest
@@ -79,9 +71,9 @@ private class SafetyAndGuardrailsFlowTest {
         String accountId = testAccount.Id;
 
         // Set input variables for the flow
-        Map<String, Object> inputs = new Map<String, Object>();
-        inputs.put('record_id', accountId);
-        inputs.put('confirmed', true);
+        Map<String, Object> inputs = new Map<String, Object>{
+            'record_id' => accountId
+        };
 
         // Run the flow
         Test.startTest();
@@ -102,33 +94,5 @@ private class SafetyAndGuardrailsFlowTest {
             WHERE Id = :accountId
         ];
         Assert.areEqual(0, deletedAccounts.size(), 'Account should be deleted');
-    }
-
-    @IsTest
-    static void testDeleteRecordNotConfirmed() {
-        Account testAccount = new Account(Name = 'Not Deleted');
-        insert testAccount;
-        String accountId = testAccount.Id;
-
-        // Set input variables for the flow
-        Map<String, Object> inputs = new Map<String, Object>();
-        inputs.put('record_id', accountId);
-        inputs.put('confirmed', false);
-
-        // Run the flow
-        Test.startTest();
-        Flow.Interview.DeleteRecord flowInterview = new Flow.Interview.DeleteRecord(
-            inputs
-        );
-        flowInterview.start();
-        Test.stopTest();
-
-        // Verify the expected outcome
-        Boolean success = (Boolean) flowInterview.getVariableValue('success');
-        Assert.areEqual(false, success, 'Record should not be deleted');
-
-        // Verify record was not deleted
-        List<Account> accounts = [SELECT Id FROM Account WHERE Id = :accountId];
-        Assert.areEqual(1, accounts.size(), 'Account should not be deleted');
     }
 }
