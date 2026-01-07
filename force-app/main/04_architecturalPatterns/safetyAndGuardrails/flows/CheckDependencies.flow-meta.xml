@@ -55,7 +55,7 @@
         <queriedFields>Id</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <runInMode>SystemModeWithoutSharing</runInMode>
+    <runInMode>DefaultMode</runInMode>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>

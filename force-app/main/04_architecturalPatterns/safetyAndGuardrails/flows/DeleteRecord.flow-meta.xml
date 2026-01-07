@@ -50,7 +50,7 @@
         </filters>
         <object>Account</object>
     </recordDeletes>
-    <runInMode>SystemModeWithoutSharing</runInMode>
+    <runInMode>DefaultMode</runInMode>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>

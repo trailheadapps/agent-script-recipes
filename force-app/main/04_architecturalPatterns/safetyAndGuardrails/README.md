@@ -4,6 +4,9 @@
 
 Learn essential **safety patterns** for production agents. This recipe demonstrates multi-stage validation, explicit confirmations, dependency checking, and permissions for record deletion operations.
 
+> [!IMPORTANT]
+> This recipe doesn't grant permissions that let the service agent user remove the records. It is your responsibility to configure those permissions otherwise the delete operation will fail.
+
 ## Agent Flow
 
 ```mermaid
