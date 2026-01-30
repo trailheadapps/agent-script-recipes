@@ -6,7 +6,6 @@ config:
    agent_label: "ActionCallbacks"
    description: "Processes payments with post-action callbacks"
 
-
 variables:
    payment_amount: mutable number = 0
       description: "Payment amount"
