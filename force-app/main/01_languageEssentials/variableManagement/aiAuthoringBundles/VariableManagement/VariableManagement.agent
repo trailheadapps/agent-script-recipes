@@ -2,85 +2,85 @@
 # This agent demonstrates how to use variables to track state across conversation turns
 
 config:
-   agent_name: "VariableManagement"
-   agent_label: "VariableManagement"
-   description: "Collects user information through a survey using variables"
+    agent_name: "VariableManagement"
+    agent_label: "VariableManagement"
+    description: "Collects user information through a survey using variables"
 
 variables:
-  # String variable with default value
-  # 'mutable' means the agent can change this value
-  user_name: mutable string = ""
-     description: "The user's full name"
+   # String variable with default value
+   # 'mutable' means the agent can change this value
+   user_name: mutable string = ""
+      description: "The user's full name"
 
-  # Number variable - tracks numeric values
-  age: mutable number = 0
-     description: "The user's age in years"
+   # Number variable - tracks numeric values
+   age: mutable number = 0
+      description: "The user's age in years"
 
-  # Boolean variable - tracks true/false state
-  survey_completed: mutable boolean = False
-     description: "Whether the user has completed all survey questions"
+   # Boolean variable - tracks true/false state
+   survey_completed: mutable boolean = False
+      description: "Whether the user has completed all survey questions"
 
-  # List variable - stores multiple string values
-  # Empty list [] is the default for list types
-  interests: mutable string = ""
-     description: "List of the user's interests and hobbies"
+   # List variable - stores multiple string values
+   # Empty list [] is the default for list types
+   interests: mutable string = ""
+      description: "List of the user's interests and hobbies"
 
 system:
-  messages:
-     welcome: "Welcome! I'd like to learn a bit about you. Let's start with your name."
-     error: "Sorry, I had trouble processing that. Let's try again."
+   messages:
+      welcome: "Welcome! I'd like to learn a bit about you. Let's start with your name."
+      error: "Sorry, I had trouble processing that. Let's try again."
 
-  instructions: "You are a friendly survey agent, that collects users name, age and interests. Be conversational and encouraging. Make the survey feel like a chat, not an interrogation."
+   instructions: "You are a friendly survey agent, that collects users name, age and interests. Be conversational and encouraging. Make the survey feel like a chat, not an interrogation."
 
 start_agent topic_selector:
-  description: "Welcome users and select the right topic"
-  
-  reasoning:
-     instructions:|
-        Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
-     actions:
-        begin_survey: @utils.transition to @topic.survey
-           description: "Collects user's Name, Age and Interests"
-           available when @variables.survey_completed == False
+   description: "Welcome users and select the right topic"
+   
+   reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+      actions:
+         begin_survey: @utils.transition to @topic.survey
+            description: "Collects user's Name, Age and Interests"
+            available when @variables.survey_completed == False
 
 topic survey:
-  description: "Collects user's Name, Age and Interests and save it in variables. Do not ask any other questions for the survey except for Name, Age and Interests"
+   description: "Collects user's Name, Age and Interests and save it in variables. Do not ask any other questions for the survey except for Name, Age and Interests"
 
-  reasoning:
-     instructions:->
-        |
-          Collect information from the user step by step.
- 
-          Current survey progress:
-        if @variables.user_name:
-           | - Name: {!@variables.user_name}
-        else:
-           | - Name: Not provided
-        
-        if @variables.age > 0:
-           | - Age: {!@variables.age}
-        else:
-           | - Age: Not provided
-        
-        if @variables.interests:
-           | - Interests: {!@variables.interests}
-        else:
-           | - Interests: Not provided
-        
-        | - Survey complete: {!@variables.survey_completed}
- 
-          Your task:
-          1. If user_name is empty, ask for their name
-          2. If age is 0, ask for their age
-          3. If interests list is empty, ask about their hobbies and interests
-          4. Once all information is collected, set survey_completed to True,
-             and respond to the user with a "Thank you". Also summarize the collected
-             data for them.
- 
-          When you receive information:
-          - Save the name in {!variables.user_name} variable
-          - Save the age in {!variables.age} variable
-          - Save interests as a list in the {!variables.interests} variable
-          - Mark the variable {!variables.survey_completed} as True when you finished collecting user's name, age and interests
- 
-          Be natural and conversational. Don't ask all questions at once.
+   reasoning:
+      instructions:->
+         |
+           Collect information from the user step by step.
+  
+           Current survey progress:
+         if @variables.user_name:
+            | - Name: {!@variables.user_name}
+         else:
+            | - Name: Not provided
+         
+         if @variables.age > 0:
+            | - Age: {!@variables.age}
+         else:
+            | - Age: Not provided
+         
+         if @variables.interests:
+            | - Interests: {!@variables.interests}
+         else:
+            | - Interests: Not provided
+         
+         | - Survey complete: {!@variables.survey_completed}
+  
+           Your task:
+           1. If user_name is empty, ask for their name
+           2. If age is 0, ask for their age
+           3. If interests list is empty, ask about their hobbies and interests
+           4. Once all information is collected, set survey_completed to True,
+              and respond to the user with a "Thank you". Also summarize the collected
+              data for them.
+  
+           When you receive information:
+           - Save the name in {!variables.user_name} variable
+           - Save the age in {!variables.age} variable
+           - Save interests as a list in the {!variables.interests} variable
+           - Mark the variable {!variables.survey_completed} as True when you finished collecting user's name, age and interests
+  
+           Be natural and conversational. Don't ask all questions at once.
