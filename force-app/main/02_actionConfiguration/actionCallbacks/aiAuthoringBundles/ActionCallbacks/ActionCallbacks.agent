@@ -5,7 +5,6 @@ config:
    agent_name: "ActionCallbacks"
    agent_label: "ActionCallbacks"
    description: "Processes payments with post-action callbacks"
-   default_agent_user: "helloworld@00dal00001mlely1691033239.ext"
 
 
 variables:
