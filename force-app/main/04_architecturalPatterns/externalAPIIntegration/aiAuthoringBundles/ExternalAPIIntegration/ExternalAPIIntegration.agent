@@ -32,7 +32,7 @@ variables:
       description: "The unique transaction ID returned after a payment."
 
    # Shipping API example
-   shipment_status: mutable object = {}
+   shipment_status: mutable string = ""
       description: "The status object of the shipment tracking."
 
 start_agent topic_selector:
@@ -102,7 +102,6 @@ topic api_integration:
          target: "apex://WeatherService"
 
       # Apex-based API integration
-
       process_payment:
          description: "Process payment via external payment gateway using Apex"
          inputs:
@@ -117,14 +116,13 @@ topic api_integration:
          target: "apex://PaymentGatewayController"
          
       # Flow-based tracking
-
       track_shipment:
          description: "Track shipment via external shipping API"
          inputs:
             tracking_number: string
             carrier: string
          outputs:
-            status: object
+            status: string
             estimated_delivery: string
             success: boolean
          target: "flow://TrackShipment"

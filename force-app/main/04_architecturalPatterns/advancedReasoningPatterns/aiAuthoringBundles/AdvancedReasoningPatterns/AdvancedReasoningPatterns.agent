@@ -144,6 +144,7 @@ topic intelligent_insights:
          outputs:
             profile: object
                description: "User profile object containing name, contact information, and account details"
+               complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchUserProfile"
 
       fetch_account_data:
@@ -154,6 +155,7 @@ topic intelligent_insights:
          outputs:
             account: object
                description: "Account object with account status, balance, and membership information"
+               complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchAccountData"
 
       fetch_order_history:
@@ -197,6 +199,7 @@ topic intelligent_insights:
          inputs:
             account: object
                description: "Customer account object with status and activity information"
+               complex_data_type_name: "lightning__recordInfoType"
             orders: list[object]
                description: "List of customer orders used to analyze purchase patterns and frequency"
             support_tickets: list[object]
@@ -213,6 +216,7 @@ topic intelligent_insights:
          inputs:
             profile: object
                description: "Customer profile object with preferences and demographic information"
+               complex_data_type_name: "lightning__recordInfoType"
             clv: number
                description: "Customer lifetime value used to tailor recommendations appropriately"
             churn_risk: number
