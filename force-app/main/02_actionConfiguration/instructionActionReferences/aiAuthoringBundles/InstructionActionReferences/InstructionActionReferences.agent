@@ -4,6 +4,7 @@
 config:
    agent_name: "InstructionActionReferences"
    agent_label: "InstructionActionReferences"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates embedding action references in instructions"
 
 variables:

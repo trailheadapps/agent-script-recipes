@@ -8,6 +8,7 @@ system:
 config:
     agent_name: "PromptTemplateActions"
     agent_label: "PromptTemplateActions"
+    agent_type: "AgentforceEmployeeAgent"
     description: "Provides guidance to guests by creating personalized schedules."
 start_agent topic_selector:
     description: "Welcome users and begin providing personalized scheduling guidance."

@@ -4,6 +4,7 @@
 config:
    agent_name: "ActionCallbacks"
    agent_label: "ActionCallbacks"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Processes payments with post-action callbacks"
 
 variables:

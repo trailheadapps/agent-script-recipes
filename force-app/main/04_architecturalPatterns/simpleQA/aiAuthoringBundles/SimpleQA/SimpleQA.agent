@@ -4,6 +4,7 @@
 config:
    agent_name: "SimpleQA"
    agent_label: "SimpleQA"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Answers common questions about products and services"
 
 # System block defines the agent's overall personality and capabilities

@@ -8,6 +8,7 @@ system:
 config:
     agent_name: "AdvancedReasoningPatterns"
     agent_label: "AdvancedReasoningPatterns"
+    agent_type: "AgentforceEmployeeAgent"
     description: "Demonstrates advanced reasoning with dynamic instructions and complex logic"
 
 variables:

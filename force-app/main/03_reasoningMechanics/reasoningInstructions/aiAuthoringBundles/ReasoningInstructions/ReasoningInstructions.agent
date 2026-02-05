@@ -4,6 +4,7 @@
 config:
    agent_name: "ReasoningInstructions"
    agent_label: "ReasoningInstructions"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Checks order status and provides dynamic instructions based on order state"
 
 variables:

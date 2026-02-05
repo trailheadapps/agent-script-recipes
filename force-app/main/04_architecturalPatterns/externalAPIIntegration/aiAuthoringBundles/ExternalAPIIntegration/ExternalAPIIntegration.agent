@@ -7,21 +7,22 @@ system:
 config:
     agent_name: "ExternalAPIIntegration"
     agent_label: "ExternalAPIIntegration"
+    agent_type: "AgentforceEmployeeAgent"
     description: "Demonstrates integration with external systems using flows and Apex"
 
 variables:
    # API request tracking
    api_request_id: mutable string = ""
       description: "The ID of the current API request."
-   api_response_status: mutable string = ""
+   api_response_status: mutable boolean = False
       description: "The status of the API response (e.g., true for success, false for failure)."
    api_error_message: mutable string = ""
       description: "Error message returned by the API, if any."
 
    # Weather API example
-   temperature: mutable string = ""
+   temperature: mutable number = 0
       description: "The current temperature fetched from the weather API."
-   humidity: mutable string = ""
+   humidity: mutable number = 0
       description: "The current humidity percentage fetched from the weather API."
    conditions: mutable string = ""
       description: "The current weather conditions (e.g., Sunny, Cloudy)."

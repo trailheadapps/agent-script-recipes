@@ -4,6 +4,7 @@
 config:
    agent_name: "ContextHandling"
    agent_label: "ContextHandling"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Uses platform context for personalized experiences"
 
 variables:
