@@ -118,7 +118,7 @@ jobs:
 
             # Deploy source to scratch org
             - name: 'Push source to scratch org'
-              run: sf project deploy start
+              run: sf project deploy start --dev-debug
 
             # Assign permission sets
             - name: 'Assign permission sets to default user'
