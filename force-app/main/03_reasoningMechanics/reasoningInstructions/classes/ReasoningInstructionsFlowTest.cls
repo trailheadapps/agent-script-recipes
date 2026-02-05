@@ -4,6 +4,9 @@
  */
 @IsTest
 private class ReasoningInstructionsFlowTest {
+    private static final String TEST_ORDER_STATUS = 'Shipped';
+    private static final String TEST_TRACKING_NUMBER = '1234567890';
+
     @TestSetup
     static void setup() {
         // Create test account
@@ -11,10 +14,9 @@ private class ReasoningInstructionsFlowTest {
         insert testAccount;
 
         // Create test order (OrderNumber is auto-generated)
-        Order testOrder = new Order(
-            AccountId = testAccount.Id,
-            Status = 'Draft',
-            EffectiveDate = Date.today()
+        ASR_Order__c testOrder = new ASR_Order__c(
+            Status__c = TEST_ORDER_STATUS,
+            Tracking_Number__c = TEST_TRACKING_NUMBER
         );
         insert testOrder;
     }
@@ -22,11 +24,11 @@ private class ReasoningInstructionsFlowTest {
     @IsTest
     static void testGetOrderStatusSuccess() {
         // Get the order number from the created order
-        Order testOrder = [SELECT OrderNumber FROM Order LIMIT 1];
+        ASR_Order__c testOrder = [SELECT Id, Name FROM ASR_Order__c LIMIT 1];
 
         // Set input variables for the flow
         Map<String, Object> inputs = new Map<String, Object>();
-        inputs.put('order_id', testOrder.OrderNumber);
+        inputs.put('order_id', testOrder.Name);
 
         // Run the flow
         Test.startTest();
@@ -38,9 +40,13 @@ private class ReasoningInstructionsFlowTest {
 
         // Verify the expected outcome
         String status = (String) flowInterview.getVariableValue('status');
+        String trackingNumber = (String) flowInterview.getVariableValue(
+            'tracking_number'
+        );
         SObject details = (SObject) flowInterview.getVariableValue('details');
 
-        Assert.isNotNull(status, 'Status should be returned');
+        Assert.areEqual(TEST_ORDER_STATUS, status);
+        Assert.areEqual(TEST_TRACKING_NUMBER, trackingNumber);
         Assert.isNotNull(details, 'Order details should be returned');
     }
 }

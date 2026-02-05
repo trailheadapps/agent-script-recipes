@@ -1,50 +1,17 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
-    <environments>Default</environments>
-    <interviewLabel>GetOrderStatus {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Get Order Status</label>
-    <processType>AutoLaunchedFlow</processType>
-    <start>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Get_Order</targetReference>
-        </connector>
-    </start>
-    <status>Active</status>
-    <recordLookups>
-        <name>Get_Order</name>
-        <label>Get Order</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Assign_Output</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>OrderNumber</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>order_id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Order</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_Output</name>
         <label>Assign Output</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>status</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Order.Status</elementReference>
+                <elementReference>Get_Order.Status__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
@@ -63,6 +30,60 @@
             </value>
         </assignmentItems>
     </assignments>
+    <environments>Default</environments>
+    <interviewLabel>GetOrderStatus {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Get Order Status</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Order</name>
+        <label>Get Order</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound
+        >false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_Output</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>order_id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ASR_Order__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Order</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>details</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>ASR_Order__c</objectType>
+    </variables>
     <variables>
         <name>order_id</name>
         <dataType>String</dataType>
@@ -83,13 +104,5 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
-    </variables>
-    <variables>
-        <name>details</name>
-        <dataType>SObject</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>true</isOutput>
-        <objectType>Order</objectType>
     </variables>
 </Flow>

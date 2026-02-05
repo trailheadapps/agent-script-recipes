@@ -51,6 +51,7 @@ topic order_status:
                description: "Current order status (pending, shipped, delivered, cancelled)"
             details: object
                description: "Detailed order information including items, dates, and customer information"
+               complex_data_type_name: "lightning__recordInfoType"
             tracking_number: string
                description: "Shipping tracking number if the order has been shipped"
          target: "flow://GetOrderStatus"
@@ -74,8 +75,9 @@ topic order_status:
                set @variables.order_details = @outputs.details
                set @variables.tracking_number = @outputs.tracking_number
 
-         # Now build instructions based on the order status
-         | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+         if @variables.order_status:
+            # Now build instructions based on the order status
+            | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
 
          # Different instructions for different statuses
          if @variables.order_status == "pending":

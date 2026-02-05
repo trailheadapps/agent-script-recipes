@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Estimated_Delivery_Date__c</fullName>
-    <label>Estimated Delivery Date</label>
+    <fullName>Tracking_Number__c</fullName>
+    <externalId>false</externalId>
+    <label>Tracking Number</label>
+    <length>255</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
-    <type>Date</type>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>
