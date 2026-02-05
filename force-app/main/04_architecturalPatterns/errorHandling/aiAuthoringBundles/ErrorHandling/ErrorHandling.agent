@@ -4,6 +4,7 @@
 config:
    agent_name: "ErrorHandling"
    agent_label: "ErrorHandling"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Handles account transfers with comprehensive validation and error handling"
 
 variables:

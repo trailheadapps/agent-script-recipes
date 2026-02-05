@@ -4,6 +4,7 @@
 config:
    agent_name: "ActionDescriptionOverrides"
    agent_label: "ActionDescriptionOverrides"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates overriding action descriptions based on context"
 
 variables:

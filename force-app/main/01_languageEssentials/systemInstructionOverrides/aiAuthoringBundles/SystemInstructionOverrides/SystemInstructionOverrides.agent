@@ -8,6 +8,7 @@ system:
 config:
    agent_name: "SystemInstructionOverrides"
    agent_label: "SystemInstructionOverrides"
+   agent_type: "AgentforceEmployeeAgent"
    description: "This agent demonstrates how to override system instructions per topic"
 
 start_agent topic_selector:

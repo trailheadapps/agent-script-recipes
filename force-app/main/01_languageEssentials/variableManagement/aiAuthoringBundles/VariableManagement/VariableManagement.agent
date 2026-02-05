@@ -2,9 +2,10 @@
 # This agent demonstrates how to use variables to track state across conversation turns
 
 config:
-    agent_name: "VariableManagement"
-    agent_label: "VariableManagement"
-    description: "Collects user information through a survey using variables"
+   agent_name: "VariableManagement"
+   agent_label: "VariableManagement"
+   agent_type: "AgentforceEmployeeAgent"
+   description: "Collects user information through a survey using variables"
 
 variables:
    # String variable with default value

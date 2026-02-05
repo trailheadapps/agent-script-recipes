@@ -4,6 +4,7 @@
 config:
    agent_name: "ComplexStateManagement"
    agent_label: "ComplexStateManagement"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Manages a todo list with complex state operations"
 
 variables:
