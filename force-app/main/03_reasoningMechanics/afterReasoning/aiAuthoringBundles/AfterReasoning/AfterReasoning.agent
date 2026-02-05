@@ -4,6 +4,7 @@
 config:
    agent_name: "AfterReasoning"
    agent_label: "AfterReasoning"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates reasoning lifecycle events"
 
 # Variables to track lifecycle execution

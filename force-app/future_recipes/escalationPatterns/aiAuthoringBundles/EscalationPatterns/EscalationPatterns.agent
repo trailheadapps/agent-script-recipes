@@ -4,6 +4,7 @@
 config:
    agent_name: "EscalationPatterns"
    agent_label: "EscalationPatterns"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates patterns for escalating to human agents"
 
 connections:

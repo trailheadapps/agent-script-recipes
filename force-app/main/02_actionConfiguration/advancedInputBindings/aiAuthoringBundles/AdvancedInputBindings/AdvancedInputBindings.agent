@@ -4,6 +4,7 @@
 config:
    agent_name: "AdvancedInputBindings"
    agent_label: "AdvancedInputBindings"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Generates reports using various input binding patterns"
 
 variables:

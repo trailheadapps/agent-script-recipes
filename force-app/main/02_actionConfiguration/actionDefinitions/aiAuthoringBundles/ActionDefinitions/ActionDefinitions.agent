@@ -4,6 +4,7 @@
 config:
    agent_name: "ActionDefinitions"
    agent_label: "ActionDefinitions"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Provides weather information by calling external weather APIs"
 
 # Variables to store weather data

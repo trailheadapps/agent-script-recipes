@@ -4,6 +4,7 @@
 config:
    agent_name: "TopicDelegation"
    agent_label: "TopicDelegation"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates calling topics as tools"
 
 variables:

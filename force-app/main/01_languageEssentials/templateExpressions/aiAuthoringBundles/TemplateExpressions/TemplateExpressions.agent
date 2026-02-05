@@ -4,6 +4,7 @@
 config:
    agent_name: "TemplateExpressions"
    agent_label: "TemplateExpressions"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Personalized shopping assistant using template expressions for dynamic content"
 
 variables:

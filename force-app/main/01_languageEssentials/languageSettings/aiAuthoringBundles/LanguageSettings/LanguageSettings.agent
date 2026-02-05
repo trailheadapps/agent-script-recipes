@@ -11,6 +11,7 @@ system:
 config:
     agent_name: "LanguageSettings"
     agent_label: "LanguageSettings"
+    agent_type: "AgentforceEmployeeAgent"
     description: "Demonstrates language configuration and localization"
 
 # Language Configuration

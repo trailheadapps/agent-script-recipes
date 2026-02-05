@@ -4,6 +4,7 @@
 config:
    agent_name: "MultiTopicNavigation"
    agent_label: "MultiTopicNavigation"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Multi-topic agent that handles browsing, booking, and support"
 
 variables:

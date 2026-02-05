@@ -4,6 +4,7 @@
 config:
    agent_name: "ConditionalLogicPatterns"
    agent_label: "ConditionalLogicPatterns"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Evaluates loan applications using complex conditional logic"
 
 variables:

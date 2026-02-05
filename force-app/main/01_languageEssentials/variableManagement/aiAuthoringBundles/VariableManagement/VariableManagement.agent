@@ -4,6 +4,7 @@
 config:
    agent_name: "VariableManagement"
    agent_label: "VariableManagement"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Collects user information through a survey using variables"
 
 # Variables block: Defines all state that the agent can read and modify

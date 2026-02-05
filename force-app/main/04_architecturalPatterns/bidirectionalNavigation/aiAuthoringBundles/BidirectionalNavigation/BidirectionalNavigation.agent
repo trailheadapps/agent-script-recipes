@@ -4,6 +4,7 @@
 config:
    agent_name: "BidirectionalNavigation"
    agent_label: "BidirectionalNavigation"
+   agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates bidirectional navigation pattern (handoff and return)"
 
 variables:
