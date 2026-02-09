@@ -9,25 +9,27 @@ This recipe demonstrates **procedural reasoning instructions** - a powerful way 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Reasoning Turn Starts] --> B[Execute Procedural Instructions]
-    B --> C{Check: order_id exists?}
-    C -->|No| D[Return: Ask for Order Number]
-    C -->|Yes| E{Check: order_status cached?}
-    E -->|No| F[Run get_order_status Action]
-    F --> G[Set Variables: status, details, tracking]
-    G --> H[Build Dynamic Instructions]
-    E -->|Yes| H
-    H --> I{order_status value?}
-    I -->|pending| J[Instructions: Processing Info]
-    I -->|shipped| K[Instructions: Tracking Details]
-    I -->|delivered| L[Instructions: Confirm Receipt]
-    I -->|cancelled| M[Instructions: Explain + Offer Help]
-    J --> N[Agent Reasons with Context]
-    K --> N
-    L --> N
-    M --> N
-    D --> N
-    N --> O[Generate Response]
+    A[User Message] --> B[start_agent topic_selector]
+    B --> C[Transition to order_status Topic]
+    C --> D[Execute Procedural Instructions]
+    D --> E{Check: order_id exists?}
+    E -->|No| F[Return: Ask for Order Number]
+    E -->|Yes| G{Check: order_status cached?}
+    G -->|No| H[Run get_order_status Action]
+    H --> I[Set Variables: status, details, tracking]
+    I --> J[Build Dynamic Instructions]
+    G -->|Yes| J
+    J --> K{order_status value?}
+    K -->|pending| L[Instructions: Processing Info]
+    K -->|shipped| M[Instructions: Tracking Details]
+    K -->|delivered| N[Instructions: Confirm Receipt]
+    K -->|cancelled| O[Instructions: Explain + Offer Help]
+    L --> P[Agent Reasons with Context]
+    M --> P
+    N --> P
+    O --> P
+    F --> P
+    P --> Q[Generate Response]
 ```
 
 ## Key Concepts
@@ -60,8 +62,9 @@ reasoning:
             set @variables.order_details = @outputs.details
             set @variables.tracking_number = @outputs.tracking_number
 
-      # Build dynamic instructions with |
-      | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+      # Build dynamic instructions with | based on state
+      if @variables.order_status:
+         | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
 ```
 
 ### Building Instructions with `|`
@@ -142,6 +145,7 @@ topic order_status:
                description: "Current order status (pending, shipped, delivered, cancelled)"
             details: object
                description: "Detailed order information including items, dates, and customer information"
+               complex_data_type_name: "lightning__recordInfoType"
             tracking_number: string
                description: "Shipping tracking number if the order has been shipped"
          target: "flow://GetOrderStatus"
@@ -158,7 +162,8 @@ topic order_status:
                set @variables.order_details = @outputs.details
                set @variables.tracking_number = @outputs.tracking_number
 
-         | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
+         if @variables.order_status:
+            | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
 
          if @variables.order_status == "pending":
             | The order is being processed. Let the customer know:
