@@ -114,7 +114,7 @@ jobs:
 
             # Wait for scratch org to be fully ready
             - name: 'Wait for scratch org initialization'
-              run: sleep 30
+              run: sleep 120
 
             # Assign Manage Prompt Template permission set
             - name: 'Assign Manage Prompt Template permission set'
