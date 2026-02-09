@@ -9,23 +9,24 @@ This recipe demonstrates how to use variables to manage state in your agent. Var
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start Survey] --> B[start_agent routes to survey topic]
-    B --> C{Check: user_name set?}
-    C -->|No| D[Ask for Name]
-    D --> E[Store in user_name Variable]
-    C -->|Yes| F{Check: age > 0?}
-    E --> F
-    F -->|No| G[Ask for Age]
-    G --> H[Store in age Variable]
-    F -->|Yes| I{Check: interests set?}
-    H --> I
-    I -->|No| J[Ask for Interests]
-    J --> K[Store in interests Variable]
-    I -->|Yes| L[All Data Collected]
-    K --> L
-    L --> M[Set survey_completed = True]
-    M --> N[Display Summary]
-    N --> O[End]
+    A[Start Survey] --> B[start_agent survey]
+    B --> C[Execute Procedural Instructions]
+    C --> D{Check: user_name set?}
+    D -->|No| E[Ask for Name]
+    E --> F[run set_user_name via @utils.setVariables]
+    D -->|Yes| G{Check: age > 0?}
+    F --> G
+    G -->|No| H[Ask for Age]
+    H --> I[run set_age via @utils.setVariables]
+    G -->|Yes| J{Check: interests set?}
+    I --> J
+    J -->|No| K[Ask for Interests]
+    K --> L[run set_interests via @utils.setVariables]
+    J -->|Yes| M[All Data Collected]
+    L --> M
+    M --> N[survey_completed = True]
+    N --> O[Display Summary]
+    O --> P[End]
 ```
 
 ## Key Concepts
@@ -155,7 +156,7 @@ variables:
       description: "Whether the user has completed all survey questions"
 
    interests: mutable string = ""
-      description: "List of the user's interests and hobbies"
+      description: "User's interests and hobbies"
 ```
 
 ### Using Variables in Procedural Instructions
@@ -169,20 +170,31 @@ reasoning:
         Current survey progress:
       if @variables.user_name:
          | - Name: {!@variables.user_name}
+            run set_user_name
       else:
          | - Name: Not provided
 
       if @variables.age > 0:
          | - Age: {!@variables.age}
+            run set_age
       else:
          | - Age: Not provided
 
       if @variables.interests:
          | - Interests: {!@variables.interests}
+            run set_interests
       else:
          | - Interests: Not provided
 
       | - Survey complete: {!@variables.survey_completed}
+
+        Your task:
+        1. Be natural and conversational. Don't ask all questions at once.
+        2. If user_name is empty, ask for their name
+        3. If age is 0, ask for their age
+        4. If interests list is empty, ask about their hobbies and interests
+        5. Once all information is collected respond to the user with a "Thank you". Also summarize the collected
+           data for them.
 ```
 
 ### Conditional Logic Based on Variables
@@ -199,15 +211,24 @@ The `if/else` blocks control which template content is included based on variabl
 ### start_agent Entry Point
 
 ```agentscript
-start_agent topic_selector:
-   description: "Welcome users and begin the survey process"
+start_agent survey:
+   description: "Collects user's Name, Age and Interests and save it in variables. Do not ask any other questions for the survey except for Name, Age and Interests"
 
    reasoning:
+      instructions:->
+         # ... procedural instructions shown above ...
+
       actions:
-         begin_survey: @utils.transition to @topic.survey
-            description: "Start collecting user information through the survey"
-            available when @variables.survey_completed == False
+         set_user_name: @utils.setVariables
+            with user_name=...
+         set_age: @utils.setVariables
+            with age=...
+         set_interests: @utils.setVariables
+            with interests=...
+            with survey_completed = True
 ```
+
+This agent uses `start_agent survey:` to go directly into the survey flow without a separate topic. The `@utils.setVariables` utility is used to store collected data into the agent's variables, and the `set_interests` action also sets `survey_completed = True` to mark the survey as done.
 
 ## Try It Out
 
