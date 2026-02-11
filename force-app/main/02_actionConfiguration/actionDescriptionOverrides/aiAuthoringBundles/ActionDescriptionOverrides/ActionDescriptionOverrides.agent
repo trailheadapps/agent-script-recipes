@@ -1,5 +1,5 @@
-# ActionDescriptionOverrides
-# Demonstrates context-specific action descriptions for better LLM selection
+# ActionDescriptionOverrides - Context-Aware Action Descriptions
+# Demonstrates how to override action descriptions based on context for better LLM action selection
 
 config:
    agent_name: "ActionDescriptionOverrides"

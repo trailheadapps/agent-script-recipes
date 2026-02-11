@@ -1,5 +1,5 @@
-# CustomerServiceAgent
-# Complete real-world customer service agent
+# CustomerServiceAgent - Complete Customer Service Workflow
+# Demonstrates a complete real-world customer service agent with triage, resolution, and escalation
 
 config:
    agent_name: "CustomerService_Agent"

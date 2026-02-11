@@ -1,5 +1,5 @@
-# ExternalAPIIntegration
-# This recipe demonstrates integration with external systems using flows and Apex.
+# ExternalAPIIntegration - External System Integration
+# Demonstrates integration with external APIs and services using Flow and Apex actions
 
 system:
    messages:

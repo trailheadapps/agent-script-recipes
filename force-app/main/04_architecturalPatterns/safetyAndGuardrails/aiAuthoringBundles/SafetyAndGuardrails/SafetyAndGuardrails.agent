@@ -1,5 +1,5 @@
-# SafetyAndGuardrails 
-# This recipe demonstrates multi-stage validation, explicit confirmations, dependency checking, and permissions for record deletion operations.
+# SafetyAndGuardrails - Multi-Stage Validation and Safety Controls
+# Demonstrates implementing safety checks with validation, confirmations, dependency checking, and permissions
 
 system:
    messages:

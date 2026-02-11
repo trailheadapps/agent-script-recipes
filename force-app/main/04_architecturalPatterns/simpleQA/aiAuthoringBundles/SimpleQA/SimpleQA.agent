@@ -1,5 +1,5 @@
-# SimpleQA
-# This agent demonstrates how to create a focused Q&A agent with clear instructions
+# SimpleQA - Focused Question & Answer Agent
+# Demonstrates creating a single-topic Q&A agent with clear instructions and knowledge retrieval
 
 config:
    agent_name: "SimpleQA"

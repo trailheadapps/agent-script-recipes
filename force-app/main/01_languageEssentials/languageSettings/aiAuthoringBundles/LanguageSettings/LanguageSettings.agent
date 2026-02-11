@@ -1,5 +1,5 @@
-# LanguageSettings
-# Demonstrates how to define the language settings for the agent
+# LanguageSettings - Multilingual Agent Configuration
+# Demonstrates how to define language settings for multilingual agent support
 
 system:
    messages:
