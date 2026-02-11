@@ -50,8 +50,9 @@ topic payment_processing:
       process_payment:
          description: "Processes a payment transaction"
          inputs:
-            amount: number
+            amount: object
                description: "The payment amount to be processed"
+               complex_data_type_name: "lightning__currencyType"
             method: string
                description: "The mode of the payment"
          outputs:
@@ -66,8 +67,9 @@ topic payment_processing:
          inputs:
             transaction_id: string
                description: "The transaction ID to include in the receipt"
-            amount: number
+            amount: object
                description: "The payment amount to display on the receipt"
+               complex_data_type_name: "lightning__currencyType"
          outputs:
             sent: boolean
                description: "Indicates whether the receipt was sent successfully"
@@ -76,8 +78,9 @@ topic payment_processing:
       award_points:
          description: "Awards loyalty points"
          inputs:
-            amount: number
+            amount: object
                description: "The payment amount used to calculate loyalty points"
+               complex_data_type_name: "lightning__currencyType"
          outputs:
             points: number
                description: "The number of loyalty points awarded to the customer"

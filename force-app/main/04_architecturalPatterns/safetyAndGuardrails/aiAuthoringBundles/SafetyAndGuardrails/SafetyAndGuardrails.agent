@@ -1,3 +1,6 @@
+# SafetyAndGuardrails 
+# This recipe demonstrates multi-stage validation, explicit confirmations, dependency checking, and permissions for record deletion operations.
+
 system:
    messages:
       welcome: "I can help with data management. Deletions require confirmation."

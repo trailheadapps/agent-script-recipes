@@ -84,7 +84,7 @@ If you don't have an org yet, you can sign up for a free [Developer Edition Org]
 1. Open your org with the **Agentforce Studio** app displayed:
 
     ```bash
-    sf org open -p "/lightning/n/standard-AgentforceStudio?c__nav=agents"
+    sf org open -p "/lightning/n/standard-AgentforceStudio"
     ```
 
 > [!TIP]

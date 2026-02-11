@@ -144,6 +144,7 @@ topic onboarding:
                     description: "The unique identifier of the customer whose settings to configure"
                 settings: string
                     description: "Account privacy settings as JSON object"
+            outputs:
                 success: boolean
                     description: "Indicates whether the privacy settings were configured successfully"
             target: "flow://ConfigureAccountSettings"

@@ -204,12 +204,7 @@ topic creative:
 ```text
 [start_agent routes to general topic]
 
-Agent: I'm in general mode - casual and friendly!
-       I can switch to:
-       - Professional mode (for business)
-       - Technical mode (for tech support)
-       - Creative mode (for brainstorming)
-       What mode would you like?
+Agent: Welcome! I adapt my behavior based on the conversation context.
 
 User: Switch to professional mode
 
