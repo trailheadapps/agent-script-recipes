@@ -2,7 +2,7 @@
 # Demonstrates a complete real-world customer service agent with triage, resolution, and escalation
 
 config:
-   agent_name: "CustomerService_Agent"
+   agent_name: "CustomerService"
    agent_label: "Customer Service Agent"
    agent_type: "AgentforceEmployeeAgent"
    description: "Complete customer service agent with issue classification, resolution workflows, and escalation"
