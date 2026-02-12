@@ -240,7 +240,7 @@ Agent: Your Q1 2025 sales report has been generated as a PDF with charts.
        Download: [report_url]
 ```
 
-Note clickable links will be blocked by the organization's security policies unless you  add them to your trusted URLs.
+Note clickable links will be blocked by the organization's security policies unless you add them to your trusted URLs.
 
 ### Example 2: Variable Binding
 

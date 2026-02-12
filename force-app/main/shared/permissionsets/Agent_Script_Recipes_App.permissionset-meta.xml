@@ -11,151 +11,225 @@
     <description>Grants access to the Agent Script Recipes app</description>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>AddToCart</flow>
+        <flow>
+AddToCart;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>AnalyzeBillingIssue</flow>
+        <flow>
+AnalyzeBillingIssue;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>AnalyzeTechnicalIssue</flow>
+        <flow>
+AnalyzeTechnicalIssue;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>AssessChurnRisk</flow>
+        <flow>
+AssessChurnRisk;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>AwardLoyaltyPoints</flow>
+        <flow>
+AwardLoyaltyPoints;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>CalculateCustomerValue</flow>
+        <flow>
+CalculateCustomerValue;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>CheckDependencies</flow>
+        <flow>
+CheckDependencies;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>ConfigureAccountSettings</flow>
+        <flow>
+ConfigureAccountSettings;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>CreateBooking</flow>
+        <flow>
+CreateBooking;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>CreateCase</flow>
+        <flow>
+CreateCase;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>CreateCustomerAccount</flow>
+        <flow>
+CreateCustomerAccount;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>CreateEscalationTicket</flow>
+        <flow>
+CreateEscalationTicket;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>DeleteRecord</flow>
+        <flow>
+DeleteRecord;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>ExecuteTransfer</flow>
+        <flow>
+ExecuteTransfer;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>FetchAccountData</flow>
+        <flow>
+FetchAccountData;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>FetchOrderHistory</flow>
+        <flow>
+FetchOrderHistory;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>FetchSupportHistory</flow>
+        <flow>
+FetchSupportHistory;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>FetchUserProfile</flow>
+        <flow>
+FetchUserProfile;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>FinalizeOnboarding</flow>
+        <flow>
+FinalizeOnboarding;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GenerateRecommendations</flow>
+        <flow>
+GenerateRecommendations;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GenerateReport</flow>
+        <flow>
+GenerateReport;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GetAccountBalance</flow>
+        <flow>
+GetAccountBalance;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GetCurrentTimestamp</flow>
+        <flow>
+GetCurrentTimestamp;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GetCurrentWeather</flow>
+        <flow>
+GetCurrentWeather;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GetOrderStatus</flow>
+        <flow>
+GetOrderStatus;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GetProductInfo</flow>
+        <flow>
+GetProductInfo;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GetRecommendations</flow>
+        <flow>
+GetRecommendations;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>GetWeatherForecast</flow>
+        <flow>
+GetWeatherForecast;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>LogEvent</flow>
+        <flow>
+LogEvent;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>LogTransaction</flow>
+        <flow>
+LogTransaction;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>PerformSearch</flow>
+        <flow>
+PerformSearch;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>ProcessPayment</flow>
+        <flow>
+ProcessPayment;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>SearchHotels</flow>
+        <flow>
+SearchHotels;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>SendReceipt</flow>
+        <flow>
+SendReceipt;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>SendVerificationEmail</flow>
+        <flow>
+SendVerificationEmail;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>SetupCustomerProfile</flow>
+        <flow>
+SetupCustomerProfile;
+        </flow>
     </flowAccesses>
     <flowAccesses>
         <enabled>true</enabled>
-        <flow>TrackShipment</flow>
+        <flow>
+TrackShipment;
+        </flow>
     </flowAccesses>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Agent Script Recipes App</label>
