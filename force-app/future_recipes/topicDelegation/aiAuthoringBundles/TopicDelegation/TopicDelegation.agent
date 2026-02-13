@@ -1,5 +1,5 @@
-# TopicDelegation - Topic as Tool Pattern
-# Demonstrates calling topics as reusable tools with automatic return, rather than transitioning to them
+# TopicDelegation
+# Demonstrates how to call a topic as a tool (delegation) rather than transitioning to it
 
 config:
    agent_name: "TopicDelegation"

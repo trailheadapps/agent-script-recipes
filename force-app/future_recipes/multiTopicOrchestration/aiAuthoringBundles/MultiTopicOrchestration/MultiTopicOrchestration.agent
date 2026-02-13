@@ -1,5 +1,5 @@
-# MultiTopicOrchestration - Complex Multi-Service Coordination
-# Demonstrates coordinating multiple specialized topics in complex workflows with an orchestrator pattern
+# MultiTopicOrchestration
+# Demonstrates complex multi-topic workflows with orchestration patterns
 
 config:
    agent_name: "MultiTopicOrchestration"

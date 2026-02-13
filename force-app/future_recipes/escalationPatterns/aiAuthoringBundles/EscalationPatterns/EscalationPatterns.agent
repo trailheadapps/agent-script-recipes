@@ -1,5 +1,5 @@
-# EscalationPatterns - Human Agent Escalation
-# Demonstrates how to escalate conversations to human agents using the connections block and @utils.escalate
+# EscalationPatterns
+# Demonstrates how to escalate to a human agent using the connections block and @utils.escalate
 
 config:
    agent_name: "EscalationPatterns"
