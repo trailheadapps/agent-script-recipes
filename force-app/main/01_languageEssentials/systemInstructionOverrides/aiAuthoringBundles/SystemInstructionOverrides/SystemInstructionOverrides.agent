@@ -1,3 +1,6 @@
+# SystemInstructionOverrides - Topic-Specific Behavior Control
+# This agent demonstrates how to override system instructions per topic to adapt behavior and tone
+
 system:
    instructions: "You are a versatile assistant that adapts tone and behavior based on context. By default you are in general mode."
 

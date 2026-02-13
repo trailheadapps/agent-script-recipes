@@ -1,5 +1,5 @@
-# ActionDescriptionOverrides
-# Demonstrates context-specific action descriptions for better LLM selection
+# ActionDescriptionOverrides - Context-Aware Action Descriptions
+# Demonstrates how to override action descriptions based on context for better LLM action selection
 
 config:
    agent_name: "ActionDescriptionOverrides"
@@ -46,8 +46,9 @@ topic beginner_mode:
             filters: string
                description: "Filter criteria object to refine search results (e.g., type, date range, tags)"
          outputs:
-            results: list[string]
+            results: list[object]
                description: "List of search result objects containing matching knowledge base articles"
+               complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
 
    reasoning:
@@ -76,8 +77,9 @@ topic advanced_mode:
             filters: string
                description: "Advanced filter criteria object with type, date range, tags, and custom field filters"
          outputs:
-            results: list[string]
+            results: list[object]
                description: "Paginated list of search result objects with relevance scores"
+               complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
 
    reasoning:
@@ -106,8 +108,9 @@ topic contextual_search:
             filters: string
                description: "Context-specific filter criteria object"
          outputs:
-            results: list[string]
+            results: list[object]
                description: "List of context-relevant search result objects"
+               complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
 
    reasoning:

@@ -1,3 +1,6 @@
+# ExternalAPIIntegration - External System Integration
+# Demonstrates integration with external APIs and services using Flow and Apex actions
+
 system:
    messages:
       welcome: "I can integrate with external APIs for weather, payments, and shipping!"
@@ -94,9 +97,11 @@ topic api_integration:
          inputs:
             cityName: string
          outputs:
-            temperature: number
+            temperature: object
+               complex_data_type_name: "lightning__integerType"
             conditions: string
-            humidity: number
+            humidity: object
+               complex_data_type_name: "lightning__integerType"
             success: boolean
             error_message: string
          target: "apex://WeatherService"

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Itinerary__c</fullName>
-    <label>Itinerary</label>
-    <type>Lookup</type>
-    <referenceTo>ASR_Itinerary__c</referenceTo>
-    <relationshipLabel>Flight_Bookings</relationshipLabel>
-    <relationshipName>Flight_Bookings</relationshipName>
-</CustomField>

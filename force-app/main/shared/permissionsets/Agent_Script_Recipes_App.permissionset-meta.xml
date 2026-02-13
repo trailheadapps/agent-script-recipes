@@ -16,10 +16,6 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>ASR_Car_Rental__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
         <tab>ASR_Cart_Item__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
@@ -40,19 +36,11 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>ASR_Flight_Booking__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
         <tab>ASR_Hotel_Booking__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
         <tab>ASR_Hotel__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>ASR_Itinerary__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
@@ -69,14 +57,6 @@
     </tabSettings>
     <tabSettings>
         <tab>ASR_Shopping_Cart__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>ASR_Survey_Log__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>ASR_Task__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

@@ -1,7 +1,34 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Output</name>
+        <label>Assign Output</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignmentItems>
+            <assignToReference>report_url</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>report_url_formula</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>success</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <environments>Default</environments>
+    <formulas>
+        <name>report_url_formula</name>
+        <dataType>String</dataType>
+        <expression
+        >LEFT({!$Api.Partner_Server_URL_470}, FIND(&apos;/services&apos;, {!$Api.Partner_Server_URL_470}))&amp; {!report_id}</expression>
+    </formulas>
     <interviewLabel>GenerateReport {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Generate Report</label>
     <processMetadataValues>
@@ -10,33 +37,26 @@
             <stringValue>LightningFlowBuilder</stringValue>
         </value>
     </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <start>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Create_Log</targetReference>
-        </connector>
-    </start>
-    <status>Active</status>
     <recordCreates>
         <name>Create_Log</name>
         <label>Create Log</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
+        <assignRecordIdToReference>report_id</assignRecordIdToReference>
         <connector>
             <targetReference>Assign_Output</targetReference>
         </connector>
         <inputAssignments>
-            <field>Report_Type__c</field>
+            <field>End_Date__c</field>
             <value>
-                <elementReference>report_type</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>User_ID__c</field>
-            <value>
-                <elementReference>user_id</elementReference>
+                <elementReference>end_date</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -52,63 +72,36 @@
             </value>
         </inputAssignments>
         <inputAssignments>
+            <field>Report_Type__c</field>
+            <value>
+                <elementReference>report_type</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
             <field>Start_Date__c</field>
             <value>
                 <elementReference>start_date</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>End_Date__c</field>
+            <field>User_ID__c</field>
             <value>
-                <elementReference>end_date</elementReference>
+                <elementReference>user_id</elementReference>
             </value>
         </inputAssignments>
         <object>ASR_Report_Log__c</object>
     </recordCreates>
-    <assignments>
-        <name>Assign_Output</name>
-        <label>Assign Output</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
-        <assignmentItems>
-            <assignToReference>report_url</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>https://example.com/report/generated</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>success</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-    </assignments>
-    <variables>
-        <name>report_type</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
-    </variables>
-    <variables>
-        <name>start_date</name>
-        <dataType>Date</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
-    </variables>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Log</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
     <variables>
         <name>end_date</name>
         <dataType>Date</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
-    </variables>
-    <variables>
-        <name>user_id</name>
-        <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>true</isOutput>
@@ -135,6 +128,20 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>report_id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>report_type</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
         <name>report_url</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -142,10 +149,24 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
+        <name>start_date</name>
+        <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
         <name>success</name>
         <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>user_id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
         <isOutput>true</isOutput>
     </variables>
 </Flow>

@@ -1,5 +1,5 @@
-# InstructionActionReferences
-# Demonstrates how to reference actions directly within reasoning instructions
+# InstructionActionReferences - Action References in Instructions
+# Demonstrates how to reference and guide action usage directly within reasoning instructions
 
 config:
    agent_name: "InstructionActionReferences"

@@ -1,5 +1,5 @@
-# AfterReasoning
-# Demonstrates after_reasoning lifecycle event
+# AfterReasoning - Lifecycle Event Handling
+# Demonstrates using the after_reasoning lifecycle event for cleanup and logging
 
 config:
    agent_name: "AfterReasoning"

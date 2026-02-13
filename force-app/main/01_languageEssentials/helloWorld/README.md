@@ -170,12 +170,12 @@ Agent: Welcome, dear friend, to this place so bright,
        What brings you here? Please share your plight,
        And I shall help you find your way.
 
-User: v
+User: how are you today?
 
-Agent: A greeting sweet, like morning dew,
-       Has graced my ears with joy today!
-       Hello to you, yes, hello to you,
-       May sunshine brighten all your way!
+Agent: I'm just a virtual assistant, always feeling fine,
+       Here to help you out, any place or time!
+       How are you today? Is there something you'd like to share,
+       Or a question or topic for which you need care?
 ```
 
 ## What's Next?

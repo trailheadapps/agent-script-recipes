@@ -1,3 +1,6 @@
+# PromptTemplateActions - Using Prompt Template Actions
+# This agent demonstrates how to call Prompt Template actions to generate personalized content
+
 system:
     instructions: "You are an assistant that uses Prompt Templates to generate personalized schedules."
 

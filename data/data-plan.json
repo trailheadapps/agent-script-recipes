@@ -48,24 +48,6 @@
         "files": ["travel-hotel.json"]
     },
     {
-        "sobject": "ASR_Itinerary__c",
-        "saveRefs": true,
-        "resolveRefs": true,
-        "files": ["travel-itinerary.json"]
-    },
-    {
-        "sobject": "ASR_Car_Rental__c",
-        "saveRefs": true,
-        "resolveRefs": true,
-        "files": ["travel-car-rental.json"]
-    },
-    {
-        "sobject": "ASR_Flight_Booking__c",
-        "saveRefs": true,
-        "resolveRefs": true,
-        "files": ["travel-flight-booking.json"]
-    },
-    {
         "sobject": "ASR_Hotel_Booking__c",
         "saveRefs": true,
         "resolveRefs": true,
@@ -112,12 +94,6 @@
         "saveRefs": false,
         "resolveRefs": false,
         "files": ["service-event.json"]
-    },
-    {
-        "sobject": "ASR_Task__c",
-        "saveRefs": false,
-        "resolveRefs": false,
-        "files": ["general-task.json"]
     },
     {
         "sobject": "ASR_Report_Log__c",

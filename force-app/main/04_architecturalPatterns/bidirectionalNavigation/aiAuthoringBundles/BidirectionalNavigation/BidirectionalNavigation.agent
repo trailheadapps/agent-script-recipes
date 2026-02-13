@@ -1,5 +1,5 @@
-# BidirectionalNavigation
-# Demonstrates bidirectional navigation pattern (handoff and return) using transitions
+# BidirectionalNavigation - Topic Handoff and Return Pattern
+# Demonstrates bidirectional navigation where topics delegate to specialists and receive control back
 
 config:
    agent_name: "BidirectionalNavigation"

@@ -5,36 +5,14 @@
             "Subject": "Issue with product",
             "Status": "New",
             "Priority": "Medium",
-            "Origin": "Web",
-            "Survey_Logs__r": {
-                "records": [
-                    {
-                        "attributes": {
-                            "type": "ASR_Survey_Log__c",
-                            "referenceId": "survey1"
-                        },
-                        "Sent_Date__c": "2024-11-20"
-                    }
-                ]
-            }
+            "Origin": "Web"
         },
         {
             "attributes": { "type": "Case", "referenceId": "case2" },
             "Subject": "Billing inquiry",
             "Status": "Closed",
             "Priority": "Low",
-            "Origin": "Phone",
-            "Survey_Logs__r": {
-                "records": [
-                    {
-                        "attributes": {
-                            "type": "ASR_Survey_Log__c",
-                            "referenceId": "survey2"
-                        },
-                        "Sent_Date__c": "2024-10-15"
-                    }
-                ]
-            }
+            "Origin": "Phone"
         },
         {
             "attributes": { "type": "Case", "referenceId": "case3" },

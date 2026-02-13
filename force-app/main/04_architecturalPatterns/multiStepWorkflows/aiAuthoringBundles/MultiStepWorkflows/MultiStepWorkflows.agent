@@ -47,7 +47,7 @@ topic onboarding:
 
     reasoning:
         instructions: ->
-            | Onboard the customer step by step following the below ## Rules. You are currently on {!variables.step} of Step 4.
+            | Onboard the customer step by step following the below ## Rules. You are currently on {!@variables.step} of Step 4.
             | ## Rules:
                  a. Onboarding is a strictly 4 step process and you should go from Step 1 to Step 4 to complete. You are on step {!@variables.step} of 4 now. Display the step as you progress.
                  b. NEVER ask the customer to set password. We will set the password in the background.
@@ -144,6 +144,7 @@ topic onboarding:
                     description: "The unique identifier of the customer whose settings to configure"
                 settings: string
                     description: "Account privacy settings as JSON object"
+            outputs:
                 success: boolean
                     description: "Indicates whether the privacy settings were configured successfully"
             target: "flow://ConfigureAccountSettings"

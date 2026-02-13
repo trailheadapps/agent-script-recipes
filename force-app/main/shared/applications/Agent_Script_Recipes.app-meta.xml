@@ -20,9 +20,6 @@
     <tabs>ASR_Product__c</tabs>
     <tabs>ASR_Shopping_Cart__c</tabs>
     <tabs>ASR_Cart_Item__c</tabs>
-    <tabs>ASR_Itinerary__c</tabs>
-    <tabs>ASR_Car_Rental__c</tabs>
-    <tabs>ASR_Flight_Booking__c</tabs>
     <tabs>ASR_Hotel__c</tabs>
     <tabs>ASR_Hotel_Booking__c</tabs>
     <tabs>ASR_Customer_Onboarding__c</tabs>
@@ -30,8 +27,6 @@
     <tabs>ASR_Payment_Transaction__c</tabs>
     <tabs>ASR_Transaction_Log__c</tabs>
     <tabs>ASR_Report_Log__c</tabs>
-    <tabs>ASR_Survey_Log__c</tabs>
-    <tabs>ASR_Task__c</tabs>
     <tabs>ASR_Customer_Interest__c</tabs>
     <tabs>ASR_Experience__c</tabs>
     <tabs>ASR_Order__c</tabs>

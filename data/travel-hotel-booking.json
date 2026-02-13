@@ -9,8 +9,7 @@
             "Check_In__c": "2024-12-01",
             "Check_Out__c": "2024-12-05",
             "Customer_Name__c": "Jane Doe",
-            "City__c": "San Francisco",
-            "Itinerary__c": "@itin1"
+            "City__c": "San Francisco"
         },
         {
             "attributes": {
@@ -21,8 +20,7 @@
             "Check_In__c": "2024-12-10",
             "Check_Out__c": "2024-12-15",
             "Customer_Name__c": "John Smith",
-            "City__c": "Miami",
-            "Itinerary__c": "@itin2"
+            "City__c": "Miami"
         }
     ]
 }

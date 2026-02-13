@@ -51,25 +51,29 @@ topic shopping_assistant:
          inputs:
             item_name: string
                description: "Name of the product item to add to the cart"
-            price: number
+            price: object
                description: "Price of the item being added to the cart"
+               complex_data_type_name: "lightning__currencyType"
          outputs:
             success: boolean
                description: "Indicates whether the item was added to the cart successfully"
-            new_total: number
+            new_total: object
                description: "Updated cart total after adding the item"
+               complex_data_type_name: "lightning__currencyType"
          target: "flow://AddToCart"
 
       get_recommendations:
          description: "Get personalized product recommendations"
          inputs:
-            budget: number
+            budget: object
                description: "Customer's budget to tailor recommendations within their price range"
+               complex_data_type_name: "lightning__currencyType"
             preferences: string
                description: "Customer preferences or interests to personalize recommendations"
          outputs:
-            recommendations: list[string]
+            recommendations: list[object]
                description: "List of personalized product recommendations matching budget and preferences"
+               complex_data_type_name: "lightning__textType"
          target: "flow://GetRecommendations"
 
    reasoning:
@@ -79,10 +83,10 @@ topic shopping_assistant:
          | 
          
          if @variables.customer_name:
-            | You're helping {!@variables.customer_name}.
+            | You're helping {!@variables.customer_name}. Use their name ({!@variables.customer_name}) when speaking to make it personal!
          else:
             | You're helping a new customer. Ask for their name to personalize the experience.
-  
+
          | Current shopping session:
          
          if @variables.budget > 0:
@@ -102,13 +106,9 @@ topic shopping_assistant:
             | - ⚠️ Cart total exceeds budget by ${!@variables.cart_total - @variables.budget}
   
          | Help the customer:
-           1. Find products that match their needs and budget
-           2. Add items to their cart using add_to_cart
+           1. Find recommendations that match their needs and budget using @actions.get_recommendations
+           2. Add items to their cart when user confirms using @actions.add_to_cart
            3. Keep them informed of their cart total
-           4. Suggest items based on their budget and preferences
-  
-         if @variables.customer_name:
-            | Use their name ({!@variables.customer_name}) when speaking to make it personal!
 
       actions:
          add_to_cart: @actions.add_to_cart

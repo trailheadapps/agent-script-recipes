@@ -1,3 +1,6 @@
+# SafetyAndGuardrails - Multi-Stage Validation and Safety Controls
+# Demonstrates implementing safety checks with validation, confirmations, dependency checking, and permissions
+
 system:
    messages:
       welcome: "I can help with data management. Deletions require confirmation."

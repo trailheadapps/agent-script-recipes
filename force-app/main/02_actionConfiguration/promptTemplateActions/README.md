@@ -95,7 +95,7 @@ User: Generate a personalized schedule of experiences for me.
 
 Agent: To create a personalized schedule for you, please provide your email address.
 
-User: alex.reed@xample.com
+User: alex.reed@example.com
 
 Agent: Here is your personalized schedule of experiences ...
 
