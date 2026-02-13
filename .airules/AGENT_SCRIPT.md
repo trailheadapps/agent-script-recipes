@@ -323,6 +323,60 @@ actions:
       target: "flow://GetCustomerInfo"
 ```
 
+### Output Parameter Complex Data Types
+
+When defining action output parameters, use the `object` type with a `complex_data_type_name` to map to specific Salesforce data types. This is required when the platform expects a particular data type mapping (e.g., Integer outputs from Apex `@InvocableMethod` classes).
+
+**Primitive Types:**
+
+| `complex_data_type_name`  | Description                    |
+| ------------------------- | ------------------------------ |
+| `lightning__integerType`  | Integer numbers                |
+| `lightning__booleanType`  | True/false values              |
+| `lightning__dateType`     | Date values                    |
+| `lightning__dateTimeType` | Date and time values           |
+| `lightning__doubleType`   | Decimal/floating point numbers |
+
+**Complex Types:**
+
+| `complex_data_type_name` | Description             |
+| ------------------------ | ----------------------- |
+| `lightning__objectType`  | Complex data structures |
+| `lightning__listType`    | Arrays/lists of items   |
+
+**Apex Class Types:**
+
+Reference custom Apex classes using the format `@apexClassType/<namespace>__<ClassName>`:
+
+```agentscript
+# Example: custom Apex class output
+outputs:
+   document: object
+      description: "Signed document wrapper"
+      complex_data_type_name: "@apexClassType/c__AgentSentForSignature$DocumentWrapperSign"
+```
+
+**Syntax:**
+
+```agentscript
+actions:
+   get_orders:
+      description: "Retrieve orders for a customer"
+      inputs:
+         customer_id: string
+            description: "The customer's Salesforce record ID"
+      outputs:
+         success: object
+            description: "Whether the lookup was successful"
+            complex_data_type_name: "lightning__booleanType"
+         order_count: object
+            description: "Total number of orders found"
+            complex_data_type_name: "lightning__integerType"
+         order_summary: string
+            description: "Formatted summary of orders"
+      target: "apex://OrderLookupService"
+```
+
 ---
 
 ## Reasoning Actions
@@ -514,7 +568,7 @@ instructions:->
 - `@topic.<name>` - Reference a topic by name
 - `@variables.<name>` - Reference a variable
 - `@outputs.<name>` - Reference action output (in post-action context)
-- `@inputs.<name>` - Reference action input (in procedure context)
+- `@inputs.<name>` - Reference action input (procedure context only — see warning below)
 - `@utils.<utility>` - Reference utility function (escalate, transition to, setVariables)
 
 ---
@@ -714,4 +768,22 @@ Before finalizing an Agent Script, verify:
     # CORRECT - only @actions support post-action directives
     process: @actions.process_order
        set @variables.result = @outputs.result
+    ```
+
+8. **Using `@inputs` in `set` directives (causes unknown deploy error):**
+
+    ```agentscript
+    # WRONG - @inputs in set causes unknown error at deploy time
+    verify: @actions.verify_customer
+       with account_number=...
+       set @variables.account_number = @inputs.account_number
+       set @variables.customer_name = @outputs.customer_name
+
+    # CORRECT - use @utils.setVariables to capture input, only @outputs in set
+    collect_input: @utils.setVariables
+       description: "Collect the account number from the user"
+       with account_number=...
+    verify: @actions.verify_customer
+       with account_number=@variables.account_number
+       set @variables.customer_name = @outputs.customer_name
     ```
