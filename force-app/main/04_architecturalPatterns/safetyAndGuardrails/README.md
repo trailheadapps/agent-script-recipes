@@ -187,7 +187,7 @@ User: Delete the record
 
 Agent: Please provide the record ID you want to delete.
 
-User: 001al000021W3HPAA0
+User: [Look for an account to delete in your org and provide its Id]
 
 Agent: Are you sure you want to delete the record? Please confirm to proceed.
 
