@@ -259,7 +259,7 @@ variables:
 User: I want to transfer $500
 
 Agent: I need the source account number before proceeding.
-       Could you please provide the source account number?
+       Could you please provide the source and destination account numbers?
 
 [validation_passed = False, execute_transfer NOT available]
 ```
