@@ -39,6 +39,9 @@ start_agent topic_selector:
       actions:
          browse_hotels: @utils.transition to @topic.hotel_browse
             description: "Browse and search for available hotels"
+            
+         hotel_booking: @utils.transition to @topic.hotel_booking
+            description: "Book a hotel"
          
          view_booking: @utils.transition to @topic.hotel_confirmation
             description: "View existing booking confirmations"
@@ -67,16 +70,17 @@ topic hotel_browse:
 
    reasoning:
       instructions:->
-         | Help users find the perfect hotel using {!@actions.search_hotels}.
+         | Help users find the perfect hotel.
 
-           Ensure to ask the user for:
-           - location
+           Ensure you know:
+           - desired hotel location
            - check-in date
            - check-out date
+           Never ask for other details or user preferences.
 
-           Do not ask for other booking details.
+           Once you have this information, look for available hotels using {!@actions.search_hotels}. 
 
-           If you find available hotels provide the user the hotel information.
+           Show them to the user and ask for confirmation before booking the hotel.
 
       actions:
          search_hotels: @actions.search_hotels
@@ -87,7 +91,7 @@ topic hotel_browse:
 
 # Topic 2: Booking topic handles the reservation process
 topic hotel_booking:
-   description: "Handle hotel booking and reservation"
+   description: "Book hotel"
 
    actions:
       create_booking:
@@ -110,6 +114,8 @@ topic hotel_booking:
       instructions:->
          | Complete the booking for the customer using {!@actions.create_booking}.
 
+           Never ask for other booking details (number of guests etc.) or user preferences.
+
       actions:
          create_booking: @actions.create_booking
             with hotel_name=...
@@ -125,7 +131,7 @@ topic hotel_confirmation:
 
    reasoning:
       instructions:->
-         | The booking has been confirmed!
+         | Confirm the booking and provide its details to the user.
 
            Confirmation details:
            - Booking ID: {!@variables.booking_id}
@@ -133,8 +139,8 @@ topic hotel_confirmation:
            - Check-in: {!@variables.check_in_date}
            - Check-out: {!@variables.check_out_date}
   
-           Provide these details to the customer and ask if they need anything else.
-           If they want to make another booking, use start_new_booking action.
+           Ask if they need anything else.
+           If they want to make another booking, use {!@actions.start_new_booking} action.
 
       actions:
          start_new_booking: @utils.transition to @topic.hotel_browse
