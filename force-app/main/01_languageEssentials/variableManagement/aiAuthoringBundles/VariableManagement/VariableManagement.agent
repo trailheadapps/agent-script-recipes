@@ -43,19 +43,19 @@ start_agent survey:
            Current survey progress:
          if @variables.user_name:
             | - Name: {!@variables.user_name}
-               run set_user_name
+               run @actions.set_user_name
          else:
             | - Name: Not provided
          
          if @variables.age > 0:
             | - Age: {!@variables.age}
-               run set_age
+               run @actions.set_age
          else:
             | - Age: Not provided
          
          if @variables.interests:
             | - Interests: {!@variables.interests}
-               run set_interests
+               run @actions.set_interests
          else:
             | - Interests: Not provided
          
