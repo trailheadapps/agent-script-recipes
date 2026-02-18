@@ -22,10 +22,7 @@ graph TD
     D -->|Mixed| K[Pattern 3: Mixed Binding]
     K --> L[Combine:<br/>LLM slots + Variables + Fixed]
     L --> H
-    D -->|Advanced| M[Pattern 4: Object Construction]
-    M --> N[Build options object<br/>with multiple sources]
-    N --> H
-    H --> O[Return report_url]
+    H --> O[Return report_url, success, report_type,<br/>start_date, end_date, user_id, format, include_charts]
     O --> P[Display Report]
     P --> Q{Another Report?}
     Q -->|Yes| D
@@ -118,23 +115,39 @@ topic report_generation:
          inputs:
             report_type: string
                description: "Type of report to generate (e.g., sales, analytics, performance, financial)"
-            start_date: string
-               description: "Report start date in ISO format (YYYY-MM-DD)"
-            end_date: string
-               description: "Report end date in ISO format (YYYY-MM-DD)"
+            start_date: object
+               description: "Report start date in ISO format (YYYY-MM-DD) defining the beginning of the data range"
+               complex_data_type_name: "lightning__dateType"
+            end_date: object
+               description: "Report end date in ISO format (YYYY-MM-DD) defining the end of the data range"
+               complex_data_type_name: "lightning__dateType"
             user_id: string
-               description: "The unique identifier of the user generating the report"
+               description: "The unique identifier of the user generating the report (for access control and audit)"
             format: string
                description: "Output format for the report (pdf, csv, excel, or html)"
             include_charts: boolean
-               description: "Whether to include visual charts and graphs"
-            options: object
-               description: "Additional report configuration options"
+               description: "Whether to include visual charts and graphs in the report output"
+            options: string
+               description: "Additional report configuration options such as filters, groupings, and custom parameters"
          outputs:
             report_url: string
-               description: "URL where the generated report can be accessed"
+               description: "URL where the generated report can be accessed or downloaded"
             success: boolean
                description: "Indicates whether the report was generated successfully"
+            report_type: string
+               description: "The report type used"
+            start_date: object
+               description: "The start date used"
+               complex_data_type_name: "lightning__dateType"
+            end_date: object
+               description: "The end date used"
+               complex_data_type_name: "lightning__dateType"
+            user_id: string
+               description: "The user ID used"
+            format: string
+               description: "The format used"
+            include_charts: boolean
+               description: "Whether charts were included"
          target: "flow://GenerateReport"
 
    reasoning:

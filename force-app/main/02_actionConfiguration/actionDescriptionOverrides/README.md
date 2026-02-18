@@ -15,29 +15,25 @@ graph TD
     C -->|Advanced| E[Transition to advanced_mode]
     C -->|Contextual| F[Transition to contextual_search]
     D --> G[Simple Action Descriptions]
-    G --> H[simple_search: basic description<br/>create_new_item: simple description]
+    G --> H[simple_search: basic description<br/>switch_to_advanced: mode switch]
     E --> I[Technical Action Descriptions]
-    I --> J[advanced_search: detailed with filters<br/>create_record_advanced: with schema info<br/>generate_analytics: with parameters]
-    F --> K{Search Context Variable?}
-    K -->|accounts| L[search_accounts action available]
-    K -->|contacts| M[search_contacts action available]
-    K -->|cases| N[search_cases action available]
-    H --> O[User Executes Action]
-    J --> O
-    L --> O
-    M --> O
-    N --> O
-    O --> P{Switch Mode?}
-    P -->|Yes| C
-    P -->|No| Q[Continue in Current Mode]
+    I --> J[advanced_search: detailed with filters<br/>switch_to_beginner: mode switch]
+    F --> K[Context-Aware Descriptions]
+    K --> L[contextual_search: context-specific description]
+    H --> M[User Executes Action]
+    J --> M
+    L --> M
+    M --> N{Switch Mode?}
+    N -->|Yes| C
+    N -->|No| O[Continue in Current Mode]
 ```
 
 ## Key Concepts
 
 - **Topic-level action definitions**: Each topic can define actions with different descriptions
-- **Context-aware descriptions**: Adapt descriptions to user level
-- **Expertise-based descriptions**: Different detail levels for beginners vs experts
-- **Conditional availability**: Use `available when` to show actions based on context
+- **Context-aware descriptions**: Adapt descriptions to user level and search context
+- **Expertise-based descriptions**: Different detail levels for beginners vs advanced users
+- **Mode switches**: Each topic exposes transitions (e.g., `switch_to_advanced`, `switch_to_beginner`) to change modes
 - **Improved LLM selection**: Better descriptions = better tool choices
 
 ## How It Works
@@ -55,12 +51,13 @@ topic beginner_mode:
          description: "Search the knowledge base"
          inputs:
             query: string
-               description: "Search query text to find relevant articles"
-            filters: object
-               description: "Filter criteria object to refine search results"
+               description: "Search query text to find relevant knowledge base articles"
+            filters: string
+               description: "Filter criteria object to refine search results (e.g., type, date range, tags)"
          outputs:
             results: list[object]
-               description: "List of search result objects"
+               description: "List of search result objects containing matching knowledge base articles"
+               complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
 ```
 
@@ -84,36 +81,45 @@ topic advanced_mode:
          inputs:
             query: string
                description: "Search query text with support for advanced syntax and operators"
-            filters: object
+            filters: string
                description: "Advanced filter criteria object with type, date range, tags, and custom field filters"
          ...
 ```
 
-### Context-Based Action Availability
+### Context-Aware Search Topic
 
-Use `available when` to show actions only in specific contexts:
+The `contextual_search` topic uses context-specific descriptions for the same `perform_search` action. The reasoning layer exposes a single `contextual_search` action that invokes `perform_search`:
 
 ```agentscript
 topic contextual_search:
    reasoning:
       actions:
-         search_accounts: @actions.perform_search
-            available when @variables.search_context == "accounts"
-            with query=...
-            with filters=...
-
-         search_contacts: @actions.perform_search
-            available when @variables.search_context == "contacts"
-            with query=...
-            with filters=...
-
-         search_cases: @actions.perform_search
-            available when @variables.search_context == "cases"
+         contextual_search: @actions.perform_search
             with query=...
             with filters=...
 ```
 
 ## Key Code Snippets
+
+### Topic Selector (Entry Point)
+
+```agentscript
+start_agent topic_selector:
+   description: "Welcome users and determine their expertise level"
+
+   reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+      actions:
+         beginner_mode: @utils.transition to @topic.beginner_mode
+            description: "Use simplified interface for beginners. Choose this for general questions or when no specific search context (like Accounts or Cases) is mentioned."
+
+         advanced_mode: @utils.transition to @topic.advanced_mode
+            description: "Use full technical interface for advanced users. Choose this when the user uses technical terms, asks for specific filters, or complex operations."
+
+         contextual_mode: @utils.transition to @topic.contextual_search
+            description: "Use context-aware search. Choose this ONLY when the user explicitly searches for specific business objects like Accounts, Contacts, or Cases."
+```
 
 ### Beginner Mode with Simple Descriptions
 
@@ -127,24 +133,13 @@ topic beginner_mode:
          inputs:
             query: string
                description: "Search query text to find relevant knowledge base articles"
-            filters: object
-               description: "Filter criteria object to refine search results"
+            filters: string
+               description: "Filter criteria object to refine search results (e.g., type, date range, tags)"
          outputs:
             results: list[object]
-               description: "List of search result objects containing matching articles"
+               description: "List of search result objects containing matching knowledge base articles"
+               complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
-
-      create_record:
-         description: "Create a new record"
-         inputs:
-            record_type: string
-               description: "Type of record to create"
-            data: object
-               description: "Record data object containing field-value pairs"
-         outputs:
-            record_id: string
-               description: "Unique identifier of the newly created record"
-         target: "flow://CreateRecord"
 
    reasoning:
       instructions:->
@@ -156,10 +151,6 @@ topic beginner_mode:
          simple_search: @actions.perform_search
             with query=...
             with filters=...
-
-         create_new_item: @actions.create_record
-            with record_type=...
-            with data=...
 
          switch_to_advanced: @utils.transition to @topic.advanced_mode
 ```
@@ -176,36 +167,13 @@ topic advanced_mode:
          inputs:
             query: string
                description: "Search query text with support for advanced syntax and operators"
-            filters: object
+            filters: string
                description: "Advanced filter criteria object with type, date range, tags, and custom field filters"
          outputs:
             results: list[object]
                description: "Paginated list of search result objects with relevance scores"
+               complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
-
-      create_record:
-         description: "Create new database record. Specify record_type (Account, Contact, Case, Custom__c) and provide data object with field-value pairs. Returns record ID on success."
-         inputs:
-            record_type: string
-               description: "Database record type (Account, Contact, Case, Custom__c, etc.)"
-            data: object
-               description: "Record data object with field-value pairs matching the specified record type schema"
-         outputs:
-            record_id: string
-               description: "Unique 18-character Salesforce record ID"
-         target: "flow://CreateRecord"
-
-      generate_report:
-         description: "Generate analytics report. Available types: sales_summary, user_activity, performance_metrics. Accepts parameters object for date ranges, filters, and aggregation options."
-         inputs:
-            report_type: string
-               description: "Report type (sales_summary, user_activity, performance_metrics, etc.)"
-            parameters: object
-               description: "Report parameters object with date ranges, filters, and aggregation options"
-         outputs:
-            report_url: string
-               description: "URL to access or download the generated report"
-         target: "flow://GenerateReport"
 
    reasoning:
       instructions:->
@@ -217,14 +185,6 @@ topic advanced_mode:
          advanced_search: @actions.perform_search
             with query=...
             with filters=...
-
-         create_record_advanced: @actions.create_record
-            with record_type=...
-            with data=...
-
-         generate_analytics: @actions.generate_report
-            with report_type=...
-            with parameters=...
 
          switch_to_beginner: @utils.transition to @topic.beginner_mode
 ```
@@ -241,11 +201,12 @@ topic contextual_search:
          inputs:
             query: string
                description: "Search query text adapted to the current search context"
-            filters: object
+            filters: string
                description: "Context-specific filter criteria object"
          outputs:
             results: list[object]
                description: "List of context-relevant search result objects"
+               complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
 
    reasoning:
@@ -255,18 +216,8 @@ topic contextual_search:
            Search descriptions adapt based on what you're looking for.
 
       actions:
-         search_accounts: @actions.perform_search
-            available when @variables.search_context == "accounts"
-            with query=...
-            with filters=...
-
-         search_contacts: @actions.perform_search
-            available when @variables.search_context == "contacts"
-            with query=...
-            with filters=...
-
-         search_cases: @actions.perform_search
-            available when @variables.search_context == "cases"
+         # When searching for accounts
+         contextual_search: @actions.perform_search
             with query=...
             with filters=...
 ```
@@ -304,23 +255,18 @@ Agent: [Calls perform_search with query="API" and complex filters]
 ### Example: Context-Aware
 
 ```text
-User: Search for contact John Smith
+User: I want to search for Accounts
 
-[Context: search_context = "accounts"]
-Agent sees: search_accounts action available
+[Topic selector: user chose contextual_mode]
+Agent transitions to contextual_search topic
 
-Agent: [Searches accounts]
-       Found 3 companies with "John Smith" in the name
+Agent sees action:
+  contextual_search: "Search the knowledge base" (with context-specific descriptions)
 
----
+LLM thinks: "User wants to search for context-specific business objects, use contextual_search"
 
-User: Search for John Smith
-
-[Context: search_context = "contacts"]
-Agent sees: search_contacts action available
-
-Agent: [Searches contacts]
-       Found 5 contacts named John Smith
+Agent: [Calls perform_search with query="Accounts"]
+       Here's what I found...
 ```
 
 ## Why Different Descriptions?
@@ -378,11 +324,11 @@ Agent: [Searches contacts]
 - Mention the context
 - Explain what it searches
 - Be concrete
-- Example: "Search customer accounts by name, industry, location"
+- Example: "Search query text adapted to the current search context"
 
 ## What's Next
 
-- **DynamicActionRouting**: Combine with `available when` patterns
+- **ActionCallbacks**: Combine with action callbacks for richer behavior
 - **SystemInstructionOverrides**: Use with persona changes
 - **AdvancedReasoningPatterns**: Build sophisticated selection logic
 
@@ -402,14 +348,14 @@ Test description effectiveness:
 - Test with complex requests
 - Verify detailed descriptions help
 
-### Test Case 3: Context Switching
+### Test Case 3: Contextual Mode
 
-- Switch between contexts
-- Verify actions adapt
-- Check LLM selects appropriately
+- Ask to search for Accounts, Contacts, or Cases
+- Verify topic selector routes to contextual_search
+- Check contextual_search action is used
 
 ### Test Case 4: Ambiguous Request
 
-- Give ambiguous input
-- Verify context-specific action guides LLM
+- Give ambiguous input (e.g., "help me find something")
+- Verify agent starts with beginner interface per instructions
 - Check correct action chosen

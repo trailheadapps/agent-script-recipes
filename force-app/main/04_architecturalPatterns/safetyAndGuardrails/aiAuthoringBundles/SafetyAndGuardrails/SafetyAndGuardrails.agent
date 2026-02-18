@@ -1,13 +1,3 @@
-# SafetyAndGuardrails - Multi-Stage Validation and Safety Controls
-# Demonstrates implementing safety checks with validation, confirmations, dependency checking, and permissions
-
-system:
-   messages:
-      welcome: "I can help with data management. Deletions require confirmation."
-      error: "Operation cancelled for safety."
-
-   instructions: "You are a data management assistant. Follow the safety guardrails and instructions provided to you."
-
 config:
    agent_name: "SafetyAndGuardrails"
    agent_label: "SafetyAndGuardrails"
@@ -30,18 +20,26 @@ variables:
    delete_state: mutable string = "check_dependencies"
       description: "Flag that indicates the state of the deletion process"
 
+system:
+   messages:
+      welcome: "I can help with data management. Deletions require confirmation."
+      error: "Operation cancelled for safety."
+
+   instructions: "You are a data management assistant. Follow the safety guardrails and instructions provided to you."
+
 start_agent topic_selector:
    label: "Topic Selector"
 
-   description: "Welcome users and begin data management with safety protocols"
+   description: "Route user messages to data management topic"
 
    reasoning:
       instructions: |
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         If the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), always route to {!@actions.begin_data_management}.
 
       actions:
          begin_data_management: @utils.transition to @topic.data_management
-            description: "Start data management with safety guardrails"
+            description: "Route to data management for any data operation including deletions, confirmations, record lookups, and continuing in-progress workflows"
 
 topic data_management:
    label: "Data Management"
@@ -54,7 +52,7 @@ topic data_management:
             | Ask for the record ID to delete. Use {!@actions.set_record_id} to save the ID.
 
          if @variables.record_id != "" and @variables.user_confirmed_deletion == False:
-            | Ask for the user's confirmation to delete the record. Use {!@actions.set_user_confirmation} to save the answer.
+            | Ask the user to confirm deletion of the record. If the user has already confirmed in the conversation, immediately use {!@actions.set_user_confirmation} to save their confirmation. Otherwise, ask for confirmation first.
 
          | If the confirmation is received ({!@variables.user_confirmed_deletion}), check the dependencies using {!@actions.check_dependencies}.
          | If dependencies are checked and if there are no dependencies, delete the record using {!@actions.delete_record}.

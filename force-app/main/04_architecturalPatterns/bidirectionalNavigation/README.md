@@ -189,23 +189,14 @@ Agent: [Sets issue_type = "technical", issue_description = "..."]
 [Transitions to technical_specialist topic]
 
 Agent: [technical_specialist topic]
-       Technical Specialist here! Let me analyze your issue.
-
-       Issue: App crashes during file upload
 
        [Runs analyze_technical_issue action]
 
-       I found the issue - it appears to be a memory issue.
-       Try to reboot the system.
-
-[Transitions back to general_support]
-
-Agent: [general_support topic]
-       Great news! Our technical specialist identified the issue.
+       [Transitions back to general_support topic]
 
        Our technical specialist recommends trying to reboot your system as a first step.
 
-       Does this help resolve your issue?
+       If the issue persists after rebooting, please let me know so we can investigate further.
 ```
 
 ### Example: Billing Consultation
@@ -219,22 +210,16 @@ Agent: [Sets issue_type = "billing"]
 [Transitions to billing_specialist topic]
 
 Agent: [billing_specialist topic]
-       Billing Specialist here! Let me review your account.
 
        [Runs analyze_billing_issue action]
 
-       I found the duplicate charge. I've initiated a refund
-       of $29.99 which will appear in 3-5 business days.
+       [Transitions back to general_support topic]
 
-[Transitions back to general_support]
+       Your billing issue has been reviewed.
 
-Agent: [general_support topic]
-       Our billing specialist has resolved your issue.
+       If you were indeed charged twice, a refund process has been initiated.
 
-       A refund of $29.99 has been initiated.
-       You should see it in 3-5 business days.
-
-       Is there anything else I can help you with?
+       If you need further details or confirmation, please let me know.
 ```
 
 ## Pattern Comparison

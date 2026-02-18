@@ -43,13 +43,15 @@ graph TD
 ```agentscript
 actions:
    get_weather:
-      description: "Fetch weather data from external API via Flow"
+      description: "Fetch weather data from external API via Apex"
       inputs:
          cityName: string
       outputs:
-         temperature: number
+         temperature: object
+            complex_data_type_name: "lightning__integerType"
          conditions: string
-         humidity: number
+         humidity: object
+            complex_data_type_name: "lightning__integerType"
          success: boolean
          error_message: string
       target: "apex://WeatherService"
@@ -166,13 +168,15 @@ variables:
 ```agentscript
 actions:
    get_weather:
-      description: "Fetch weather data from external API via Flow"
+      description: "Fetch weather data from external API via Apex"
       inputs:
          cityName: string
       outputs:
-         temperature: number
+         temperature: object
+            complex_data_type_name: "lightning__integerType"
          conditions: string
-         humidity: number
+         humidity: object
+            complex_data_type_name: "lightning__integerType"
          success: boolean
          error_message: string
       target: "apex://WeatherService"

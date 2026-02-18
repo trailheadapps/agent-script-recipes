@@ -94,10 +94,10 @@ topic conversation:
             with event_type="reasoning_started"
             with event_data="Turn: {!@variables.turn_count}"
 
-         | Every time you interact with the user, respond to their message and append the session info with turn count to your response.
+         | Every time you interact with the user, respond to their message showing this information and nothing else:
 
-           Session Start: {!@variables.session_start_time}
-           Current Turn Count: {!@variables.turn_count}
+           - Session Start Time: {!@variables.session_start_time}
+           - Current Turn Count: {!@variables.turn_count}
 
 
    # AFTER_REASONING: Runs after every reasoning step

@@ -7,7 +7,7 @@
             },
             "AccountId__c": "@acc_adv_reasoning",
             "TotalAmount__c": 500.0,
-            "Status__c": "Confirmed",
+            "Status__c": "Shipped",
             "Tracking_Number__c": "1234567890",
             "EffectiveDate__c": "2024-12-15"
         },
@@ -18,7 +18,7 @@
             },
             "AccountId__c": "@acc_adv_reasoning",
             "TotalAmount__c": 750.0,
-            "Status__c": "Shipped",
+            "Status__c": "Delivered",
             "Tracking_Number__c": "1234567891",
             "EffectiveDate__c": "2024-11-15"
         }

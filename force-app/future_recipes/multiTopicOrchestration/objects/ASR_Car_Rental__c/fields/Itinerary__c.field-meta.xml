@@ -5,5 +5,5 @@
     <type>Lookup</type>
     <referenceTo>ASR_Itinerary__c</referenceTo>
     <relationshipLabel>Car_Rentals</relationshipLabel>
-    <relationshipName>Car_Rentals</relationshipName>
+    <relationshipName>ASR_Car_Rentals</relationshipName>
 </CustomField>

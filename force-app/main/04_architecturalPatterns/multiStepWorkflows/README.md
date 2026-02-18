@@ -30,8 +30,9 @@ graph TD
 ## Key Concepts
 
 - **Action chaining**: Using `run` to execute follow-up actions automatically
+- **available when**: Conditionally expose actions based on workflow step
 - **Step-by-step workflows**: Guided multi-step processes with clear progression
-- **Progress tracking**: Boolean flags to track completion of each step
+- **Progress tracking**: Boolean flags and `step` variable to track completion of each step
 - **Data flow**: Outputs from one action feed into subsequent actions
 - **Procedural instructions**: Step-by-step rules that guide the LLM through the workflow
 
@@ -43,14 +44,22 @@ Track progress with boolean flags and store data needed across steps:
 
 ```agentscript
 variables:
-   customer_email: mutable string = ""
-   customer_id: mutable string = ""
-   account_created: mutable boolean = False
-   profile_completed: mutable boolean = False
-   preferences_set: mutable boolean = False
-   onboarding_complete: mutable boolean = False
-   verification_token: mutable string = ""
-   step: mutable number = 0
+    customer_email: mutable string = ""
+        description: "Customer's email address"
+    customer_id: mutable string = ""
+        description: "Generated customer ID from account creation"
+    account_created: mutable boolean = False
+        description: "Whether account has been created"
+    profile_completed: mutable boolean = False
+        description: "Whether profile setup is complete"
+    preferences_set: mutable boolean = False
+        description: "Whether preferences have been configured"
+    onboarding_complete: mutable boolean = False
+        description: "Whether entire onboarding is done"
+    verification_token: mutable string = ""
+        description: "Email verification token"
+    step: mutable number = 1
+        description: "The current step in the onboarding process"
 ```
 
 ### Step-by-Step Instructions
@@ -59,33 +68,19 @@ Use procedural instructions to guide the workflow through each step:
 
 ```agentscript
 reasoning:
-   instructions: ->
-      | Follow the below Rules step by step
-        Rules:
-        Step 1:
-           First step is to create Account with the name and customer email
-           If not provided you will ask for it and you won't proceed.
-           After Step 1 please proceed to Step 2
-        Step 2:
-           Before setting up the customer's profile,
-           Ask the customer about their preferences:
-              1. Notification preferences (email, SMS, or both)
-              2. Preferred language
-              3. Timezone
-           Collect all this info and call it 'preferences'.
-        Only proceed with setup_profile action after you have preferences.
-        After Step 2 please proceed to Step 3
-        Step 3:
-           Before configuring account settings, ask the customer about:
-              1. Default notification settings
-              2. Privacy preferences
-           Collect all this info and call it 'settings'.
-        Only proceed with configure_settings action after you have settings.
-        After Step 3 please proceed to Step 4
-        Step 4:
-           This is the final action.
-           Execute finalize_onboarding
-           Tell customer they have completed onboarding successfully
+    instructions: ->
+        | Onboard the customer step by step following the below ## Rules. You are currently on {!@variables.step} of Step 4.
+        | ## Rules:
+             a. Onboarding is a strictly 4 step process and you should go from Step 1 to Step 4 to complete. You are on step {!@variables.step} of 4 now. Display the step as you progress.
+             b. NEVER ask the customer to set password. We will set the password in the background.
+        if @variables.step == 1:
+            | Ask for name and email to create account.
+        if @variables.step == 2 and @variables.account_created == True:
+            | Collect the customer's profile preferences by asking about: (1) Notification Preferences (e.g., email, SMS, push), (2) Preferred Language, and (3) Timezone. Once all preferences are gathered, format them as a JSON string (e.g., {"notifications": "email", "language": "en", "timezone": "PST"}) and pass it to the `preferences` input of setup_profile action.
+        if @variables.step == 3 and @variables.profile_completed == True:
+            | Collect the customer's privacy settings by asking about: (1) Data Sharing preferences, (2) Marketing Communications opt-in/out, and (3) Profile Visibility. Once all settings are gathered, format them as a JSON string (e.g., {"dataSharing": false, "marketing": true, "visibility": "private"}) and pass it to the `settings` input of configure_settings action.
+        if @variables.step == 4 and @variables.preferences_set == True:
+            | Run the {!@actions.finalize_onboarding} action to inform customer onboarding is complete.
 ```
 
 ### Action with Chained Follow-up
@@ -94,17 +89,37 @@ The `run` keyword chains a follow-up action immediately after the primary action
 
 ```agentscript
 actions:
-   create_account: @actions.create_account
-      with email = ...
-      with name = ...
-      set @variables.customer_id = @outputs.customer_id
-      set @variables.account_created = @outputs.success
-      set @variables.customer_email = @outputs.customer_email
-      # Chain a follow-up action
-      run @actions.send_verification
-         with customer_id = @variables.customer_id
-         with email = @variables.customer_email
-         set @variables.verification_token = @outputs.token
+    create_account: @actions.create_account
+        available when @variables.step == 1
+        with email = ...
+        with name = ...
+        set @variables.customer_id = @outputs.customer_id
+        set @variables.account_created = @outputs.success
+        set @variables.customer_email = @outputs.customer_email
+        set @variables.step = 2
+        run @actions.send_verification
+            with customer_id = @variables.customer_id
+            with email = @variables.customer_email
+            set @variables.verification_token = @outputs.token
+
+    setup_profile: @actions.setup_profile
+        available when @variables.step == 2
+        with customer_id = @variables.customer_id
+        with preferences = ...
+        set @variables.profile_completed = @outputs.success
+        set @variables.step = 3
+
+    configure_settings: @actions.configure_settings
+        available when @variables.step == 3
+        with customer_id = @variables.customer_id
+        with settings = ...
+        set @variables.preferences_set = @outputs.success
+        set @variables.step = 4
+
+    finalize_onboarding: @actions.finalize_onboarding
+        available when @variables.step == 4
+        with customer_id = @variables.customer_id
+        set @variables.onboarding_complete = @outputs.success
 ```
 
 ## Key Code Snippets
@@ -113,103 +128,110 @@ actions:
 
 ```agentscript
 actions:
-   create_account:
-      description: "Creates a new customer account"
-      inputs:
-         email: string
-            description: "Customer's email address"
-         name: string
-            description: "Customer's full name"
-      outputs:
-         customer_id: string
-            description: "Unique identifier for the new account"
-         success: boolean
-            description: "Whether account was created"
-         customer_email: string
-            description: "Customer email"
-      target: "flow://CreateCustomerAccount"
+    create_account:
+        description: "Creates a new customer account"
+        inputs:
+            email: string
+                description: "Customer's email address for account registration and verification"
+            name: string
+                description: "Customer's full name for the account"
+        outputs:
+            customer_id: string
+                description: "Unique identifier assigned to the newly created customer account"
+            success: boolean
+                description: "Indicates whether the account was created successfully"
+            customer_email: string
+                description: "Customer email"
+        target: "flow://CreateCustomerAccount"
 
-   send_verification:
-      description: "Sends email verification"
-      inputs:
-         customer_id: string
-            description: "Customer to send verification to"
-         email: string
-            description: "Email address for verification"
-      outputs:
-         token: string
-            description: "Verification token"
-         sent: boolean
-            description: "Whether email was sent"
-      target: "flow://SendVerificationEmail"
+    send_verification:
+        description: "Sends email verification"
+        inputs:
+            customer_id: string
+                description: "The unique identifier of the customer to send verification email to"
+            email: string
+                description: "The email address where the verification link will be sent"
+        outputs:
+            token: string
+                description: "Verification token generated for email confirmation"
+            sent: boolean
+                description: "Indicates whether the verification email was sent successfully"
+        target: "flow://SendVerificationEmail"
 
-   setup_profile:
-      description: "Creates customer profile with preferences"
-      inputs:
-         customer_id: string
-            description: "Customer to set up profile for"
-         preferences: string
-            description: "Customer preferences"
-      outputs:
-         profile_id: string
-            description: "Profile identifier"
-         success: boolean
-            description: "Whether profile was created"
-      target: "flow://SetupCustomerProfile"
+    setup_profile:
+        description: "Creates customer profile with preferences"
+        inputs:
+            customer_id: string
+                description: "The unique identifier of the customer whose profile to set up"
+            preferences: string
+                description: "Customer preferences as JSON object"
+        outputs:
+            profile_id: string
+                description: "Unique identifier for the newly created customer profile"
+            success: boolean
+                description: "Indicates whether the profile was set up successfully"
+        target: "flow://SetupCustomerProfile"
 
-   configure_settings:
-      description: "Sets default account settings"
-      inputs:
-         customer_id: string
-            description: "Customer to configure"
-         settings: string
-            description: "Account settings"
-      outputs:
-         success: boolean
-            description: "Whether settings were configured"
-      target: "flow://ConfigureAccountSettings"
+    configure_settings:
+        description: "Sets default account privacy settings"
+        inputs:
+            customer_id: string
+                description: "The unique identifier of the customer whose settings to configure"
+            settings: string
+                description: "Account privacy settings as JSON object"
+        outputs:
+            success: boolean
+                description: "Indicates whether the privacy settings were configured successfully"
+        target: "flow://ConfigureAccountSettings"
 
-   finalize_onboarding:
-      description: "Marks onboarding as complete and sends welcome email"
-      inputs:
-         customer_id: string
-            description: "Customer to finalize"
-      outputs:
-         success: boolean
-            description: "Whether onboarding was finalized"
-         welcome_sent: boolean
-            description: "Whether welcome email was sent"
-      target: "flow://FinalizeOnboarding"
+    finalize_onboarding:
+        description: "Marks onboarding as complete and sends welcome email"
+        inputs:
+            customer_id: string
+                description: "The unique identifier of the customer to finalize onboarding for"
+        outputs:
+            success: boolean
+                description: "Indicates whether onboarding was finalized successfully"
+            welcome_sent: boolean
+                description: "Indicates whether the welcome email was sent to the customer"
+        target: "flow://FinalizeOnboarding"
 ```
 
 ### Reasoning Actions
 
 ```agentscript
 actions:
-   create_account: @actions.create_account
-      with email = ...
-      with name = ...
-      set @variables.customer_id = @outputs.customer_id
-      set @variables.account_created = @outputs.success
-      set @variables.customer_email = @outputs.customer_email
-      run @actions.send_verification
-         with customer_id = @variables.customer_id
-         with email = @variables.customer_email
-         set @variables.verification_token = @outputs.token
+    create_account: @actions.create_account
+        available when @variables.step == 1
+        with email = ...
+        with name = ...
+        set @variables.customer_id = @outputs.customer_id
+        set @variables.account_created = @outputs.success
+        set @variables.customer_email = @outputs.customer_email
+        set @variables.step = 2
+        run @actions.send_verification
+            with customer_id = @variables.customer_id
+            with email = @variables.customer_email
+            set @variables.verification_token = @outputs.token
 
-   setup_profile: @actions.setup_profile
-      with customer_id = ...
-      with preferences = ...
-      set @variables.profile_completed = @outputs.success
+    setup_profile: @actions.setup_profile
+        available when @variables.step == 2
+        with customer_id = @variables.customer_id
+        with preferences = ...
+        set @variables.profile_completed = @outputs.success
+        set @variables.step = 3
 
-   configure_settings: @actions.configure_settings
-      with customer_id = ...
-      with settings = ...
-      set @variables.preferences_set = @outputs.success
+    configure_settings: @actions.configure_settings
+        available when @variables.step == 3
+        with customer_id = @variables.customer_id
+        with settings = ...
+        set @variables.preferences_set = @outputs.success
+        set @variables.step = 4
 
-   finalize_onboarding: @actions.finalize_onboarding
-      with customer_id = ...
-      set @variables.onboarding_complete = @outputs.success
+    finalize_onboarding: @actions.finalize_onboarding
+        available when @variables.step == 4
+        with customer_id = @variables.customer_id
+        set @variables.onboarding_complete = @outputs.success
 ```
 
 ## Try It Out
@@ -306,7 +328,7 @@ primary: @actions.primary_action
 
 ### Test Case 2: Resume from Step 2
 
-- Set `account_created=True` and `customer_id="..."`
+- Set `step=2`, `account_created=True`, and `customer_id="..."`
 - Start conversation
 - Agent should continue at step 2
 

@@ -41,6 +41,22 @@ graph TD
 
 ## How It Works
 
+### Start Agent Routing
+
+The agent uses a topic selector that routes to data management. When the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), it routes to `{!@actions.begin_data_management}`:
+
+```agentscript
+start_agent topic_selector:
+   reasoning:
+      instructions: |
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         If the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), always route to {!@actions.begin_data_management}.
+
+      actions:
+         begin_data_management: @utils.transition to @topic.data_management
+            description: "Route to data management for any data operation including deletions, confirmations, record lookups, and continuing in-progress workflows"
+```
+
 ### Multi-Stage Validation in Instructions
 
 The agent enforces a strict sequence of validation steps. Each stage must complete before the next can begin. This prevents accidental deletions by ensuring the user explicitly provides and confirms the record to delete.
@@ -53,7 +69,7 @@ instructions:->
 
    # Stage 2: Request confirmation
    if @variables.record_id != "" and @variables.user_confirmed_deletion == False:
-      | Ask for the user's confirmation to delete the record. Use {!@actions.set_user_confirmation} to save the answer.
+      | Ask the user to confirm deletion of the record. If the user has already confirmed in the conversation, immediately use {!@actions.set_user_confirmation} to save their confirmation. Otherwise, ask for confirmation first.
 
    # Stage 3: Check dependencies and proceed
    | If the confirmation is received ({!@variables.user_confirmed_deletion}), check the dependencies using {!@actions.check_dependencies}.
@@ -62,14 +78,12 @@ instructions:->
 
 ### Explicit Confirmation Pattern
 
-The agent accepts natural language confirmations (e.g., "confirmed", "yes", "proceed") rather than requiring exact phrases. This makes the interaction more user-friendly while still ensuring explicit approval.
+The agent accepts natural language confirmations (e.g., "confirmed", "yes", "proceed") rather than requiring exact phrases. This makes the interaction more user-friendly while still ensuring explicit approval. If the user has already confirmed in the conversation, the agent immediately saves their confirmation using `{!@actions.set_user_confirmation}`.
 
 ```agentscript
 instructions:->
-   if @variables.user_confirmed_deletion == False:
-      | Ask for the user's confirmation to delete the record.
-      | Use {!@actions.set_user_confirmation} to set the confirmation received
-      | If the confirmation is received, check the dependencies using {!@actions.check_dependencies}.
+   if @variables.record_id != "" and @variables.user_confirmed_deletion == False:
+      | Ask the user to confirm deletion of the record. If the user has already confirmed in the conversation, immediately use {!@actions.set_user_confirmation} to save their confirmation. Otherwise, ask for confirmation first.
 ```
 
 ### Dynamic Action Availability with Conditions
@@ -131,19 +145,23 @@ variables:
 ```agentscript
 actions:
    check_dependencies:
-      description: "Checks if record has dependencies"
+      description: "Checks if a record has dependencies"
       inputs:
          record_id: string
+            description: "The unique identifier of the record to check for dependencies"
       outputs:
          count: number
+            description: "The number of dependent records that would be affected by deletion"
       target: "flow://CheckDependencies"
 
    delete_record:
       description: "Deletes a record permanently"
       inputs:
          record_id: string
+            description: "The unique identifier of the record to permanently delete"
       outputs:
          success: boolean
+            description: "Indicates whether the record was deleted successfully"
       target: "flow://DeleteRecord"
 ```
 
@@ -187,7 +205,7 @@ User: Delete the record
 
 Agent: Please provide the record ID you want to delete.
 
-User: 001al000021W3HPAA0
+User: [Look for an account to delete in your org and provide its Id]
 
 Agent: Are you sure you want to delete the record? Please confirm to proceed.
 

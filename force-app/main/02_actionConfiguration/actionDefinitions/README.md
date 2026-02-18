@@ -112,6 +112,10 @@ topic weather_lookup:
                description: "Current temperature value in the specified units"
             weather_condition: string
                description: "Description of current weather (e.g., sunny, cloudy, rainy)"
+            humidity: number
+               description: "Current humidity percentage (0-100)"
+            wind_speed: number
+               description: "Current wind speed in miles per hour"
          target: "flow://GetCurrentWeather"
 ```
 
@@ -122,7 +126,7 @@ Define actions, then make them available in `reasoning.actions:`:
 ```agentscript
 reasoning:
    instructions:->
-      | Help users get weather information for their requested locations.
+      | Help users get weather information for their requested locations and send weather alerts.
 
    actions:
       get_current_weather: @actions.get_current_weather
@@ -224,8 +228,9 @@ get_forecast:
       days: number
          description: "Number of days to include in the forecast (1-10)"
    outputs:
-      forecast_data: list[string]
+      forecast_data: list[object]
          description: "List of daily forecast objects containing temperature, conditions, and precipitation data"
+         complex_data_type_name: "lightning__textType"
    target: "flow://GetWeatherForecast"
 ```
 
@@ -275,7 +280,7 @@ reasoning:
         3. Store the results in variables
         4. Report the weather clearly to the user
 
-        If the user asks to send a weather alert, use {!@actions.send_alert} to send the alert
+      | If the user asks to send a weather alert, use {!@actions.send_alert} to send the alert
 
    actions:
       get_current_weather: @actions.get_current_weather

@@ -22,13 +22,15 @@ system:
    instructions: "You are a helpful assistant that demonstrates after reasoning event."
 
 start_agent topic_selector:
-   description: "Welcome users and demonstrate reasoning lifecycle events. Transition to the conversation topic to get started."
+   description: "Route every user message to the conversation topic for lifecycle event handling."
    
    reasoning:
       instructions:|
-         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         ALWAYS call the begin_conversation tool for every user message, including greetings and chitchat.
+         Do not respond directly. Route every message to the conversation topic.
       actions:
          begin_conversation: @utils.transition to @topic.conversation
+            description: "Route to the conversation topic. MUST be called for every user message, including greetings and chitchat. Never skip this tool."
 
 # Main conversation topic
 topic conversation:
@@ -68,13 +70,13 @@ topic conversation:
             with event_type="reasoning_started"
             with event_data="Turn: {!@variables.turn_count}"
 
-         | Every time you interact with the user, respond to their message and append the session info with turn count to your response.
+         | Every time you interact with the user, respond to their message showing this information and nothing else:
            
-           Session Start: {!@variables.session_start_time}
-           Current Turn Count: {!@variables.turn_count}
+           - Session Start Time: {!@variables.session_start_time}
+           - Current Turn Count: {!@variables.turn_count}
 
 
-   # AFTER_REASONING: Runs after every reasoning step
+   # AFTER_REASONING: Runs after every turn.
    # Use for: Cleanup, final logging, state updates, analytics
    after_reasoning:
       # Log the reasoning completion

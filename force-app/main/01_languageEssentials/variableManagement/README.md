@@ -170,19 +170,19 @@ reasoning:
         Current survey progress:
       if @variables.user_name:
          | - Name: {!@variables.user_name}
-            run set_user_name
+            run @actions.set_user_name
       else:
          | - Name: Not provided
 
       if @variables.age > 0:
          | - Age: {!@variables.age}
-            run set_age
+            run @actions.set_age
       else:
          | - Age: Not provided
 
       if @variables.interests:
          | - Interests: {!@variables.interests}
-            run set_interests
+            run @actions.set_interests
       else:
          | - Interests: Not provided
 
@@ -192,7 +192,7 @@ reasoning:
         1. Be natural and conversational. Don't ask all questions at once.
         2. If user_name is empty, ask for their name
         3. If age is 0, ask for their age
-        4. If interests list is empty, ask about their hobbies and interests
+        4. If interests is empty, ask about their hobbies and interests
         5. Once all information is collected respond to the user with a "Thank you". Also summarize the collected
            data for them.
 ```

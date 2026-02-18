@@ -26,10 +26,9 @@ graph TD
     N -->|Low < 0.3| P[Display: ✅ Low Risk]
     N -->|Moderate| Q[Display: ⚠️ Moderate Risk]
     N -->|High >= 0.7| R[Display: 🚨 High Risk]
-    O --> P[Present Intelligence Dashboard]
-    P --> Q
-    Q --> R
-    R --> S[User Interaction]
+    P --> S[User Interaction]
+    Q --> S
+    R --> S
 ```
 
 ## Key Concepts
@@ -102,7 +101,7 @@ Create instructions based on loaded data:
 
 ```agentscript
 reasoning:
-   instructions:->
+   instructions: ->
       # [Parts omitted for brevity]
 
       | Customer Intelligence Dashboard
@@ -229,6 +228,7 @@ topic intelligent_insights:
          outputs:
             profile: object
                description: "User profile object containing name, contact information, and account details"
+               complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchUserProfile"
 
       fetch_account_data:
@@ -239,6 +239,7 @@ topic intelligent_insights:
          outputs:
             account: object
                description: "Account object with account status, balance, and membership information"
+               complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchAccountData"
 
       fetch_order_history:
@@ -251,6 +252,7 @@ topic intelligent_insights:
          outputs:
             orders: list[object]
                description: "List of order objects containing order ID, date, amount, and items for each order"
+               complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchOrderHistory"
 
       fetch_support_history:
@@ -261,6 +263,7 @@ topic intelligent_insights:
          outputs:
             tickets: list[object]
                description: "List of support ticket objects with ticket ID, status, issue type, and resolution details"
+               complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchSupportHistory"
 
       calculate_customer_value:
@@ -270,6 +273,7 @@ topic intelligent_insights:
                description: "The unique identifier of the customer to calculate value for"
             orders: list[object]
                description: "List of customer's order history objects used for CLV calculation"
+               complex_data_type_name: "lightning__recordInfoType"
          outputs:
             clv: number
                description: "Calculated customer lifetime value as a monetary amount"
@@ -282,15 +286,19 @@ topic intelligent_insights:
          inputs:
             account: object
                description: "Customer account object with status and activity information"
+               complex_data_type_name: "lightning__recordInfoType"
             orders: list[object]
                description: "List of customer orders used to analyze purchase patterns and frequency"
+               complex_data_type_name: "lightning__recordInfoType"
             support_tickets: list[object]
                description: "List of support tickets used to identify potential dissatisfaction indicators"
+               complex_data_type_name: "lightning__recordInfoType"
          outputs:
             risk_score: number
                description: "Churn risk score as a decimal between 0.0 (low risk) and 1.0 (high risk)"
-            risk_factors: list[string]
+            risk_factors: list[object]
                description: "List of identified factors contributing to churn risk (e.g., decreased purchase frequency, unresolved tickets)"
+               complex_data_type_name: "lightning__textType"
          target: "flow://AssessChurnRisk"
 
       generate_recommendations:
@@ -298,13 +306,15 @@ topic intelligent_insights:
          inputs:
             profile: object
                description: "Customer profile object with preferences and demographic information"
+               complex_data_type_name: "lightning__recordInfoType"
             clv: number
                description: "Customer lifetime value used to tailor recommendations appropriately"
             churn_risk: number
                description: "Churn risk score (0.0-1.0) used to prioritize retention-focused recommendations"
          outputs:
-            recommendations: list[string]
+            recommendations: list[object]
                description: "List of personalized action recommendations for engaging and retaining the customer"
+               complex_data_type_name: "lightning__textType"
          target: "flow://GenerateRecommendations"
 ```
 

@@ -81,14 +81,14 @@ System instructions define:
 reasoning:
    instructions:->
       | Answer the user's questions about products and services clearly and accurately.
-        When the user asks about a specific product, use the get_product_info action
+        When the user asks about a specific product, use {!@actions.get_product_info}
         to look up current information.
 
         When answering:
         - Be specific and provide helpful details
         - If the question is unclear, ask for clarification
         - Stay focused on product-related topics
-        - Use get_product_info to get accurate, up-to-date information
+        - Use {!@actions.get_product_info} to get accurate, up-to-date information
 
         Topics you can help with:
         - Product features and specifications
@@ -109,8 +109,9 @@ actions:
       outputs:
          product_details: string
             description: "Detailed product information including features, specifications, and description"
-         price: number
+         price: object
             description: "Current price of the product"
+            complex_data_type_name: "lightning__currencyType"
          in_stock: boolean
             description: "Indicates whether the product is currently in stock and available"
       target: "flow://GetProductInfo"
@@ -132,24 +133,25 @@ topic product_qa:
                description: "Name of the product to look up information for"
          outputs:
             product_details: string
-               description: "Detailed product information"
-            price: number
+               description: "Detailed product information including features, specifications, and description"
+            price: object
                description: "Current price of the product"
+               complex_data_type_name: "lightning__currencyType"
             in_stock: boolean
-               description: "Whether the product is in stock"
+               description: "Indicates whether the product is currently in stock and available"
          target: "flow://GetProductInfo"
 
    reasoning:
       instructions:->
          | Answer the user's questions about products and services clearly and accurately.
-           When the user asks about a specific product, use the get_product_info action
+           When the user asks about a specific product, use {!@actions.get_product_info}
            to look up current information.
 
            When answering:
            - Be specific and provide helpful details
            - If the question is unclear, ask for clarification
            - Stay focused on product-related topics
-           - Use get_product_info to get accurate, up-to-date information
+           - Use {!@actions.get_product_info} to get accurate, up-to-date information
 
            Topics you can help with:
            - Product features and specifications
@@ -183,14 +185,14 @@ Agent: Hi! I'm here to answer your questions about our products and services. Wh
 User: What features does Product Laptop X200 include?
 
 [Agent calls get_product_info with product_name="Product X"]
-[Returns: product_details="...", price=299, in_stock=true]
+[Returns: product_details="...", price=1200, in_stock=true]
 
 Agent: Product X includes several great features:
        - Feature A: [description]
        - Feature B: [description]
        - Feature C: [description]
 
-       It's currently priced at $299 and is in stock. Would you like to know more about any specific feature?
+       It's currently priced at $1200 and is in stock. Would you like to know more about any specific feature?
 ```
 
 ### Example Interaction 2: Pricing Question
@@ -199,21 +201,21 @@ Agent: Product X includes several great features:
 User: How much does the wireless mouse cost?
 
 [Agent calls get_product_info with product_name="Product Y"]
-[Returns: price=149, in_stock=true]
+[Returns: price=25, in_stock=true]
 
-Agent: Product Y is priced at $149 and is currently in stock.
+Agent: Product Y is priced at $25 and is currently in stock.
        Would you like to know about its features or compare it to other products?
 ```
 
 ### Example Interaction 3: Availability Check
 
 ```text
-User: Is the wireless mouse available?
+User: Is the 4K Monitor available?
 
-[Agent calls get_product_info with product_name="Premium Widget"]
+[Agent calls get_product_info with product_name="4K Monitor"]
 [Returns: in_stock=false]
 
-Agent: I'm sorry, the Premium Widget is currently out of stock.
+Agent: I'm sorry, the 4K Monitor is currently out of stock.
        Would you like me to let you know when it's available, or can I suggest some similar products?
 ```
 
@@ -223,7 +225,7 @@ Agent: I'm sorry, the Premium Widget is currently out of stock.
 
 **Good instructions are:**
 
-- **Specific**: "Use get_product_info to look up current information"
+- **Specific**: "Use {!@actions.get_product_info} to look up current information"
 - **Actionable**: Clear guidance on when to use tools
 - **Structured**: Use bullet points and sections
 

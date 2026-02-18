@@ -29,7 +29,7 @@
             "Is_Active__c": true,
             "Description__c": "32-inch 4K UHD Monitor",
             "Family__c": "Monitor",
-            "In_Stock__c": true,
+            "In_Stock__c": false,
             "Price__c": 450.0,
             "Category__c": "Electronics"
         },

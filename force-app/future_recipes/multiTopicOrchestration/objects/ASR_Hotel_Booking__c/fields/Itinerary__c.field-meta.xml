@@ -5,5 +5,5 @@
     <type>Lookup</type>
     <referenceTo>ASR_Itinerary__c</referenceTo>
     <relationshipLabel>Hotel_Bookings</relationshipLabel>
-    <relationshipName>Hotel_Bookings</relationshipName>
+    <relationshipName>ASR_Hotel_Bookings</relationshipName>
 </CustomField>

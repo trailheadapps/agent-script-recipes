@@ -9,7 +9,7 @@
         {
             "attributes": { "type": "ASR_Hotel__c", "referenceId": "hotel2" },
             "Name": "Seaside Resort",
-            "City__c": "Miami",
+            "City__c": "San Francisco",
             "Location__c": "Beachfront"
         }
     ]
