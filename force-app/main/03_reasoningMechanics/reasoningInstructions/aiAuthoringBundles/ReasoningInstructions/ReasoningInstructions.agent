@@ -79,6 +79,10 @@ topic order_status:
             # Now build instructions based on the order status
             | The customer's order {!@variables.order_id} has status: {!@variables.order_status}
 
+         if @variables.order_id and not @variables.order_status:
+            | No order was found for order ID {!@variables.order_id}.
+              Ask the customer to verify the order number and try again.
+
          # Different instructions for different statuses
          if @variables.order_status == "pending":
             | The order is being processed. Let the customer know:
