@@ -35,7 +35,7 @@ start_agent topic_selector:
    reasoning:
       instructions: |
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
-         If the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), always route to begin_data_management.
+         If the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), always route to {!@actions.begin_data_management}.
 
       actions:
          begin_data_management: @utils.transition to @topic.data_management
