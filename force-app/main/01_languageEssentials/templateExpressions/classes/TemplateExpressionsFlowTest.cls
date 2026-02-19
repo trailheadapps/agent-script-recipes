@@ -59,7 +59,7 @@ private class TemplateExpressionsFlowTest {
         // Set input variables for the flow
         Map<String, Object> inputs = new Map<String, Object>();
         inputs.put('budget', 75.00);
-        inputs.put('preferences', 'electronics');
+        inputs.put('product_name', 'Product');
 
         // Run the flow
         Test.startTest();

@@ -37,6 +37,22 @@
             </value>
         </assignmentItems>
     </assignments>
+    <assignments>
+        <name>Init_Cart_Total</name>
+        <label>Init Cart Total</label>
+        <locationX>264</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>CurrentCart.Total_Amount__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_Cart_Item</targetReference>
+        </connector>
+    </assignments>
     <decisions>
         <name>Check_Cart_Exists</name>
         <label>Check Cart Exists</label>
@@ -79,7 +95,7 @@
         <locationY>350</locationY>
         <assignRecordIdToReference>CurrentCart.Id</assignRecordIdToReference>
         <connector>
-            <targetReference>Create_Cart_Item</targetReference>
+            <targetReference>Init_Cart_Total</targetReference>
         </connector>
         <inputAssignments>
             <field>Customer_Name__c</field>
@@ -179,7 +195,7 @@
     </variables>
     <variables>
         <name>price</name>
-        <dataType>Currency</dataType>
+        <dataType>Number</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
@@ -194,7 +210,7 @@
     </variables>
     <variables>
         <name>new_total</name>
-        <dataType>Currency</dataType>
+        <dataType>Number</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>

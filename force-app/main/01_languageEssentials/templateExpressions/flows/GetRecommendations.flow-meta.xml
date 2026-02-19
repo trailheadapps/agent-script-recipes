@@ -32,9 +32,16 @@
         <filterLogic>and</filterLogic>
         <filters>
             <field>Price__c</field>
-            <operator>LessThan</operator>
+            <operator>LessThanOrEqualTo</operator>
             <value>
                 <elementReference>budget</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Name</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>product_name</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
@@ -70,14 +77,14 @@
     </assignments>
     <variables>
         <name>budget</name>
-        <dataType>Currency</dataType>
+        <dataType>Number</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
         <scale>2</scale>
     </variables>
     <variables>
-        <name>preferences</name>
+        <name>product_name</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>

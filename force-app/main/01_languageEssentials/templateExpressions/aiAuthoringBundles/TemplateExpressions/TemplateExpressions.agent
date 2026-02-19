@@ -20,8 +20,8 @@ variables:
    cart_total: mutable number = 0
       description: "Total cost of items in cart"
 
-   loyalty_points: mutable number = 0
-      description: "Customer's loyalty reward points"
+   product_name: mutable string = ""
+      description: "The type of product the customer is looking for"
 
 system:
    messages:
@@ -37,10 +37,10 @@ start_agent topic_selector:
    
    reasoning:
       instructions:|
-         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         Always use the start_shopping tool to route the user to the shopping assistant. This is a single-topic agent, so every message should go to the shopping assistant.
       actions:
          start_shopping: @utils.transition to @topic.shopping_assistant
-            description: "Begin the personalized shopping session"
+            description: "Route any user message to the shopping assistant"
 
 topic shopping_assistant:
    description: "Helps customers shop and manages their cart"
@@ -51,66 +51,82 @@ topic shopping_assistant:
          inputs:
             item_name: string
                description: "Name of the product item to add to the cart"
-            price: object
+            price: number
                description: "Price of the item being added to the cart"
-               complex_data_type_name: "lightning__currencyType"
          outputs:
             success: boolean
                description: "Indicates whether the item was added to the cart successfully"
-            new_total: object
+            new_total: number
                description: "Updated cart total after adding the item"
-               complex_data_type_name: "lightning__currencyType"
          target: "flow://AddToCart"
 
       get_recommendations:
          description: "Get personalized product recommendations"
          inputs:
-            budget: object
+            budget: number
                description: "Customer's budget to tailor recommendations within their price range"
-               complex_data_type_name: "lightning__currencyType"
-            preferences: string
-               description: "Customer preferences or interests to personalize recommendations"
+            product_name: string
+               description: "The type of product to search for by name"
          outputs:
-            recommendations: list[object]
+            recommendations: list[string]
                description: "List of personalized product recommendations matching budget and preferences"
-               complex_data_type_name: "lightning__textType"
          target: "flow://GetRecommendations"
 
    reasoning:
       # Template expressions: {!expression} inserts dynamic values
       # You can use variables, conditionals, and simple logic
       instructions:->
-         | 
-         
+         |
+
          if @variables.customer_name:
-            | You're helping {!@variables.customer_name}. Use their name ({!@variables.customer_name}) when speaking to make it personal!
+            | You're helping {!@variables.customer_name}.
          else:
-            | You're helping a new customer. Ask for their name to personalize the experience.
+            | You're helping a new customer. Ask for their name.
 
          | Current shopping session:
-         
+
+         if @variables.product_name:
+            | - Looking for: {!@variables.product_name}
+
          if @variables.budget > 0:
-            | - Budget: ${!@variables.budget}
+            | - Budget: {!@variables.budget}
          else:
             | - Budget: Not set
-         
+
          if @variables.cart_items:
             | - Cart items: {!@variables.cart_items}
          else:
             | - Cart items: Empty
-         
-         | - Cart total: ${!@variables.cart_total}
-           - Loyalty points: {!@variables.loyalty_points}
-         
-         if (@variables.cart_total > @variables.budget) and (@variables.budget > 0):
-            | - ⚠️ Cart total exceeds budget by ${!@variables.cart_total - @variables.budget}
-  
+
+         | - Cart total: {!@variables.cart_total}
+
+         if @variables.cart_total > @variables.budget and @variables.budget > 0:
+            | - ⚠️ Cart total exceeds budget by {!@variables.cart_total - @variables.budget}
+
          | Help the customer:
-           1. Find recommendations that match their needs and budget using @actions.get_recommendations
-           2. Add items to their cart when user confirms using @actions.add_to_cart
+           1. Suggest products that match their product name and budget
+           2. Add items to their cart using {!@actions.add_to_cart}
            3. Keep them informed of their cart total
 
+           Don't call {!@actions.get_recommendations} unless you already have the product name and budget set.
+           Never ask the customer about their preferences.
+
+         if @variables.customer_name:
+            | Use their name ({!@variables.customer_name}) when speaking to make it personal!
+
       actions:
+         collect_name: @utils.setVariables
+            description: "Set the customer's name from the conversation"
+            with customer_name=...
+
+         collect_budget: @utils.setVariables
+            description: "Set the customer's shopping budget from the conversation"
+            with budget=...
+
+         collect_product_name: @utils.setVariables
+            description: "Set the type of product the customer is looking for"
+            with product_name=...
+
          add_to_cart: @actions.add_to_cart
             with item_name=...
             with price=...
@@ -118,4 +134,4 @@ topic shopping_assistant:
 
          get_recommendations: @actions.get_recommendations
             with budget=@variables.budget
-            with preferences=...
+            with product_name=@variables.product_name

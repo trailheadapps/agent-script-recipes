@@ -13,9 +13,13 @@ graph TD
     B --> C{Check: customer_name set?}
     C -->|No| D[Display: Ask for Name]
     C -->|Yes| E[Display: Personalized Greeting]
-    E --> F{Check: budget > 0?}
-    F -->|No| G[Display: Budget Not Set]
-    F -->|Yes| H[Display: Budget Amount]
+    E --> F{Check: product_name set?}
+    F -->|Yes| F2[Display: Looking for product_name]
+    F -->|No| G0[Skip product display]
+    F2 --> G1{Check: budget > 0?}
+    G0 --> G1
+    G1 -->|No| G[Display: Budget Not Set]
+    G1 -->|Yes| H[Display: Budget Amount]
     H --> I{Check: cart_total > budget?}
     I -->|Yes| J[Display: Warning - Over Budget]
     I -->|No| K[Display: Normal Status]
@@ -23,8 +27,10 @@ graph TD
     K --> L
     L --> M[Agent Assists with Shopping]
     M --> N{Action Needed?}
+    N -->|Collect Info| O2[collect_name / collect_budget / collect_product_name]
     N -->|Add to Cart| O[Call add_to_cart Action]
     N -->|Get Recommendations| P[Call get_recommendations Action]
+    O2 --> M
     O --> L
     P --> L
 ```
@@ -47,7 +53,7 @@ Template expressions use `{!expression}` syntax within `|` template strings:
 ```agentscript
 instructions:->
    | You're helping {!@variables.customer_name}.
-     Their budget is ${!@variables.budget}.
+     Their budget is {!@variables.budget}.
 ```
 
 When the agent processes these instructions:
@@ -55,7 +61,7 @@ When the agent processes these instructions:
 - `{!@variables.customer_name}` is replaced with the actual name (e.g., "Alice")
 - `{!@variables.budget}` is replaced with the number (e.g., "500")
 
-Result: "You're helping Alice. Their budget is $500."
+Result: "You're helping Alice. Their budget is 500."
 
 ### Block-Level Conditional Templates
 
@@ -76,7 +82,7 @@ The content shown depends on whether `customer_name` has a value.
 ```agentscript
 instructions:->
    if @variables.cart_total > @variables.budget and @variables.budget > 0:
-      | - ⚠️ Cart total exceeds budget by ${!@variables.cart_total - @variables.budget}
+      | - ⚠️ Cart total exceeds budget by {!@variables.cart_total - @variables.budget}
 ```
 
 Conditions support:
@@ -90,7 +96,7 @@ Conditions support:
 Perform math directly within template expressions:
 
 ```agentscript
-| Cart total exceeds budget by ${!@variables.cart_total - @variables.budget}
+| Cart total exceeds budget by {!@variables.cart_total - @variables.budget}
 ```
 
 You can:
@@ -121,8 +127,11 @@ Shows different content based on whether you know the customer's name.
 instructions:->
    | Current shopping session:
 
+   if @variables.product_name:
+      | - Looking for: {!@variables.product_name}
+
    if @variables.budget > 0:
-      | - Budget: ${!@variables.budget}
+      | - Budget: {!@variables.budget}
    else:
       | - Budget: Not set
 
@@ -131,8 +140,7 @@ instructions:->
    else:
       | - Cart items: Empty
 
-   | - Cart total: ${!@variables.cart_total}
-     - Loyalty points: {!@variables.loyalty_points}
+   | - Cart total: {!@variables.cart_total}
 ```
 
 Displays current state with conditional handling for empty fields.
@@ -141,7 +149,7 @@ Displays current state with conditional handling for empty fields.
 
 ```agentscript
 if (@variables.cart_total > @variables.budget) and (@variables.budget > 0):
-   | - ⚠️ Cart total exceeds budget by ${!@variables.cart_total - @variables.budget}
+   | - ⚠️ Cart total exceeds budget by {!@variables.cart_total - @variables.budget}
 ```
 
 Only shows warning when conditions are met.
@@ -166,7 +174,7 @@ actions:
 
    get_recommendations: @actions.get_recommendations
       with budget=@variables.budget
-      with preferences=...
+      with product_name=@variables.product_name
 ```
 
 Actions can use variables as inputs and store outputs back into variables.
@@ -187,10 +195,22 @@ topic shopping_assistant:
                description: "Price of the item being added to the cart"
          outputs:
             success: boolean
-               description: "Indicates whether the item was added successfully"
+               description: "Indicates whether the item was added to the cart successfully"
             new_total: number
                description: "Updated cart total after adding the item"
          target: "flow://AddToCart"
+
+      get_recommendations:
+         description: "Get personalized product recommendations"
+         inputs:
+            budget: number
+               description: "Customer's budget to tailor recommendations within their price range"
+            product_name: string
+               description: "The type of product to search for by name"
+         outputs:
+            recommendations: list[string]
+               description: "List of personalized product recommendations matching budget and preferences"
+         target: "flow://GetRecommendations"
 
    reasoning:
       instructions:->
@@ -203,8 +223,11 @@ topic shopping_assistant:
 
          | Current shopping session:
 
+         if @variables.product_name:
+            | - Looking for: {!@variables.product_name}
+
          if @variables.budget > 0:
-            | - Budget: ${!@variables.budget}
+            | - Budget: {!@variables.budget}
          else:
             | - Budget: Not set
 
@@ -213,22 +236,35 @@ topic shopping_assistant:
          else:
             | - Cart items: Empty
 
-         | - Cart total: ${!@variables.cart_total}
-           - Loyalty points: {!@variables.loyalty_points}
+         | - Cart total: {!@variables.cart_total}
 
          if @variables.cart_total > @variables.budget and @variables.budget > 0:
-            | - ⚠️ Cart total exceeds budget by ${!@variables.cart_total - @variables.budget}
+            | - ⚠️ Cart total exceeds budget by {!@variables.cart_total - @variables.budget}
 
          | Help the customer:
-           1. Find products that match their needs and budget
-           2. Add items to their cart using add_to_cart
+           1. Suggest products that match their product name and budget
+           2. Add items to their cart using {!@actions.add_to_cart}
            3. Keep them informed of their cart total
-           4. Suggest items based on their budget and preferences
+
+           Don't call {!@actions.get_recommendations} unless you already have the product name and budget set.
+           Never ask the customer about their preferences.
 
          if @variables.customer_name:
             | Use their name ({!@variables.customer_name}) when speaking to make it personal!
 
       actions:
+         collect_name: @utils.setVariables
+            description: "Set the customer's name from the conversation"
+            with customer_name=...
+
+         collect_budget: @utils.setVariables
+            description: "Set the customer's shopping budget from the conversation"
+            with budget=...
+
+         collect_product_name: @utils.setVariables
+            description: "Set the type of product the customer is looking for"
+            with product_name=...
+
          add_to_cart: @actions.add_to_cart
             with item_name=...
             with price=...
@@ -236,7 +272,7 @@ topic shopping_assistant:
 
          get_recommendations: @actions.get_recommendations
             with budget=@variables.budget
-            with preferences=...
+            with product_name=@variables.product_name
 ```
 
 ## Try It Out
@@ -256,28 +292,32 @@ User: I'm Sarah
 
 Agent: Great to meet you, Sarah! What's your budget for the laptop?
 
-User: Around $1000
+User: $1200
 
-Agent: Perfect, Sarah! I'll help you find laptops within your $1000 budget.
+Agent: Perfect, Sarah! I've found Laptop X200, that costs $1200. Do you want to add it to the cart?
+
+User: Yes
+
+Agent: Great Sarah, the item has been added and now your cart total is $1200.
 ```
 
 **Behind the scenes:**
 
 - Initially `customer_name = ""` → Agent asks for name
 - After update `customer_name = "Sarah"` → All responses use "Sarah"
-- `budget = 1000` → Agent references "$1000"
+- `budget = 1200` → Agent references "1200"
 
 ### Example Interaction 2: Exceeding Budget
 
 ```text
 Agent: Hi Sarah! Your current shopping session:
-       - Budget: $1000
-       - Cart total: $1250
-       - ⚠️ Cart total exceeds budget by $250
+       - Budget: 1000
+       - Cart total: 1250
+       - ⚠️ Cart total exceeds budget by 250
 
 User: Oh, I didn't realize. What can I remove?
 
-Agent: Let's look at your items and see what we can adjust to get within your $1000 budget, Sarah.
+Agent: Let's look at your items and see what we can adjust to get within your 1000 budget, Sarah.
 ```
 
 **Template expression triggered:**
@@ -292,7 +332,7 @@ The warning appears because `cart_total > budget and budget > 0` evaluates to `T
 
 ```agentscript
 if @variables.budget > 0:
-   | Budget: ${!@variables.budget}
+   | Budget: {!@variables.budget}
 else:
    | Budget: Not set
 ```
@@ -300,10 +340,10 @@ else:
 **Poor:**
 
 ```agentscript
-| Budget: ${!@variables.budget}
+| Budget: {!@variables.budget}
 ```
 
-(Shows "$0" when not set, which is confusing)
+(Shows "0" when not set, which can be confusing)
 
 ### Keep Templates Readable
 
@@ -339,14 +379,14 @@ Template expressions can be used in:
 ```agentscript
 reasoning:
    instructions:->
-      | Budget remaining: ${!@variables.budget - @variables.cart_total}
+      | Budget remaining: {!@variables.budget - @variables.cart_total}
 ```
 
 ✅ **System instructions** (with `{!expression}` syntax)
 
 ```agentscript
 system:
-   instructions: "Help the customer with their ${!@variables.budget} budget."
+   instructions: "Help the customer with their {!@variables.budget} budget."
 ```
 
 ❌ **NOT in descriptions** (currently unsupported)
@@ -381,7 +421,7 @@ Expected: Conditional blocks show "Not set" / "Empty" messages
 - `budget = 500`
 - `cart_total = 650`
 
-Expected: Warning message with "$150" overage calculation
+Expected: Warning message with "150" overage calculation
 
 ### Test Case 3: Normal Shopping
 
