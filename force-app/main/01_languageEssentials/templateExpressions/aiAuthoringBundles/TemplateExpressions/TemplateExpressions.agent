@@ -37,13 +37,13 @@ start_agent topic_selector:
    
    reasoning:
       instructions:|
-         Always use the start_shopping tool to route the user to the shopping assistant. This is a single-topic agent, so every message should go to the shopping assistant.
+          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          start_shopping: @utils.transition to @topic.shopping_assistant
-            description: "Route any user message to the shopping assistant"
+            description: "Handle all shopping interactions: collecting the customer's name or budget, finding products, and adding items to the cart. Use this for ANY shopping-related message, including when the customer is responding to a prior question from the assistant."
 
 topic shopping_assistant:
-   description: "Helps customers shop and manages their cart"
+   description: "Gather customer's product requirements, help them find matching products and add them to their cart."
 
    actions:
       add_to_cart:
