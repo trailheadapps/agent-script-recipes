@@ -4,9 +4,6 @@
 
 A collection of easy-to-digest [Agent Script](https://developer.salesforce.com/docs/einstein/genai/guide/agent-script.html) examples. Each recipe demonstrates how to build a specific agent behaviour in the fewest lines of script possible while following best practices. From "Hello World" interactions to sophisticated agent transitions, there's a recipe for that!
 
-> [!IMPORTANT]
-> The new Agentforce Builder is a beta service that is subject to the Beta Services Terms at [Agreements - Salesforce.com](https://www.salesforce.com/company/legal/) or your written Unified Pilot Agreement, and applicable terms in the [Product Terms Directory](https://ptd.salesforce.com/?_ga=2.247987783.1372150065.1709219475-629000709.1639001992). Use of this beta service consumes usage types per the [Agentforce and Generative AI Usage and Billing documentation](https://help.salesforce.com/s/articleView?id=ai.generative_ai_usage.htm) and is at the Customer's sole discretion.
-
 ## Table of contents
 
 - [Prerequisites](#prerequisites)
