@@ -39,13 +39,12 @@ start_agent topic_selector:
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
-         Route to the matching topic immediately based on the user's message.
       actions:
          go_to_payment_processing: @utils.transition to @topic.payment_processing
-            description: "Begin payment processing for the user"
+            description: "User wants to make a payment, process a transaction, or ask about payment status, receipts, or loyalty points"
 
 topic payment_processing:
-   description: "Processes payments and post-payment actions"
+   description: "Handles payment requests — collecting payment amount and method, processing transactions, sending receipts, awarding loyalty points, and logging for audit"
 
    actions:
       process_payment:

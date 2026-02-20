@@ -93,8 +93,50 @@ Multiple `run` statements execute in sequence after the primary action.
 ### Complete Recipe Example
 
 ```agentscript
+config:
+   agent_name: "ActionCallbacks"
+   agent_label: "ActionCallbacks"
+   agent_type: "AgentforceEmployeeAgent"
+   description: "Processes payments with post-action callbacks"
+
+variables:
+   payment_amount: mutable number = 0
+      description: "Payment amount"
+
+   payment_method: mutable string = ""
+      description: "Payment method used"
+
+   transaction_id: mutable string = ""
+      description: "Transaction ID from payment"
+
+   payment_successful: mutable boolean = False
+      description: "Whether payment succeeded"
+
+   receipt_sent: mutable boolean = False
+      description: "Whether receipt was sent"
+
+   points_awarded: mutable number = 0
+      description: "Loyalty points awarded"
+
+system:
+   messages:
+      welcome: "I'll help you process your payment securely."
+      error: "Payment processing error. Please try again."
+
+   instructions: "You are a payment processing assistant that helps customers process payments and provides transaction confirmations. Never ask for card details, billing information, or other payment specifics."
+
+start_agent topic_selector:
+   description: "Welcome users and begin payment processing"
+
+   reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+      actions:
+         go_to_payment_processing: @utils.transition to @topic.payment_processing
+            description: "User wants to make a payment, process a transaction, or ask about payment status, receipts, or loyalty points"
+
 topic payment_processing:
-   description: "Processes payments and post-payment actions"
+   description: "Handles payment requests — collecting payment amount and method, processing transactions, sending receipts, awarding loyalty points, and logging for audit"
 
    actions:
       process_payment:
