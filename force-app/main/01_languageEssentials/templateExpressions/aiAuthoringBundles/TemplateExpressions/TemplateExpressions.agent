@@ -115,16 +115,10 @@ topic shopping_assistant:
             | Use their name ({!@variables.customer_name}) when speaking to make it personal!
 
       actions:
-         collect_name: @utils.setVariables
-            description: "Set the customer's name from the conversation"
+         collect_info: @utils.setVariables
+            description: "Set the customer's name, product name and budget from the conversation"
             with customer_name=...
-
-         collect_budget: @utils.setVariables
-            description: "Set the customer's shopping budget from the conversation"
             with budget=...
-
-         collect_product_name: @utils.setVariables
-            description: "Set the type of product the customer is looking for"
             with product_name=...
 
          add_to_cart: @actions.add_to_cart
