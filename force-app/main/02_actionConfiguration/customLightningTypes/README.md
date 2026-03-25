@@ -1,5 +1,9 @@
 # CustomLightningTypes
 
+> **Known Platform Bug**: The CLT output renderer card does **not** render in the Agentforce **Builder preview panel**. The data pipeline is fully functional — the `result` array is correctly populated with `copilotActionOutput/Submit_Case` and the case data — but the Builder preview UI does not instantiate the renderer LWC. The CLT output card **does render correctly** in the actual deployed Agentforce chat experience. The CLT input editor works in both the Builder preview and the deployed experience. This appears to be a Salesforce platform limitation specific to the Builder preview for output renderers.
+
+> **Setup Requirement**: To test this recipe, the user's Permission Set must include **Agent access to the CustomLightningTypes agent**. Without this, the agent will not be available in the Agentforce chat experience.
+
 ## Overview
 
 This recipe demonstrates how to use **Custom Lightning Types (CLTs)** to replace the default agent input and output UI with custom LWC components. CLTs let you render structured forms for collecting user input and display rich confirmation cards for action results, all wired through Lightning Type Bundles and AgentScript action definitions.
@@ -109,8 +113,6 @@ public with sharing class CaseSubmissionService {
         public String subject;
         @InvocableVariable(label='Priority' description='Case priority')
         public String priority;
-        @InvocableVariable(label='Category' description='Case category')
-        public String category;
         @InvocableVariable(label='Description' description='Case description')
         public String description;
     }
@@ -133,7 +135,7 @@ actions:
       description: "Submits a support case with structured input and returns case details"
       inputs:
          case_data: object
-            description: "Case details including subject, priority, category, and description"
+            description: "Case details including subject, priority, and description"
             label: "case_data"
             is_required: True
             is_user_input: True
@@ -174,7 +176,6 @@ handleInputChange(event) {
                 value: {
                     subject: this.subject,
                     priority: this.priority,
-                    category: this.category,
                     description: this.description
                 }
             }
@@ -205,12 +206,11 @@ Agent: Hi! I can help you submit a support case. Let me know when you are ready.
 
 User: I need to submit a support case.
 
-[CLT Editor form renders with Subject, Priority, Category, and Description fields]
+[CLT Editor form renders with Subject, Priority, and Description fields]
 
 User: [Fills in the form]
   Subject: "Dashboard not loading after update"
   Priority: High
-  Category: Technical
   Description: "After the latest platform update, the analytics dashboard shows a blank page."
 
 [User submits the form]
@@ -224,7 +224,7 @@ Agent: Submitting your case...
   │ Your case has been created with number: CS-742891 │
   │                                               │
   │ Subject: Dashboard not loading after update   │
-  │ Priority: [High]  Category: [Technical]       │
+  │ Priority: [High]                                │
   │ Status: New                                   │
   │ Created: March 24, 2026                       │
   │ Estimated Response: Within 4 hours            │
@@ -253,22 +253,3 @@ When the user says "I need to submit a support case":
 - **ActionCallbacks**: Chain multiple actions together with `run` for multi-step workflows
 - **AdvancedInputBindings**: Master all input binding patterns including variable binding and fixed values
 - **PromptTemplateActions**: Use prompt templates to generate dynamic responses
-
-## Notes
-
-When referencing inner Apex classes in `schema.json`, use `$` as the separator (e.g., `@apexClassType/c__CaseSubmissionService$CaseInput`). Using `.` instead of `$` will cause a "We couldn't find the Apex class" deploy error.
-
-## Testing
-
-Run the Apex tests to verify the service logic:
-
-```bash
-sf apex run test --class-names CaseSubmissionServiceTest --result-format human
-```
-
-Test cases covered:
-
-- Single case submission with all fields populated
-- Bulk case submission with multiple requests
-- Default value handling when optional fields are omitted
-- Priority-based estimated response time calculation

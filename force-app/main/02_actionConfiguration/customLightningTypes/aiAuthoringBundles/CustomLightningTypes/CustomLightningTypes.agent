@@ -25,7 +25,7 @@ start_agent topic_selector:
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_case_submission: @utils.transition to @topic.case_submission
-            description: "Start helping with case submission"
+            description: "Route to case submission. Call for case-related requests and ACTION_CONFIRM messages."
 
 topic case_submission:
    description: "Collects case details via a CLT form and displays the created case"
@@ -33,19 +33,15 @@ topic case_submission:
    reasoning:
       instructions: ->
          if not @variables.case_submitted:
-            | The user wants to submit a support case.
-              Call {!@actions.submit_case} action's user_input tool to present the case form to the user.
-              The form collects all required information (subject, priority, and description). Do NOT ask the user for any additional fields or confirmation.
-              Once the user submits the form, immediately invoke the {!@actions.submit_case} action with the provided data. Do not ask follow-up questions before submitting.
-              After submission, display the case result to the user and share the case number.
+            | If ACTION_CONFIRM, call {!@actions.submit_case} with the form data. Otherwise call {!@actions.submit_case} user_input to show the form.
          else:
-            | The case has already been submitted.
-              - Case Number: {!@variables.case_number}
-              Display the case result to the user and ask if they need anything else.
+            | Case {!@variables.case_number} submitted. Call show_command to display the submit_case case_result output. Do NOT output any text.
 
       actions:
          submit_case: @actions.submit_case
             with case_data = ...
+            set @variables.case_submitted = True
+            set @variables.case_number = @outputs.case_number
 
    actions:
       submit_case:

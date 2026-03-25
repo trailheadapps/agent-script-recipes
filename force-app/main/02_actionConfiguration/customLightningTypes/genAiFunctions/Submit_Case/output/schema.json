@@ -7,7 +7,7 @@
             "lightning:type": "lightning__textType",
             "lightning:isPII": false,
             "copilotAction:isDisplayable": false,
-            "copilotAction:isUsedByPlanner": false,
+            "copilotAction:isUsedByPlanner": true,
             "copilotAction:useHydratedPrompt": false
         },
         "case_result": {
