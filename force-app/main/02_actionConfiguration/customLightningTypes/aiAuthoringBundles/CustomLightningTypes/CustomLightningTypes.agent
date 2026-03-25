@@ -33,7 +33,7 @@ topic case_submission:
    reasoning:
       instructions: ->
          if not @variables.case_submitted:
-            | If ACTION_CONFIRM, call {!@actions.submit_case} with the form data. Otherwise call {!@actions.submit_case} user_input to show the form.
+            | If ACTION_CONFIRM, call {!@actions.submit_case} with the form data. Do NOT ask for confirmation or output any text. Otherwise call {!@actions.submit_case} user_input to show the form. Do NOT output any text.
          else:
             | Case {!@variables.case_number} submitted. Call show_command to display the submit_case case_result output. Do NOT output any text.
 
