@@ -1,0 +1,5 @@
+{
+    "title": "Case Result",
+    "description": "Created case details",
+    "lightning:type": "@apexClassType/c__CaseSubmissionService$CaseResult"
+}

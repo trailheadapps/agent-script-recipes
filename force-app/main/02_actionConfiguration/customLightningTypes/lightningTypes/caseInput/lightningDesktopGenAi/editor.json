@@ -1,0 +1,9 @@
+{
+    "editor": {
+        "componentOverrides": {
+            "$": {
+                "definition": "c/caseInputEditor"
+            }
+        }
+    }
+}

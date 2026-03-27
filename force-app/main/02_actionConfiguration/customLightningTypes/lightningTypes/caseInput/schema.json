@@ -1,0 +1,5 @@
+{
+    "title": "Case Input",
+    "description": "Support case submission data",
+    "lightning:type": "@apexClassType/c__CaseSubmissionService$CaseInput"
+}

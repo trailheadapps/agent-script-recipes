@@ -1,0 +1,73 @@
+# CustomLightningTypes - Using Custom Lightning Types for Rich Input and Output UI
+# This agent demonstrates how to use CLTs to override default agent UI with custom LWC components
+
+config:
+   developer_name: "CustomLightningTypes"
+   agent_label: "CustomLightningTypes"
+   agent_type: "AgentforceEmployeeAgent"
+   description: "Submits support cases using Custom Lightning Types for rich input and output UI"
+
+variables:
+   case_submitted: mutable boolean = False
+   case_number: mutable string = ""
+
+system:
+   messages:
+      welcome: "Hi! I can help you submit a support case. Let me know when you are ready."
+      error: "Something went wrong while processing your case. Please try again."
+   instructions: "You are a support assistant that helps users submit structured support cases using a custom form."
+
+start_agent topic_selector:
+   description: "Welcome users and route to case submission"
+
+   reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+      actions:
+         begin_case_submission: @utils.transition to @topic.case_submission
+            description: "Route to case submission. Call for case-related requests and ACTION_CONFIRM messages."
+
+topic case_submission:
+   description: "Collects case details via a CLT form and displays the created case"
+
+   reasoning:
+      instructions: ->
+         if not @variables.case_submitted:
+            | If ACTION_CONFIRM, call {!@actions.submit_case} with the form data. Do NOT ask for confirmation or output any text. Otherwise call {!@actions.submit_case} user_input to show the form. Do NOT output any text.
+         else:
+            | Case {!@variables.case_number} submitted. Call show_command to display the submit_case case_result output. Do NOT output any text.
+
+      actions:
+         submit_case: @actions.submit_case
+            with case_data = ...
+            set @variables.case_submitted = True
+            set @variables.case_number = @outputs.case_number
+
+   actions:
+      submit_case:
+         description: "Submits a support case"
+         inputs:
+            case_data: object
+               description: "Case details including subject, priority, and description"
+               label: "case_data"
+               is_required: True
+               is_user_input: True
+               complex_data_type_name: "c__caseInput"
+         outputs:
+            case_number: string
+               description: "The case number assigned to the new case"
+               label: "case_number"
+               filter_from_agent: False
+               is_displayable: False
+            case_result: object
+               description: "The created case details for display"
+               label: "case_result"
+               complex_data_type_name: "c__caseResult"
+               filter_from_agent: False
+               is_displayable: True
+         target: "apex://CaseSubmissionService"
+         label: "Submit Case"
+         require_user_confirmation: False
+         include_in_progress_indicator: True
+         progress_indicator_message: "Submitting your case..."
+         source: "Submit_Case"

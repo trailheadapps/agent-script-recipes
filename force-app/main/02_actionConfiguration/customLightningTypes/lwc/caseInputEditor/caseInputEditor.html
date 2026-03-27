@@ -1,0 +1,42 @@
+<template>
+    <lightning-card title="Submit a Support Case">
+        <div class="slds-var-p-horizontal_medium slds-var-p-bottom_medium">
+            <lightning-input
+                label="Subject"
+                name="subject"
+                value={subject}
+                type="text"
+                required
+                placeholder="Brief summary of the issue"
+                onchange={handleInputChange}
+                read-only={readOnly}
+            >
+            </lightning-input>
+
+            <div class="slds-var-m-top_small">
+                <lightning-combobox
+                    label="Priority"
+                    name="priority"
+                    value={priority}
+                    options={priorityOptions}
+                    placeholder="Select priority"
+                    onchange={handleInputChange}
+                    read-only={readOnly}
+                >
+                </lightning-combobox>
+            </div>
+
+            <div class="slds-var-m-top_small">
+                <lightning-textarea
+                    label="Description"
+                    name="description"
+                    value={description}
+                    placeholder="Describe the issue in detail"
+                    onchange={handleInputChange}
+                    read-only={readOnly}
+                >
+                </lightning-textarea>
+            </div>
+        </div>
+    </lightning-card>
+</template>
