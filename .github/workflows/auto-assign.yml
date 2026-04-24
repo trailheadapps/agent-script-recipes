@@ -12,5 +12,5 @@ jobs:
               uses: pozil/auto-assign-issue@v2
               with:
                   repo-token: ${{ secrets.GITHUB_TOKEN }}
-                  team: maintainers-agent-script-recipes
+                  teams: maintainers-agent-script-recipes
                   numOfAssignee: 1
