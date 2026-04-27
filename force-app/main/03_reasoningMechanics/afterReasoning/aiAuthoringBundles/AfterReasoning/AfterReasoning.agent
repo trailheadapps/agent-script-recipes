@@ -21,19 +21,19 @@ system:
       error: "I encountered an issue during processing. Please try again."
    instructions: "You are a helpful assistant that demonstrates after reasoning event."
 
-start_agent topic_selector:
-   description: "Route every user message to the conversation topic for lifecycle event handling."
+start_agent agent_router:
+   description: "Route every user message to the conversation subagent for lifecycle event handling."
    
    reasoning:
       instructions:|
          ALWAYS call the begin_conversation tool for every user message, including greetings and chitchat.
-         Do not respond directly. Route every message to the conversation topic.
+         Do not respond directly. Route every message to the conversation subagent.
       actions:
-         begin_conversation: @utils.transition to @topic.conversation
-            description: "Route to the conversation topic. MUST be called for every user message, including greetings and chitchat. Never skip this tool."
+         begin_conversation: @utils.transition to @subagent.conversation
+            description: "Route to the conversation subagent. MUST be called for every user message, including greetings and chitchat. Never skip this tool."
 
-# Main conversation topic
-topic conversation:
+# Main conversation subagent
+subagent conversation:
    description: "Provides a conversation with lifecycle event tracking. Your job is to run the after reasoning event as applicable on every request."
 
    actions:

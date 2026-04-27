@@ -1,5 +1,5 @@
-# BidirectionalNavigation - Topic Handoff and Return Pattern
-# Demonstrates bidirectional navigation where topics delegate to specialists and receive control back
+# BidirectionalNavigation - Subagent Handoff and Return Pattern
+# Demonstrates bidirectional navigation where subagents delegate to specialists and receive control back
 
 config:
    developer_name: "BidirectionalNavigation"
@@ -28,18 +28,18 @@ system:
 
    instructions: "You are a support agent that delegates to specialists when needed."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome customers and route them to the appropriate support specialist"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         general_support: @utils.transition to @topic.general_support
+         general_support: @utils.transition to @subagent.general_support
             description: "Start with general customer support"
 
-# MAIN TOPIC: General Support
-topic general_support:
+# MAIN SUBAGENT: General Support
+subagent general_support:
    description: "General customer support entry point"
 
    actions:
@@ -94,13 +94,13 @@ topic general_support:
 
       actions:
          # Delegate to technical specialist
-         consult_technical: @utils.transition to @topic.technical_specialist
+         consult_technical: @utils.transition to @subagent.technical_specialist
 
          # Delegate to billing specialist
-         consult_billing: @utils.transition to @topic.billing_specialist
+         consult_billing: @utils.transition to @subagent.billing_specialist
 
-# SPECIALIST TOPIC: Technical Support
-topic technical_specialist:
+# SPECIALIST SUBAGENT: Technical Support
+subagent technical_specialist:
    description: "Technical support specialist - handles complex technical issues"
 
    actions:
@@ -128,10 +128,10 @@ topic technical_specialist:
             set @variables.technical_assessment = @outputs.assessment
             set @variables.solution_provided = @outputs.can_resolve
             # Return control to general support
-            transition to @topic.general_support
+            transition to @subagent.general_support
 
-# SPECIALIST TOPIC: Billing Support
-topic billing_specialist:
+# SPECIALIST SUBAGENT: Billing Support
+subagent billing_specialist:
    description: "Billing specialist - handles billing and payment issues"
 
    actions:
@@ -163,4 +163,4 @@ topic billing_specialist:
             set @variables.billing_analysis = @outputs.analysis
             set @variables.billing_resolved = @outputs.resolved
             # Return control to general support
-            transition to @topic.general_support
+            transition to @subagent.general_support

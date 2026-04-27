@@ -9,8 +9,8 @@ Learn how to **reference actions directly** within your reasoning instructions. 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start] --> B[Topic Selector]
-    B --> C[Case Management Topic]
+    A[Start] --> B[Agent Router]
+    B --> C[Case Management Subagent]
     C --> D{Evaluate next_open_time}
     D -->|Has Value| E[Outside Business Hours Path]
     E --> F["Instructions mention {!@actions.create_case}"]

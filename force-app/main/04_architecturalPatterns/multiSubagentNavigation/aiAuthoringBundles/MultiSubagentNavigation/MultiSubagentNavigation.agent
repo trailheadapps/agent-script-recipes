@@ -1,11 +1,11 @@
-# MultiTopicNavigation - Managing Multiple Topics and Transitions
-# This agent demonstrates how to use multiple topics and transition between them
+# MultiSubagentNavigation - Managing Multiple Subagents and Transitions
+# This agent demonstrates how to use multiple subagents and transition between them
 
 config:
-   developer_name: "MultiTopicNavigation"
-   agent_label: "MultiTopicNavigation"
+   developer_name: "MultiSubagentNavigation"
+   agent_label: "MultiSubagentNavigation"
    agent_type: "AgentforceEmployeeAgent"
-   description: "Multi-topic agent that handles browsing, booking, and support"
+   description: "Multi-subagent agent that handles browsing, booking, and support"
 
 variables:
    hotel_name: mutable string = ""
@@ -30,26 +30,26 @@ system:
 
    instructions: "You are a professional hotel booking assistant. Be helpful, accurate, and guide users through their journey. Never ask for guest details, number of guests, special requests, or other preferences."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and determine their hotel service needs"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
-         Route to the matching topic immediately based on the user's message.
+         Route to the matching subagent immediately based on the user's message.
       actions:
-         browse_hotels: @utils.transition to @topic.hotel_browse
+         browse_hotels: @utils.transition to @subagent.hotel_browse
             description: "Browse and search for available hotels"
 
-         hotel_booking: @utils.transition to @topic.hotel_booking
+         hotel_booking: @utils.transition to @subagent.hotel_booking
             description: "Book a hotel"
 
-         view_booking: @utils.transition to @topic.hotel_confirmation
+         view_booking: @utils.transition to @subagent.hotel_confirmation
             description: "View existing booking confirmations"
             available when @variables.booking_confirmed == True
 
-# Topic 1: Browse available hotels
-topic hotel_browse:
+# SUBAGENT 1: Browse available hotels
+subagent hotel_browse:
    description: "Browse available hotels and view information"
 
    actions:
@@ -87,8 +87,8 @@ topic hotel_browse:
             with check_in=...
             with check_out=...
 
-# Topic 2: Booking topic handles the reservation process
-topic hotel_booking:
+# SUBAGENT 2: Booking subagent handles the reservation process
+subagent hotel_booking:
    description: "Book hotel"
 
    actions:
@@ -135,10 +135,10 @@ topic hotel_booking:
             with check_out=@variables.check_out_date
             set @variables.booking_id = @outputs.booking_id
             set @variables.booking_confirmed = @outputs.success
-            transition to @topic.hotel_confirmation
+            transition to @subagent.hotel_confirmation
 
-# Topic 3: Confirmation topic shows booking details
-topic hotel_confirmation:
+# SUBAGENT 3: Confirmation subagent shows booking details
+subagent hotel_confirmation:
    description: "Confirm booking and provide details"
 
    reasoning:
@@ -155,5 +155,5 @@ topic hotel_confirmation:
            If they want to make another booking, use {!@actions.start_new_booking} action.
 
       actions:
-         start_new_booking: @utils.transition to @topic.hotel_browse
+         start_new_booking: @utils.transition to @subagent.hotel_browse
             description: "Start a new hotel search and booking"

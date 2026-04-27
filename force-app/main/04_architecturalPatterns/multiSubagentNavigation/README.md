@@ -1,27 +1,27 @@
-# MultiTopicNavigation
+# MultiSubagentNavigation
 
 ## Overview
 
-This recipe demonstrates how to build agents with **multiple topics** and navigate between them. Topics allow you to organize complex agents into specialized conversation modes, each handling a specific phase or capability of the interaction.
+This recipe demonstrates how to build agents with **multiple subagents** and navigate between them. Subagents allow you to organize complex agents into specialized conversation modes, each handling a specific phase or capability of the interaction.
 
 ## Agent Flow
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start] --> B[start_agent: topic_selector]
+    A[Start] --> B[start_agent: agent_router]
     B --> C{User Intent}
     C -->|Browse| D[Transition to hotel_browse]
     C -->|View Booking| E[Transition to hotel_confirmation]
-    D --> F[hotel_browse Topic]
+    D --> F[hotel_browse Subagent]
     F --> G[search_hotels Action]
     G --> H{User Ready to Book?}
     H -->|Yes| I[Transition to hotel_booking]
     H -->|Continue| G
-    I --> J[hotel_booking Topic]
+    I --> J[hotel_booking Subagent]
     J --> K[create_booking Action]
     K --> L[Auto-transition to hotel_confirmation]
-    L --> M[hotel_confirmation Topic]
+    L --> M[hotel_confirmation Subagent]
     M --> N[Display Confirmation]
     N --> O{New Booking?}
     O -->|Yes| P[Transition to hotel_browse]
@@ -32,56 +32,56 @@ graph TD
 
 ## Key Concepts
 
-- **Multiple topic blocks**: Defining several topics in one agent
-- **Topic transitions**: Moving between topics with `@utils.transition to @topic.name`
+- **Multiple subagent blocks**: Defining several subagents in one agent
+- **Subagent transitions**: Moving between subagents with `@utils.transition to @subagent.name`
 - **Transition after action**: Using `transition to` in action blocks
-- **Topic specialization**: Each topic handles a specific responsibility
-- **State sharing**: Variables are global across all topics
+- **Subagent specialization**: Each subagent handles a specific responsibility
+- **State sharing**: Variables are global across all subagents
 - **Conditional transitions**: Using `available when` on transition actions
 
 ## How It Works
 
-### Multi-Topic Architecture
+### Multi-Subagent Architecture
 
-Instead of one topic handling everything, create specialized topics:
+Instead of one subagent handling everything, create specialized subagents:
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and determine their hotel service needs"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
-         Route to the matching topic immediately based on the user's message.
+         Route to the matching subagent immediately based on the user's message.
       actions:
-         browse_hotels: @utils.transition to @topic.hotel_browse
+         browse_hotels: @utils.transition to @subagent.hotel_browse
             description: "Browse and search for available hotels"
 
-         hotel_booking: @utils.transition to @topic.hotel_booking
+         hotel_booking: @utils.transition to @subagent.hotel_booking
             description: "Book a hotel"
 
-         view_booking: @utils.transition to @topic.hotel_confirmation
+         view_booking: @utils.transition to @subagent.hotel_confirmation
             description: "View existing booking confirmations"
             available when @variables.booking_confirmed == True
 
-topic hotel_browse:
+subagent hotel_browse:
    description: "Browse available hotels and view information"
 
-topic hotel_booking:
+subagent hotel_booking:
    description: "Book hotel"
 
-topic hotel_confirmation:
+subagent hotel_confirmation:
    description: "Confirm booking and provide details"
 ```
 
-### Topic Transitions with @utils.transition
+### Subagent Transitions with @utils.transition
 
-Move between topics using `@utils.transition to @topic.name`:
+Move between subagents using `@utils.transition to @subagent.name`:
 
 ```agentscript
 reasoning:
    actions:
-      browse_hotels: @utils.transition to @topic.hotel_browse
+      browse_hotels: @utils.transition to @subagent.hotel_browse
          description: "Browse and search for available hotels"
 ```
 
@@ -91,7 +91,7 @@ Use `available when` to control when transitions are possible:
 
 ```agentscript
 actions:
-   view_booking: @utils.transition to @topic.hotel_confirmation
+   view_booking: @utils.transition to @subagent.hotel_confirmation
       description: "View existing booking confirmations"
       available when @variables.booking_confirmed == True
 ```
@@ -108,15 +108,15 @@ actions:
       with check_out=...
       set @variables.booking_id = @outputs.booking_id
       set @variables.booking_confirmed = @outputs.success
-      transition to @topic.hotel_confirmation
+      transition to @subagent.hotel_confirmation
 ```
 
 ## Key Code Snippets
 
-### Complete Topic: Hotel Browse
+### Complete Subagent: Hotel Browse
 
 ```agentscript
-topic hotel_browse:
+subagent hotel_browse:
    description: "Browse available hotels and view information"
 
    actions:
@@ -155,10 +155,10 @@ topic hotel_browse:
             with check_out=...
 ```
 
-### Complete Topic: Hotel Booking
+### Complete Subagent: Hotel Booking
 
 ```agentscript
-topic hotel_booking:
+subagent hotel_booking:
    description: "Book hotel"
 
    actions:
@@ -205,13 +205,13 @@ topic hotel_booking:
             with check_out=@variables.check_out_date
             set @variables.booking_id = @outputs.booking_id
             set @variables.booking_confirmed = @outputs.success
-            transition to @topic.hotel_confirmation
+            transition to @subagent.hotel_confirmation
 ```
 
-### Complete Topic: Hotel Confirmation
+### Complete Subagent: Hotel Confirmation
 
 ```agentscript
-topic hotel_confirmation:
+subagent hotel_confirmation:
    description: "Confirm booking and provide details"
 
    reasoning:
@@ -228,7 +228,7 @@ topic hotel_confirmation:
            If they want to make another booking, use {!@actions.start_new_booking} action.
 
       actions:
-         start_new_booking: @utils.transition to @topic.hotel_browse
+         start_new_booking: @utils.transition to @subagent.hotel_browse
             description: "Start a new hotel search and booking"
 ```
 
@@ -272,7 +272,7 @@ User: Yes, that's correct
 [Auto-transitions to hotel_confirmation]
 ```
 
-**[Now in hotel_confirmation topic]**
+**[Now in hotel_confirmation subagent]**
 
 ```text
 Agent: Your booking is confirmed! 🎉
@@ -291,7 +291,7 @@ User: No, that's all. Thanks!
 Agent: You're welcome! Have a wonderful stay!
 ```
 
-## Multi-Topic Design Patterns
+## Multi-Subagent Design Patterns
 
 ### Linear Workflow
 
@@ -321,7 +321,7 @@ Good for: Exploratory interfaces, comparison shopping
 
 ## Best Practices
 
-### Topic Naming
+### Subagent Naming
 
 **Good:** `hotel_browse`, `payment_processing`, `account_settings`
 
@@ -332,22 +332,22 @@ Good for: Exploratory interfaces, comparison shopping
 **Good:**
 
 ```agentscript
-start_new_booking: @utils.transition to @topic.hotel_browse
+start_new_booking: @utils.transition to @subagent.hotel_browse
    description: "Start a new hotel search and booking"
 ```
 
 **Poor:**
 
 ```agentscript
-go_next: @utils.transition to @topic.next
+go_next: @utils.transition to @subagent.next
    description: "Go next"
 ```
 
 ## What's Next
 
-- **TopicDelegation**: Learn about delegation (consulting other topics)
-- **MultiTopicOrchestration**: Handle complex workflows with 4+ topics
-- **SystemInstructionOverrides**: Customize behavior per topic
+- **SubagentDelegation**: Learn about delegation (consulting other subagents)
+- **MultiSubagentOrchestration**: Handle complex workflows with 4+ subagents
+- **SystemInstructionOverrides**: Customize behavior per subagent
 - **DynamicActionRouting**: Control action availability
 
 ## Testing

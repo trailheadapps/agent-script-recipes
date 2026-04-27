@@ -2,23 +2,23 @@
 
 ## Overview
 
-Learn how to use **bidirectional topic transitions for specialist consultation**. This pattern allows a main topic to route to specialist topics for domain-specific processing, with the specialist returning control after completing their task using explicit transitions.
+Learn how to use **bidirectional subagent transitions for specialist consultation**. This pattern allows a main subagent to route to specialist subagents for domain-specific processing, with the specialist returning control after completing their task using explicit transitions.
 
 ## Agent Flow
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start] --> B[general_support Topic]
+    A[Start] --> B[general_support Subagent]
     B --> C{Issue Type?}
     C -->|Technical| D[Transition to technical_specialist]
     C -->|Billing| E[Transition to billing_specialist]
     C -->|General| F[Handle in general_support]
-    D --> G[technical_specialist Topic]
+    D --> G[technical_specialist Subagent]
     G --> H[analyze_technical_issue Action]
     H --> I[Set: technical_assessment, solution_provided]
     I --> J[Transition back to general_support]
-    E --> K[billing_specialist Topic]
+    E --> K[billing_specialist Subagent]
     K --> L[analyze_billing_issue Action]
     L --> M[Set: billing_analysis, billing_resolved]
     M --> J
@@ -29,20 +29,20 @@ graph TD
 
 ## Key Concepts
 
-- **Specialist topics**: Topics with domain expertise
+- **Specialist subagents**: Subagents with domain expertise
 - **Consultation pattern**: Route to specialist, then return
-- **Natural language routing**: Route based on user intent and topic descriptions
-- **State transfer**: Variables shared across all topics
-- **Return control**: Specialist transitions back to main topic
+- **Natural language routing**: Route based on user intent and subagent descriptions
+- **State transfer**: Variables shared across all subagents
+- **Return control**: Specialist transitions back to main subagent
 
 ## How It Works
 
-### Main Topic Routes to Specialists
+### Main Subagent Routes to Specialists
 
-The general support topic routes to specialists based on issue type:
+The general support subagent routes to specialists based on issue type:
 
 ```agentscript
-topic general_support:
+subagent general_support:
    description: "General customer support entry point"
 
    reasoning:
@@ -55,17 +55,17 @@ topic general_support:
            What can I help you with today?
 
       actions:
-         consult_technical: @utils.transition to @topic.technical_specialist
+         consult_technical: @utils.transition to @subagent.technical_specialist
 
-         consult_billing: @utils.transition to @topic.billing_specialist
+         consult_billing: @utils.transition to @subagent.billing_specialist
 ```
 
-### Specialist Topic Processes and Returns
+### Specialist Subagent Processes and Returns
 
 The specialist handles their domain, then returns control:
 
 ```agentscript
-topic technical_specialist:
+subagent technical_specialist:
    description: "Technical support specialist - handles complex technical issues"
 
    actions:
@@ -93,13 +93,13 @@ topic technical_specialist:
             set @variables.technical_assessment = @outputs.assessment
             set @variables.solution_provided = @outputs.can_resolve
             # Return control to general support
-            transition to @topic.general_support
+            transition to @subagent.general_support
 ```
 
 ### Billing Specialist
 
 ```agentscript
-topic billing_specialist:
+subagent billing_specialist:
    description: "Billing specialist - handles billing and payment issues"
 
    actions:
@@ -131,7 +131,7 @@ topic billing_specialist:
             set @variables.billing_analysis = @outputs.analysis
             set @variables.billing_resolved = @outputs.resolved
             # Return control to general support
-            transition to @topic.general_support
+            transition to @subagent.general_support
 ```
 
 ## Key Code Snippets
@@ -157,9 +157,9 @@ variables:
 
 ```agentscript
 actions:
-   consult_technical: @utils.transition to @topic.technical_specialist
+   consult_technical: @utils.transition to @subagent.technical_specialist
 
-   consult_billing: @utils.transition to @topic.billing_specialist
+   consult_billing: @utils.transition to @subagent.billing_specialist
 ```
 
 ### Specialist Returns with Results
@@ -170,7 +170,7 @@ actions:
       with issue_description=@variables.issue_description
       set @variables.technical_assessment = @outputs.assessment
       set @variables.solution_provided = @outputs.can_resolve
-      transition to @topic.general_support
+      transition to @subagent.general_support
 ```
 
 ## Try It Out
@@ -178,7 +178,7 @@ actions:
 ### Example: Technical Issue Consultation
 
 ```text
-Agent: [general_support topic]
+Agent: [general_support subagent]
        Welcome to Customer Support! How can I help you today?
 
 User: My app keeps crashing when I try to upload files
@@ -186,13 +186,13 @@ User: My app keeps crashing when I try to upload files
 Agent: [Sets issue_type = "technical", issue_description = "..."]
        Let me connect you with our technical specialist...
 
-[Transitions to technical_specialist topic]
+[Transitions to technical_specialist subagent]
 
-Agent: [technical_specialist topic]
+Agent: [technical_specialist subagent]
 
        [Runs analyze_technical_issue action]
 
-       [Transitions back to general_support topic]
+       [Transitions back to general_support subagent]
 
        Our technical specialist recommends trying to reboot your system as a first step.
 
@@ -207,13 +207,13 @@ User: I was charged twice for my subscription
 Agent: [Sets issue_type = "billing"]
        Let me connect you with our billing specialist...
 
-[Transitions to billing_specialist topic]
+[Transitions to billing_specialist subagent]
 
-Agent: [billing_specialist topic]
+Agent: [billing_specialist subagent]
 
        [Runs analyze_billing_issue action]
 
-       [Transitions back to general_support topic]
+       [Transitions back to general_support subagent]
 
        Your billing issue has been reviewed.
 
@@ -232,7 +232,7 @@ Agent: [billing_specialist topic]
 
 ### Direct Transition
 
-- Move to new topic permanently
+- Move to new subagent permanently
 - No automatic return
 - Use for: workflow stages (browse → book → confirm)
 
@@ -242,17 +242,17 @@ Agent: [billing_specialist topic]
 
 ✅ **Return with results** - Store assessment in variables
 
-✅ **Natural routing** - Use clear topic descriptions for routing
+✅ **Natural routing** - Use clear subagent descriptions for routing
 
-✅ **Share state** - Variables persist across topics
+✅ **Share state** - Variables persist across subagents
 
-❌ **Don't over-specialize** - Keep simple tasks in main topic
+❌ **Don't over-specialize** - Keep simple tasks in main subagent
 
 ❌ **Don't circular route** - Avoid specialist → specialist
 
 ## What's Next
 
-- **MultiTopicOrchestration**: Build complex multi-service workflows
+- **MultiSubagentOrchestration**: Build complex multi-service workflows
 - **DynamicActionRouting**: More conditional action patterns
 - **CustomerServiceAgent**: See a complete service agent example
 

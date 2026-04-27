@@ -131,16 +131,16 @@ graph TD
     E --> G[Continue Flow]
 ```
 
-### 3. Topic Transition Pattern
+### 3. Subagent Transition Pattern
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Current Topic] --> B{Transition Condition?}
-    B -->|Yes| C[Transition to New Topic]
-    B -->|No| D[Continue in Current Topic]
-    C --> E[New Topic Entered]
-    E --> F[Apply New Topic Instructions]
+    A[Current Subagent] --> B{Transition Condition?}
+    B -->|Yes| C[Transition to New Subagent]
+    B -->|No| D[Continue in Current Subagent]
+    C --> E[New Subagent Entered]
+    E --> F[Apply New Subagent Instructions]
 ```
 
 ### 4. Lifecycle Hook Pattern
@@ -203,9 +203,9 @@ graph TD
 - Format: `[Set variable_name = value]`, `[Update variable_name]`
 - Example: `[Set order_status = "shipped"]`
 
-### Topic Transitions
+### Subagent Transitions
 
-- Format: `[Transition to topic_name]`, `[Enter topic_name Topic]`
+- Format: `[Transition to subagent_name]`, `[Enter subagent_name Subagent]`
 - Example: `[Transition to hotel_booking]`
 
 ### Lifecycle Events

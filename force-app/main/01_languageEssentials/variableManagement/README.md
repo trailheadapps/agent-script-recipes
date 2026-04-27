@@ -9,7 +9,7 @@ This recipe demonstrates how to use variables to manage state in your agent. Var
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start] --> B[start_agent topic_selector]
+    A[Start] --> B[start_agent agent_router]
     B --> C[Transition to collect_information]
     C --> D[Build Dynamic Instructions]
     D --> E{Check: user_name set?}
@@ -54,7 +54,7 @@ variables:
       description: "The user's age in years"
 ```
 
-Variables defined here are accessible from any topic in your agent using `@variables.variable_name`.
+Variables defined here are accessible from any subagent in your agent using `@variables.variable_name`.
 
 ### Variable Types
 
@@ -207,21 +207,21 @@ else:
 
 The `if/else` blocks control which template content is included based on variable values.
 
-### Topic Selector and Survey Topic
+### Agent Router and Survey Subagent
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
       description: "Welcome users"
 
       reasoning:
          instructions:|
                Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
          actions:
-            go_to_collect_information: @utils.transition to @topic.collect_information
+            go_to_collect_information: @utils.transition to @subagent.collect_information
                description: "Collects user's Name, Age and Interests from the user for the survey."
 ```
 
-The `start_agent` routes users to the `collect_information` topic via `@utils.transition to`.
+The `start_agent` routes users to the `collect_information` subagent via `@utils.transition to`.
 
 ### Setting Variables with `@utils.setVariables`
 
@@ -311,7 +311,7 @@ This recipe shows how to declare and reference variables in instructions. To lea
 
 ## Notes
 
-- Variables are **global** within an agent - all topics can access all variables
+- Variables are **global** within an agent - all subagents can access all variables
 - Variable names follow the same rules as agent names (letters, numbers, underscores only)
 - Variables persist across conversation turns within the same session
-- The `@` symbol is required when accessing resources like `@variables`, `@actions`, `@topic`
+- The `@` symbol is required when accessing resources like `@variables`, `@actions`, `@subagent`

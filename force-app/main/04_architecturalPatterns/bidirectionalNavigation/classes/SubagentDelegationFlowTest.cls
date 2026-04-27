@@ -1,9 +1,9 @@
 /**
- * @description Test class for Topic Delegation Flows
- * Tests all flows used in the topic delegation recipe
+ * @description Test class for Subagent Delegation Flows
+ * Tests all flows used in the subagent delegation recipe
  */
 @IsTest
-private class TopicDelegationFlowTest {
+private class SubagentDelegationFlowTest {
     @IsTest
     static void testCreateEscalationTicket() {
         // Set input variables for the flow

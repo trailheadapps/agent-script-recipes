@@ -182,7 +182,7 @@ Actions can use variables as inputs and store outputs back into variables.
 ## Complete Example from Recipe
 
 ```agentscript
-topic shopping_assistant:
+subagent shopping_assistant:
    description: "Helps customers shop and manages their cart"
 
    actions:

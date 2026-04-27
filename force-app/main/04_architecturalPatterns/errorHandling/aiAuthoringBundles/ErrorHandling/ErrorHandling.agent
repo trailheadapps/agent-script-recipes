@@ -37,17 +37,17 @@ system:
 
    instructions: "You are a banking transfer agent. Security and accuracy are critical. Always validate information before processing transfers. Never proceed if there are any doubts or errors."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin secure account transfer process"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start_transfer: @utils.transition to @topic.account_transfer
+         start_transfer: @utils.transition to @subagent.account_transfer
             description: "Begin the account transfer with validation and error handling"
 
-topic account_transfer:
+subagent account_transfer:
    description: "Handles account-to-account transfers with validation"
 
    actions:

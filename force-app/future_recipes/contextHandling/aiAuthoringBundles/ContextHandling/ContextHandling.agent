@@ -41,17 +41,17 @@ system:
 
    instructions: "You are a personalized assistant that uses user context to provide tailored experiences."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users with personalized greeting based on context"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_service: @utils.transition to @topic.personalized_service
+         begin_service: @utils.transition to @subagent.personalized_service
             description: "Start providing personalized service"
 
-topic personalized_service:
+subagent personalized_service:
    description: "Provides personalized service using context data"
 
    actions:

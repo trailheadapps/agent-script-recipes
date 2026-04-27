@@ -9,8 +9,8 @@ This recipe demonstrates **procedural reasoning instructions** - a powerful way 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[User Message] --> B[start_agent topic_selector]
-    B --> C[Transition to order_status Topic]
+    A[User Message] --> B[start_agent agent_router]
+    B --> C[Transition to order_status Subagent]
     C --> D[Execute Procedural Instructions]
     D --> E{Check: order_id exists?}
     E -->|No| F[Return: Ask for Order Number]
@@ -129,10 +129,10 @@ instructions:->
 
 ## Key Code Snippets
 
-### Complete Topic from Recipe
+### Complete Subagent from Recipe
 
 ```agentscript
-topic order_status:
+subagent order_status:
    description: "Looks up and explains order status"
 
    actions:
@@ -275,7 +275,7 @@ Agent: Yes! According to our records, order O-0001 was delivered yesterday.
 
 - Instructions are **always the same**
 - No **data fetching** required
-- **Simple, focused** topics with one job
+- **Simple, focused** subagents with one job
 
 ## Best Practices
 

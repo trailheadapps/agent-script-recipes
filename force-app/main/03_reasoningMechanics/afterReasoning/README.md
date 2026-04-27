@@ -40,7 +40,7 @@ graph TD
 Runs **after** the agent completes reasoning:
 
 ```agentscript
-topic conversation:
+subagent conversation:
    after_reasoning:
       # Log the reasoning completion
       run @actions.log_event
@@ -54,10 +54,10 @@ topic conversation:
 - Cleanup operations
 - Analytics tracking
 
-### Complete Topic Structure
+### Complete Subagent Structure
 
 ```agentscript
-topic conversation:
+subagent conversation:
    description: "Provides a conversation with lifecycle event tracking. Your job is to run the after reasoning event as applicable on every request."
 
    actions:

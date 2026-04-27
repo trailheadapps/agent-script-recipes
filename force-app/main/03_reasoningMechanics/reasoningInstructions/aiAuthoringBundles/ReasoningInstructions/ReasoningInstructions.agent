@@ -27,17 +27,17 @@ system:
 
    instructions: "You are an order status assistant. Help customers track their orders and resolve issues."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome customers and begin helping with order status"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         check_order: @utils.transition to @topic.order_status
+         check_order: @utils.transition to @subagent.order_status
             description: "Start checking order status"
 
-topic order_status:
+subagent order_status:
    description: "Looks up and explains order status"
 
    actions:

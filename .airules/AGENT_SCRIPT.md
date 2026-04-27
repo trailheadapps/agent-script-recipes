@@ -16,12 +16,12 @@ Before writing Agent Script, work through these questions to understand requirem
 - **What should the welcome message say?**
 - **What should the error message say?**
 
-### 2. Topics & Conversation Flow
+### 2. Subagents & Conversation Flow
 
-- **What distinct conversation areas (topics) does this agent need?**
-- **What is the entry point topic?** (The first topic users interact with)
-- **How should the agent transition between topics?**
-- **Are there any topics that need to delegate to other topics and return?**
+- **What distinct conversation areas (subagents) does this agent need?**
+- **What is the entry point subagent?** (The first subagent users interact with)
+- **How should the agent transition between subagents?**
+- **Are there any subagents that need to delegate to other subagents and return?**
 
 ### 3. State Management
 
@@ -45,7 +45,7 @@ Before writing Agent Script, work through these questions to understand requirem
 
 ### 5. Reasoning & Instructions
 
-- **What should the agent do in each topic?**
+- **What should the agent do in each subagent?**
 - **Are there conditions that change the instructions?**
 - **Should any actions run automatically before/after reasoning?**
 
@@ -85,14 +85,14 @@ language:
    ...
 
 # 7. START_AGENT (required) - Entry point
-start_agent topic_selector:
+start_agent agent_router:
    description: "..."
    reasoning:
       actions:
          ...
 
-# 8. TOPICS (at least one required)
-topic my_topic:
+# 8. SUBAGENTS (at least one required)
+subagent my_topic:
    description: "..."
    actions:
       ...
@@ -104,7 +104,7 @@ topic my_topic:
 
 ## Block Internal Ordering
 
-### Within `start_agent` and `topic` blocks:
+### Within `start_agent` and `subagent` blocks:
 
 1. `description` (required)
 2. `system` (optional - for instruction overrides)
@@ -126,13 +126,13 @@ Every Agent Script MUST have:
 - `config` block with `developer_name`
 - `system` block with `messages.welcome`, `messages.error`, and `instructions`
 - `start_agent` block with `description` and `reasoning.actions`
-- At least one `topic` block with `description` and `reasoning`
+- At least one `subagent` block with `description` and `reasoning`
 
 ---
 
 ## Naming Rules
 
-All names (developer_name, topic names, variable names, action names):
+All names (developer_name, subagent names, variable names, action names):
 
 - Can contain only letters, numbers, and underscores
 - Must begin with a letter
@@ -234,17 +234,17 @@ system:
       Never share sensitive information.
 ```
 
-### Topic Block Structure
+### Subagent Block Structure
 
 ```agentscript
-topic my_topic:
-   description: "What this topic handles"
+subagent my_topic:
+   description: "What this subagent handles"
 
-   # Optional: Override system instructions for this topic
+   # Optional: Override system instructions for this subagent
    system:
-      instructions: "Topic-specific system instructions"
+      instructions: "Subagent-specific system instructions"
 
-   # Action definitions (what the topic CAN call)
+   # Action definitions (what the subagent CAN call)
    actions:
       action_name:
          description: "What this action does"
@@ -276,7 +276,7 @@ topic my_topic:
    # Optional: Runs after reasoning completes
    after_reasoning:
       if @variables.should_transition:
-         transition to @topic.next_topic
+         transition to @subagent.next_topic
 ```
 
 ---
@@ -418,7 +418,7 @@ reasoning:
             set @variables.notified = @outputs.sent
          # Conditional transition
          if @outputs.needs_review:
-            transition to @topic.review
+            transition to @subagent.review
 ```
 
 ### Utility Actions (reasoning.actions only)
@@ -426,15 +426,15 @@ reasoning:
 | Utility                | Purpose               | Syntax                                          |
 | ---------------------- | --------------------- | ----------------------------------------------- |
 | `@utils.escalate`      | Escalate to human     | `name: @utils.escalate`                         |
-| `@utils.transition to` | Permanent handoff     | `name: @utils.transition to @topic.X`           |
+| `@utils.transition to` | Permanent handoff     | `name: @utils.transition to @subagent.X`           |
 | `@utils.setVariables`  | Set variables via LLM | `name: @utils.setVariables` with `with var=...` |
-| `@topic.<name>`        | Delegate (can return) | `name: @topic.X`                                |
+| `@subagent.<name>`        | Delegate (can return) | `name: @subagent.X`                                |
 
 ```agentscript
 reasoning:
    actions:
-      # Transition to another topic (permanent handoff)
-      go_to_checkout: @utils.transition to @topic.checkout
+      # Transition to another subagent (permanent handoff)
+      go_to_checkout: @utils.transition to @subagent.checkout
          description: "Move to checkout when ready"
          available when @variables.cart_has_items == True
 
@@ -443,9 +443,9 @@ reasoning:
          description: "Connect with a human agent"
          available when @variables.needs_human == True
 
-      # Delegate to topic (can return)
-      consult_expert: @topic.expert_topic
-         description: "Consult the expert topic"
+      # Delegate to subagent (can return)
+      consult_expert: @subagent.expert_topic
+         description: "Consult the expert subagent"
 
       # Set variables via LLM
       collect_info: @utils.setVariables
@@ -463,14 +463,14 @@ reasoning:
 ### In `reasoning.actions` (LLM-selected):
 
 ```agentscript
-go_next: @utils.transition to @topic.target_topic
+go_next: @utils.transition to @subagent.target_topic
    description: "Description for LLM"
 ```
 
 ### In Directive Blocks (`after_reasoning`):
 
 ```agentscript
-transition to @topic.target_topic
+transition to @subagent.target_topic
 ```
 
 - NEVER use `@utils.transition to` in directive blocks
@@ -502,7 +502,7 @@ Note: `else if` is not currently supported.
 ```agentscript
 after_reasoning:
    if @variables.completed:
-      transition to @topic.summary
+      transition to @subagent.summary
 ```
 
 ### Conditional Action Availability
@@ -564,8 +564,8 @@ instructions:->
 
 ### Resource References
 
-- `@actions.<name>` - Reference action defined in topic's `actions` block
-- `@topic.<name>` - Reference a topic by name
+- `@actions.<name>` - Reference action defined in subagent's `actions` block
+- `@subagent.<name>` - Reference a subagent by name
 - `@variables.<name>` - Reference a variable
 - `@outputs.<name>` - Reference action output (in post-action context)
 - `@inputs.<name>` - Reference action input (procedure context only — see warning below)
@@ -587,47 +587,47 @@ system:
       error: "Sorry, something went wrong."
    instructions: "You are a helpful assistant. Answer questions clearly."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Entry point"
    reasoning:
       actions:
-         start: @utils.transition to @topic.main
+         start: @utils.transition to @subagent.main
 
-topic main:
+subagent main:
    description: "Answer user questions"
    reasoning:
       instructions:->
          | Help the user with their questions.
 ```
 
-### Multi-Topic with Transitions
+### Multi-Subagent with Transitions
 
 ```agentscript
-start_agent topic_selector:
-   description: "Route to appropriate topic"
+start_agent agent_router:
+   description: "Route to appropriate subagent"
    reasoning:
       actions:
-         go_sales: @utils.transition to @topic.sales
+         go_sales: @utils.transition to @subagent.sales
             description: "Handle sales inquiries"
-         go_support: @utils.transition to @topic.support
+         go_support: @utils.transition to @subagent.support
             description: "Handle support issues"
 
-topic sales:
+subagent sales:
    description: "Handle sales"
    reasoning:
       instructions:->
          | Help the customer with purchasing.
       actions:
-         need_support: @utils.transition to @topic.support
+         need_support: @utils.transition to @subagent.support
             description: "Transfer to support"
 
-topic support:
+subagent support:
    description: "Handle support"
    reasoning:
       instructions:->
          | Help resolve the customer's issue.
       actions:
-         need_sales: @utils.transition to @topic.sales
+         need_sales: @utils.transition to @subagent.sales
             description: "Transfer to sales"
 ```
 
@@ -639,7 +639,7 @@ variables:
    customer_name: mutable string = ""
    customer_loaded: mutable boolean = False
 
-topic customer_service:
+subagent customer_service:
    description: "Customer service with data loading"
 
    actions:
@@ -671,11 +671,11 @@ topic customer_service:
 
 Before finalizing an Agent Script, verify:
 
-- [ ] Block ordering is correct (config → variables → system → connections → knowledge → language → start_agent → topics)
+- [ ] Block ordering is correct (config → variables → system → connections → knowledge → language → start_agent → subagents)
 - [ ] `config` block has `developer_name` (and `default_agent_user` for service agents)
 - [ ] `system` block has `messages.welcome`, `messages.error`, and `instructions`
 - [ ] `start_agent` block exists with at least one transition action
-- [ ] Each `topic` has a `description` and `reasoning` block
+- [ ] Each `subagent` has a `description` and `reasoning` block
 - [ ] All `mutable` variables have default values
 - [ ] All `linked` variables have `source` specified (and NO default value)
 - [ ] Action `target` uses valid format (`flow://`, `apex://`, etc.)
@@ -696,14 +696,14 @@ Before finalizing an Agent Script, verify:
 
     ```agentscript
     # WRONG in reasoning.actions
-    go_next: transition to @topic.next
+    go_next: transition to @subagent.next
 
     # CORRECT in reasoning.actions
-    go_next: @utils.transition to @topic.next
+    go_next: @utils.transition to @subagent.next
 
     # CORRECT in directive blocks
     after_reasoning:
-       transition to @topic.next
+       transition to @subagent.next
     ```
 
 2. **Missing default for mutable:**
@@ -762,7 +762,7 @@ Before finalizing an Agent Script, verify:
 
     ```agentscript
     # WRONG - utilities don't support post-action directives
-    go_next: @utils.transition to @topic.next
+    go_next: @utils.transition to @subagent.next
        set @variables.navigated = True
 
     # CORRECT - only @actions support post-action directives
@@ -794,12 +794,12 @@ Before finalizing an Agent Script, verify:
     | If continuing a conversation, route to {!@actions.begin_data_management}.
     ```
 
-9. **Using `run @actions.X` where X is only a reasoning-level utility (not a topic-level action):**
+9. **Using `run @actions.X` where X is only a reasoning-level utility (not a subagent-level action):**
 
-    The `run @actions.X` directive in `instructions` procedures resolves against the **topic-level `actions`** block (those with a `target:`). It cannot invoke actions defined only in `reasoning.actions` (such as `@utils.setVariables`). If the topic has no top-level `actions` block, you'll get: _"Action '@actions.X' not found … No actions defined in this topic."_
+    The `run @actions.X` directive in `instructions` procedures resolves against the **subagent-level `actions`** block (those with a `target:`). It cannot invoke actions defined only in `reasoning.actions` (such as `@utils.setVariables`). If the subagent has no top-level `actions` block, you'll get: _"Action '@actions.X' not found … No actions defined in this subagent."_
 
     ```agentscript
-    # WRONG - set_user_name is a @utils.setVariables utility, not a topic-level action
+    # WRONG - set_user_name is a @utils.setVariables utility, not a subagent-level action
     reasoning:
        instructions:->
           run @actions.set_user_name
@@ -816,7 +816,7 @@ Before finalizing an Agent Script, verify:
           set_user_name: @utils.setVariables
              with user_name=...
 
-    # ALSO VALID - run works when the action is defined at the topic level with a target
+    # ALSO VALID - run works when the action is defined at the subagent level with a target
     actions:
        fetch_customer:
           inputs:

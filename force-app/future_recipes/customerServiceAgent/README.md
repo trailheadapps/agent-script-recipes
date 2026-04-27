@@ -9,16 +9,16 @@ A **complete real-world customer service agent** demonstrating a production-read
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Customer Arrives] --> B[Topic: Triage]
+    A[Customer Arrives] --> B[Subagent: Triage]
     B --> C[Fetch Customer & Classify Issue]
-    C --> D[Topic: Resolution]
+    C --> D[Subagent: Resolution]
     D --> E[Search Knowledge Base]
     E --> F{KB Article Found?}
-    F -->|Yes| G[Topic: Solution Presentation]
-    F -->|No| H[Topic: Escalation]
+    F -->|Yes| G[Subagent: Solution Presentation]
+    F -->|No| H[Subagent: Escalation]
     G --> I[Present Solution]
     I --> J{Resolved?}
-    J -->|Yes| K[Topic: Closure]
+    J -->|Yes| K[Subagent: Closure]
     J -->|No| H
     H --> L[Escalate to Specialist]
     L --> K
@@ -36,12 +36,12 @@ graph TD
 
 ## How It Works
 
-### Topic: Triage
+### Subagent: Triage
 
 The entry point for the conversation. It identifies the customer and classifies their issue.
 
 ```agentscript
-topic triage:
+subagent triage:
    actions:
       fetch_customer:
          description: "Fetch customer information"
@@ -56,15 +56,15 @@ topic triage:
          classify_customer_issue: @actions.classify_issue
             available when @variables.issue_description and not @variables.issue_type
             # ...
-            transition to @topic.resolution
+            transition to @subagent.resolution
 ```
 
-### Topic: Resolution
+### Subagent: Resolution
 
 Attempts to find a solution using the Knowledge Base and initiates case tracking.
 
 ```agentscript
-topic resolution:
+subagent resolution:
    actions:
       search_knowledge_base:
          description: "Search knowledge base for solutions"
@@ -81,20 +81,20 @@ topic resolution:
             # ...
 
          # If KB solution found, present it
-         present_solution: @utils.transition to @topic.solution_presentation
+         present_solution: @utils.transition to @subagent.solution_presentation
             available when @variables.kb_article_found
 
          # If no KB solution, escalate
-         escalate_to_specialist: @utils.transition to @topic.escalation
+         escalate_to_specialist: @utils.transition to @subagent.escalation
             available when not @variables.kb_article_found
 ```
 
-### Topic: Solution Presentation
+### Subagent: Solution Presentation
 
 Presents the found Knowledge Base article to the user and asks for confirmation.
 
 ```agentscript
-topic solution_presentation:
+subagent solution_presentation:
    reasoning:
       instructions:->
          | I found a solution for your {!@variables.issue_type} issue!
@@ -104,17 +104,17 @@ topic solution_presentation:
       actions:
          mark_resolved: @actions.update_case
             # ...
-            transition to @topic.closure
+            transition to @subagent.closure
 
-         need_more_help: @utils.transition to @topic.escalation
+         need_more_help: @utils.transition to @subagent.escalation
 ```
 
-### Topic: Escalation
+### Subagent: Escalation
 
 Handles scenarios where the bot cannot resolve the issue or the user requests a human.
 
 ```agentscript
-topic escalation:
+subagent escalation:
    reasoning:
       instructions:->
          | This issue requires specialist attention.
@@ -125,7 +125,7 @@ topic escalation:
          escalate_issue: @actions.escalate_case
             with specialist_team=@variables.issue_type
             # ...
-            transition to @topic.closure
+            transition to @subagent.closure
 ```
 
 ## Key Code Snippets
@@ -229,12 +229,12 @@ Agent: Your case (500xx000000abc2) has been escalated to our specialist team.
 
 1.  **Context Engineering**: Hydrating customer data (`before_reasoning`) before interaction.
 2.  **Chaining Actions**: Combining KB search and Case creation in a single logical step.
-3.  **Conditional Transitions**: Routing between topics based on variables (`kb_article_found`, `issue_resolved`).
+3.  **Conditional Transitions**: Routing between subagents based on variables (`kb_article_found`, `issue_resolved`).
 4.  **Variable Descriptions**: providing semantic meaning to variables for better planner performance.
 
 ## Best Practices Demonstrated
 
 ✅ **Context Engineering** - Hydrating data before instructions run.
-✅ **Topic Separation** - Distinct topics for Triage, Resolution, and Escalation.
+✅ **Subagent Separation** - Distinct subagents for Triage, Resolution, and Escalation.
 ✅ **Variable Descriptions** - Clear descriptions helping the LLM understand variable purpose.
 ✅ **Deterministic Transitions** - Explicit `@utils.transition` calls for state management.

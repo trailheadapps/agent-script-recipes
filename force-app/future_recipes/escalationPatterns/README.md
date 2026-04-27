@@ -9,7 +9,7 @@ Learn how to implement **human handoff** (escalation) in your agent. This patter
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start Conversation] --> B[General Support Topic]
+    A[Start Conversation] --> B[General Support Subagent]
     B --> C{User Frustrated?}
     C -->|Yes| D[Call escalate_to_human]
     C -->|No| E[Continue Support]
@@ -31,7 +31,7 @@ The `connections` block tells the agent where to route the chat when escalation 
 
 ### 2. Define the Action
 
-Add the escalation action to your topic's `reasoning.actions` block.
+Add the escalation action to your subagent's `reasoning.actions` block.
 
 ## Key Code Snippets
 

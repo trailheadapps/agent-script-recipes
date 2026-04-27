@@ -9,7 +9,7 @@ Learn how to configure **language settings** for your agent to support multiple 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Agent Starts] --> B[topic_selector]
+    A[Agent Starts] --> B[agent_router]
     B --> C[Greet User in Detected Language]
     C --> D[pass Action]
     D --> E[main_topic]
@@ -19,14 +19,14 @@ graph TD
 ## Key Concepts
 
 - **Language Block**: Configures the primary and additional supported locales.
-- **start_agent topic_selector**: Entry point that identifies language and greets the user before transitioning.
-- **topic main_topic**: Main interaction topic that assists the user in their preferred language.
+- **start_agent agent_router**: Entry point that identifies language and greets the user before transitioning.
+- **subagent main_topic**: Main interaction subagent that assists the user in their preferred language.
 
 ## How It Works
 
 ### Agent Structure
 
-The agent uses `start_agent topic_selector` as the entry point. The topic_selector instructs the LLM to greet the user in their detected language (Spanish, French, German, or English) and then calls the `pass` action to transition to `main_topic`. The topic `main_topic` handles the main interaction and assists the user in their preferred language.
+The agent uses `start_agent agent_router` as the entry point. The agent_router instructs the LLM to greet the user in their detected language (Spanish, French, German, or English) and then calls the `pass` action to transition to `main_topic`. The subagent `main_topic` handles the main interaction and assists the user in their preferred language.
 
 ### Language Block Configuration
 
@@ -42,10 +42,10 @@ language:
   additional_locales: "es_MX,fr,de"
 ```
 
-### start_agent topic_selector
+### start_agent agent_router
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
    description: "Identifies language and greets user"
 
    reasoning:
@@ -59,15 +59,15 @@ start_agent topic_selector:
            Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
 
       actions:
-         pass: @utils.transition to @topic.main_topic
-            description: "Continue to main topic"
+         pass: @utils.transition to @subagent.main_topic
+            description: "Continue to main subagent"
 ```
 
-### topic main_topic
+### subagent main_topic
 
 ```agentscript
-topic main_topic:
-   description: "Main interaction topic"
+subagent main_topic:
+   description: "Main interaction subagent"
 
    reasoning:
       instructions:->
