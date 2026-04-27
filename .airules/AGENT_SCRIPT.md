@@ -426,9 +426,9 @@ reasoning:
 | Utility                | Purpose               | Syntax                                          |
 | ---------------------- | --------------------- | ----------------------------------------------- |
 | `@utils.escalate`      | Escalate to human     | `name: @utils.escalate`                         |
-| `@utils.transition to` | Permanent handoff     | `name: @utils.transition to @subagent.X`           |
+| `@utils.transition to` | Permanent handoff     | `name: @utils.transition to @subagent.X`        |
 | `@utils.setVariables`  | Set variables via LLM | `name: @utils.setVariables` with `with var=...` |
-| `@subagent.<name>`        | Delegate (can return) | `name: @subagent.X`                                |
+| `@subagent.<name>`     | Delegate (can return) | `name: @subagent.X`                             |
 
 ```agentscript
 reasoning:

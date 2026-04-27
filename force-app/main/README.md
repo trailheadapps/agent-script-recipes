@@ -78,16 +78,16 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 
 Core building blocks every Agent Script developer should know.
 
-| Recipe                    | Concept                 | What You'll Learn                                                |
-| ------------------------- | ----------------------- | ---------------------------------------------------------------- |
-| **HelloWorld**            | Basic agent structure   | `config`, `system`, `subagent` blocks and minimal agent anatomy     |
-| **SimpleQA**              | Q&A with actions        | Single-subagent pattern, multiline strings, action integration      |
-| **VariableManagement**    | State management        | All variable types, `mutable` vs `readonly`, `@variables` syntax |
-| **ActionDefinitions**     | External integrations   | Action structure, inputs/outputs, targets, binding patterns      |
-| **TemplateExpressions**   | Dynamic content         | `{!}` syntax, conditionals, personalization, calculations        |
-| **MultiSubagentNavigation**  | Subagent transitions       | Multiple subagents, `@utils.transition`, workflow orchestration     |
-| **ReasoningInstructions** | Procedural instructions | `instructions:->`, dynamic instruction building, `run` actions   |
-| **ErrorHandling**         | Validation & safety     | Guard clauses, validation patterns, `available when`             |
+| Recipe                      | Concept                 | What You'll Learn                                                |
+| --------------------------- | ----------------------- | ---------------------------------------------------------------- |
+| **HelloWorld**              | Basic agent structure   | `config`, `system`, `subagent` blocks and minimal agent anatomy  |
+| **SimpleQA**                | Q&A with actions        | Single-subagent pattern, multiline strings, action integration   |
+| **VariableManagement**      | State management        | All variable types, `mutable` vs `readonly`, `@variables` syntax |
+| **ActionDefinitions**       | External integrations   | Action structure, inputs/outputs, targets, binding patterns      |
+| **TemplateExpressions**     | Dynamic content         | `{!}` syntax, conditionals, personalization, calculations        |
+| **MultiSubagentNavigation** | Subagent transitions    | Multiple subagents, `@utils.transition`, workflow orchestration  |
+| **ReasoningInstructions**   | Procedural instructions | `instructions:->`, dynamic instruction building, `run` actions   |
+| **ErrorHandling**           | Validation & safety     | Guard clauses, validation patterns, `available when`             |
 
 ### Phase 2: Intermediate Concepts (Complete)
 
@@ -109,17 +109,17 @@ Building on the foundation with more sophisticated patterns.
 
 Production-ready patterns and real-world applications.
 
-| Recipe                         | Concept             | What You'll Learn                             |
-| ------------------------------ | ------------------- | --------------------------------------------- |
-| **AfterReasoning**             | Lifecycle events    | `after_reasoning` hook                        |
-| **MultiSubagentOrchestration**    | Complex flows       | 3+ subagent coordination, handoff strategies     |
-| **BidirectionalNavigation**    | Supervision         | Transitions to specialist subagents and return   |
-| **AdvancedReasoningPatterns**  | Complex reasoning   | Multi-step flows, data aggregation            |
-| **ExternalAPIIntegration**     | API patterns        | External system integration best practices    |
+| Recipe                         | Concept                | What You'll Learn                                |
+| ------------------------------ | ---------------------- | ------------------------------------------------ |
+| **AfterReasoning**             | Lifecycle events       | `after_reasoning` hook                           |
+| **MultiSubagentOrchestration** | Complex flows          | 3+ subagent coordination, handoff strategies     |
+| **BidirectionalNavigation**    | Supervision            | Transitions to specialist subagents and return   |
+| **AdvancedReasoningPatterns**  | Complex reasoning      | Multi-step flows, data aggregation               |
+| **ExternalAPIIntegration**     | API patterns           | External system integration best practices       |
 | **SystemInstructionOverrides** | Subagent customization | Per-subagent system prompts, namespace overrides |
-| **ActionDescriptionOverrides** | Contextual actions  | Context-specific action descriptions          |
-| **ProductionPatterns**         | Enterprise ready    | Comprehensive error handling, maintainability |
-| **CustomerServiceAgent**       | Real-world example  | Complete customer service implementation      |
+| **ActionDescriptionOverrides** | Contextual actions     | Context-specific action descriptions             |
+| **ProductionPatterns**         | Enterprise ready       | Comprehensive error handling, maintainability    |
+| **CustomerServiceAgent**       | Real-world example     | Complete customer service implementation         |
 
 ## Recipe Structure
 
@@ -198,24 +198,24 @@ else:
 
 ### Key Syntax Elements
 
-| Element         | Usage                 | Example                            |
-| --------------- | --------------------- | ---------------------------------- |
-| `config:`       | Agent metadata        | `developer_name: "MyAgent"`        |
-| `system:`       | Global settings       | `instructions: "You are..."`       |
-| `variables:`    | State declaration     | `name: mutable string = ""`        |
-| `subagent name:`   | Define subagent          | `subagent greeting:`                  |
-| `actions:`      | Define external tools | `get_data: ...`                    |
-| `reasoning:`    | Subagent behavior        | `instructions: "Help user..."`     |
-| `->`            | Procedure             | `instructions:->`                  |
-| `\|`            | Multiline string      | `\| Line 1`                        |
-| `{!}`           | Template expression   | `{!@variables.name}`               |
-| `@`             | Resource access       | `@variables`, `@actions`, `@subagent` |
-| `run`           | Call action           | `run @actions.name`                |
-| `set`           | Set variable          | `set @variables.x = 1`             |
-| `with`          | Bind input            | `with param=value`                 |
-| `...`           | LLM slot-fill         | `with param=...`                   |
-| `if`/`else`     | Conditional           | `if @variables.x > 0:`             |
-| `transition to` | Change subagent          | `transition to @subagent.next`        |
+| Element          | Usage                 | Example                               |
+| ---------------- | --------------------- | ------------------------------------- |
+| `config:`        | Agent metadata        | `developer_name: "MyAgent"`           |
+| `system:`        | Global settings       | `instructions: "You are..."`          |
+| `variables:`     | State declaration     | `name: mutable string = ""`           |
+| `subagent name:` | Define subagent       | `subagent greeting:`                  |
+| `actions:`       | Define external tools | `get_data: ...`                       |
+| `reasoning:`     | Subagent behavior     | `instructions: "Help user..."`        |
+| `->`             | Procedure             | `instructions:->`                     |
+| `\|`             | Multiline string      | `\| Line 1`                           |
+| `{!}`            | Template expression   | `{!@variables.name}`                  |
+| `@`              | Resource access       | `@variables`, `@actions`, `@subagent` |
+| `run`            | Call action           | `run @actions.name`                   |
+| `set`            | Set variable          | `set @variables.x = 1`                |
+| `with`           | Bind input            | `with param=value`                    |
+| `...`            | LLM slot-fill         | `with param=...`                      |
+| `if`/`else`      | Conditional           | `if @variables.x > 0:`                |
+| `transition to`  | Change subagent       | `transition to @subagent.next`        |
 
 ## Getting Help
 
