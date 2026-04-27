@@ -60,6 +60,7 @@ subagent personalized_service:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose profile to load"
+               is_required: True
          outputs:
             name: string
                description: "The user's display name or full name"
@@ -72,10 +73,13 @@ subagent personalized_service:
          inputs:
             session_id: string
                description: "The unique session identifier for tracking this conversation session"
+               is_required: True
             user_id: string
                description: "The unique identifier of the user in this interaction"
+               is_required: True
             channel: string
                description: "The communication channel used (web, mobile, sms, etc.)"
+               is_required: True
          outputs:
             success: boolean
                description: "Indicates whether the interaction was successfully logged to analytics"

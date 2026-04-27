@@ -48,6 +48,7 @@ subagent general_support:
          inputs:
             issue_description: string
                description: "Detailed description of the technical issue to analyze"
+               is_required: True
          outputs:
             assessment: string
                description: "Technical assessment and diagnosis of the issue"
@@ -60,8 +61,10 @@ subagent general_support:
          inputs:
             issue_description: string
                description: "Description of the billing issue or inquiry"
+               is_required: True
             customer_id: string
                description: "The unique identifier of the customer with the billing issue"
+               is_required: True
          outputs:
             analysis: string
                description: "Analysis of the billing issue including account review and findings"
@@ -74,10 +77,13 @@ subagent general_support:
          inputs:
             issue_type: string
                description: "Type of issue being escalated (technical, billing, general)"
+               is_required: True
             issue_description: string
                description: "Detailed description of the issue requiring escalation"
+               is_required: True
             customer_id: string
                description: "The unique identifier of the customer for the escalation ticket"
+               is_required: True
          outputs:
             ticket_id: string
                description: "Unique identifier of the created escalation ticket"
@@ -109,6 +115,7 @@ subagent technical_specialist:
          inputs:
             issue_description: string
                description: "Detailed description of the technical issue to analyze"
+               is_required: True
          outputs:
             assessment: string
                description: "Technical assessment and diagnosis of the issue"
@@ -140,8 +147,10 @@ subagent billing_specialist:
          inputs:
             issue_description: string
                description: "Description of the billing issue or inquiry"
+               is_required: True
             customer_id: string
                description: "The unique identifier of the customer with the billing issue"
+               is_required: True
          outputs:
             analysis: string
                description: "Analysis of the billing issue including account review and findings"

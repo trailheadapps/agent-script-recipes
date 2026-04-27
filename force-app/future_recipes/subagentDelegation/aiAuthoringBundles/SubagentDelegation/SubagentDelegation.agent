@@ -51,6 +51,7 @@ subagent specialist:
          description: "Analyzes the account"
          inputs:
             userId: string
+               is_required: True
          outputs:
             status: string
          target: "flow://SpecialistAction"

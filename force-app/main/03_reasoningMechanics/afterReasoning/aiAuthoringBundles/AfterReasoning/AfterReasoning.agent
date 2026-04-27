@@ -49,8 +49,10 @@ subagent conversation:
          inputs:
             event_type: string
                description: "Type of event being logged (e.g., reasoning_started, reasoning_completed, user_greeted)"
+               is_required: True
             event_data: string
                description: "Additional data or context about the event being logged"
+               is_required: False
          outputs:
             logged: boolean
                description: "Indicates whether the event was successfully logged to the system"

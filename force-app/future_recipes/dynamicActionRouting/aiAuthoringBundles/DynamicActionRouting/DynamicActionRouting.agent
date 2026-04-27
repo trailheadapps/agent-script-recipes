@@ -115,6 +115,7 @@ subagent ticket_management:
            inputs:
                ticket_number: string
                    description: "The unique identifier of the ticket/case to view"
+                   is_required: True
            outputs:
                ticket_info: object
                    description: "Complete ticket information including status, priority, description, and history"
@@ -125,8 +126,10 @@ subagent ticket_management:
            inputs:
                ticket_id: string
                    description: "The unique identifier of the ticket to add a comment to"
+                   is_required: True
                comment: string
                    description: "The comment text to add to the ticket"
+                   is_required: True
            outputs:
                success: boolean
                    description: "Indicates whether the comment was added successfully"
@@ -137,8 +140,10 @@ subagent ticket_management:
            inputs:
                ticket_id: string
                    description: "The unique identifier of the ticket to assign"
+                   is_required: True
                agent: string
                    description: "The name or ID of the agent to assign the ticket to"
+                   is_required: True
            outputs:
                success: boolean
                    description: "Indicates whether the ticket was assigned successfully"
@@ -149,8 +154,10 @@ subagent ticket_management:
            inputs:
                ticket_id: string
                    description: "The unique identifier of the ticket to update"
+                   is_required: True
                new_status: string
                    description: "New status to set (assigned, in_progress, resolved, closed)"
+                   is_required: True
            outputs:
                success: boolean
                    description: "Indicates whether the status was updated successfully"
@@ -161,6 +168,7 @@ subagent ticket_management:
            inputs:
                ticket_id: string
                    description: "The unique identifier of the resolved ticket to close"
+                   is_required: True
            outputs:
                success: boolean
                    description: "Indicates whether the ticket was closed successfully"
@@ -171,8 +179,10 @@ subagent ticket_management:
            inputs:
                ticket_id: string
                    description: "The unique identifier of the ticket to escalate"
+                   is_required: True
                reason: string
                    description: "Reason for escalation (e.g., complexity, urgency, customer request)"
+                   is_required: True
            outputs:
                success: boolean
                    description: "Indicates whether the ticket was escalated successfully"
@@ -183,6 +193,7 @@ subagent ticket_management:
            inputs:
                ticket_id: string
                    description: "The unique identifier of the ticket to permanently delete"
+                   is_required: True
            outputs:
                success: boolean
                    description: "Indicates whether the ticket was deleted successfully"
@@ -193,8 +204,10 @@ subagent ticket_management:
            inputs:
                ticket_id: string
                    description: "The unique identifier of the ticket to reassign"
+                   is_required: True
                new_agent: string
                    description: "The name or ID of the agent to reassign the ticket to"
+                   is_required: True
            outputs:
                success: boolean
                    description: "Indicates whether the ticket was reassigned successfully"

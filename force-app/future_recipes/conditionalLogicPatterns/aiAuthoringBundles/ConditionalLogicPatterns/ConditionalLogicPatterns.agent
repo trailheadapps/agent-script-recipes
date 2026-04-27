@@ -57,7 +57,9 @@ subagent loan_evaluation:
          description: "Calculates debt-to-income ratio"
          inputs:
             income: number
+               is_required: True
             loan_amount: number
+               is_required: True
          outputs:
             ratio: number
          target: "flow://CalculateDebtRatio"

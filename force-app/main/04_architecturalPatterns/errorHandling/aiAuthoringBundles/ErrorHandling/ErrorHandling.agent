@@ -56,6 +56,7 @@ subagent account_transfer:
          inputs:
             account_number: string
                description: "The account number to check the balance for"
+               is_required: True
          outputs:
             balance: number
                description: "Current account balance as a monetary amount"
@@ -68,10 +69,13 @@ subagent account_transfer:
          inputs:
             from_account: string
                description: "Source account number to transfer funds from"
+               is_required: True
             to_account: string
                description: "Destination account number to transfer funds to"
+               is_required: True
             amount: number
                description: "Amount of money to transfer (must be positive and within limits)"
+               is_required: True
          outputs:
             success: boolean
                description: "Indicates whether the transfer was completed successfully"
