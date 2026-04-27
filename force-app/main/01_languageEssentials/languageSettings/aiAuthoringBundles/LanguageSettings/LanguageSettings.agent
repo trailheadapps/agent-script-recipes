@@ -19,7 +19,7 @@ language:
   default_locale: "en_US"
   additional_locales: "es_MX,fr,de"
   
-start_agent topic_selector:
+start_agent agent_router:
    description: "Identifies language and greets user"
    
    reasoning:
@@ -33,11 +33,11 @@ start_agent topic_selector:
            Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
 
       actions:
-         pass: @utils.transition to @topic.main_topic
-            description: "Continue to main topic"
+         pass: @utils.transition to @subagent.main_topic
+            description: "Continue to main subagent"
 
-topic main_topic:
-   description: "Main interaction topic"
+subagent main_topic:
+   description: "Main interaction subagent"
    
    reasoning:
       instructions:->

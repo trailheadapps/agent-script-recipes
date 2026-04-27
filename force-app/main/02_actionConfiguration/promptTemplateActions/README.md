@@ -9,8 +9,8 @@ Learn how to **invoke Salesforce Prompt Templates** from an Agent Script agent a
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start] --> B[Topic Selector]
-    B --> C[Schedule Generation Topic]
+    A[Start] --> B[Agent Router]
+    B --> C[Schedule Generation Subagent]
     C --> D[Ask for email address]
     D --> E[Run generate_personalized_schedule action]
     E --> F[Prompt Template executes + returns promptResponse]
@@ -22,7 +22,7 @@ graph TD
 - **Prompt Template action targets**: Use `generatePromptResponse://<PromptTemplateDeveloperName>` to execute a prompt template and return a `promptResponse` string.
 - **Prompt Template inputs**: Prompt inputs are passed using the `Input:<apiName>` reference name (for example, `Input:email`).
 - **Grounded data via data providers**: Prompt templates can pull grounded data via data providers (for example, an Apex data provider referenced from the template).
-- **Topic-scoped execution**: Keep the “ask for missing input” + “run the action” logic inside a focused topic so the agent stays predictable.
+- **Subagent-scoped execution**: Keep the “ask for missing input” + “run the action” logic inside a focused subagent so the agent stays predictable.
 - **Displayable outputs**: Mark the `promptResponse` output with `is_displayable: True` and `is_used_by_planner: True` so the planner can surface the generated content directly to the user without intermediate variable storage.
 
 ## How It Works
@@ -47,9 +47,9 @@ The `promptResponse` output is marked `is_displayable: True` and `is_used_by_pla
 
 ### 3. Ask for required input, then run the action
 
-The `schedule_generation` topic is responsible for collecting the email address. Once the user provides it, the topic runs `generate_personalized_schedule` and outputs the personalized schedule in its response.
+The `schedule_generation` subagent is responsible for collecting the email address. Once the user provides it, the subagent runs `generate_personalized_schedule` and outputs the personalized schedule in its response.
 
-The topic instructions include:
+The subagent instructions include:
 
 - **Never ask about goals, preferences, or interests** — the prompt template retrieves that data from Salesforce via the email.
 - **If the user does not provide an email address, ask for it again.**
@@ -78,17 +78,17 @@ config:
     agent_type: "AgentforceEmployeeAgent"
     description: "Provides guidance to guests by creating personalized schedules."
 
-start_agent topic_selector:
+start_agent agent_router:
     description: "Welcome users and begin providing personalized scheduling guidance."
 
     reasoning:
         instructions:|
             Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
         actions:
-            generate_schedule: @utils.transition to @topic.schedule_generation
+            generate_schedule: @utils.transition to @subagent.schedule_generation
                 description: "Route here for any scheduling request — no prior input needed before routing"
 
-topic schedule_generation:
+subagent schedule_generation:
     description: "Generates a personalized schedule of experiences — all required information is retrieved automatically from Salesforce; do not ask the user about goals, preferences, or interests before generating."
 
     reasoning:
@@ -145,7 +145,7 @@ actions:
     target: "generatePromptResponse://Generate_Personalized_Schedule"
 ```
 
-### Action Usage (Topic Instructions)
+### Action Usage (Subagent Instructions)
 
 ```agentscript
 | When a user asks for help scheduling their day or creating a personalized schedule:

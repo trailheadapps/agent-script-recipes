@@ -2,19 +2,19 @@
 
 ## Overview
 
-Learn how to **override system instructions per topic** to change agent behavior and persona dynamically. This powerful pattern enables a single agent to adopt different personalities and behaviors in different contexts.
+Learn how to **override system instructions per subagent** to change agent behavior and persona dynamically. This powerful pattern enables a single agent to adopt different personalities and behaviors in different contexts.
 
 ## Agent Flow
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start] --> B[start_agent: topic_selector]
+    A[Start] --> B[start_agent: agent_router]
     B --> C{User Requests Mode}
-    C -->|General| D[Transition to general Topic]
-    C -->|Professional| E[Transition to professional Topic]
-    C -->|Technical| F[Transition to technical Topic]
-    C -->|Creative| G[Transition to creative Topic]
+    C -->|General| D[Transition to general Subagent]
+    C -->|Professional| E[Transition to professional Subagent]
+    C -->|Technical| F[Transition to technical Subagent]
+    C -->|Creative| G[Transition to creative Subagent]
     D --> H[Uses Global System Instructions]
     H --> I[Casual, Friendly Mode]
     E --> J[Apply Professional System Override]
@@ -33,17 +33,17 @@ graph TD
 
 ## Key Concepts
 
-- **Topic-level system overrides**: Override global system instructions within a topic
-- **Persona switching**: Change agent personality per topic
+- **Subagent-level system overrides**: Override global system instructions within a subagent
+- **Persona switching**: Change agent personality per subagent
 - **Context-specific behavior**: Adapt tone and approach dynamically
-- **Scoped instructions**: Overrides apply only to that specific topic
+- **Scoped instructions**: Overrides apply only to that specific subagent
 - **Global vs local**: Understand instruction hierarchy
 
 ## How It Works
 
 ### Global System Instructions
 
-Define default behavior for all topics:
+Define default behavior for all subagents:
 
 ```agentscript
 system:
@@ -54,38 +54,38 @@ system:
        error: "I encountered an issue. Please try again."
 ```
 
-All topics inherit these instructions by default.
+All subagents inherit these instructions by default.
 
 ### start_agent Entry Point
 
 The `start_agent` block routes users to different modes:
 
 ```agentscript
-start_agent topic_selector:
-   description: "Welcome users and determine the appropriate topic based on user input"
+start_agent agent_router:
+   description: "Welcome users and determine the appropriate subagent based on user input"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
 
       actions:
-         general_mode: @utils.transition to @topic.general
+         general_mode: @utils.transition to @subagent.general
             description: "Use general casual and friendly mode"
 
-         professional_mode: @utils.transition to @topic.professional
+         professional_mode: @utils.transition to @subagent.professional
             description: "Use professional business mode"
 
-         technical_mode: @utils.transition to @topic.technical
+         technical_mode: @utils.transition to @subagent.technical
             description: "Use technical support specialist mode"
 
-         creative_mode: @utils.transition to @topic.creative
+         creative_mode: @utils.transition to @subagent.creative
             description: "Use creative brainstorming mode"
 ```
 
-### Topic Without Override (Uses Global)
+### Subagent Without Override (Uses Global)
 
 ```agentscript
-topic general:
+subagent general:
    description: "General friendly conversation"
 
    reasoning:
@@ -103,19 +103,19 @@ topic general:
              Depending on the user's response, switch to the appropriate mode using {!@actions.go_professional}, {!@actions.go_technical}, or {!@actions.go_creative}.
 
        actions:
-           go_professional: @utils.transition to @topic.professional
-           go_technical: @utils.transition to @topic.technical
-           go_creative: @utils.transition to @topic.creative
+           go_professional: @utils.transition to @subagent.professional
+           go_technical: @utils.transition to @subagent.technical
+           go_creative: @utils.transition to @subagent.creative
 ```
 
-The `general` topic uses the global system instructions since it has no override.
+The `general` subagent uses the global system instructions since it has no override.
 
-### Topic-Level System Override
+### Subagent-Level System Override
 
-Override system instructions for a specific topic:
+Override system instructions for a specific subagent:
 
 ```agentscript
-topic professional:
+subagent professional:
    description: "Professional business communication"
 
    system:
@@ -132,17 +132,17 @@ topic professional:
              "How may I assist you professionally?"
 
        actions:
-           return_to_general: @utils.transition to @topic.general
+           return_to_general: @utils.transition to @subagent.general
 ```
 
-When in this topic, the agent uses the overridden instructions instead of global ones.
+When in this subagent, the agent uses the overridden instructions instead of global ones.
 
 ## Key Code Snippets
 
 ### Professional Mode Override
 
 ```agentscript
-topic professional:
+subagent professional:
    description: "Professional business communication"
 
    system:
@@ -159,13 +159,13 @@ topic professional:
              "How may I assist you professionally?"
 
        actions:
-           return_to_general: @utils.transition to @topic.general
+           return_to_general: @utils.transition to @subagent.general
 ```
 
 ### Technical Support Override
 
 ```agentscript
-topic technical:
+subagent technical:
    description: "Technical support specialist"
 
    system:
@@ -182,13 +182,13 @@ topic technical:
              "How can I assist you with technical issues?"
 
        actions:
-           return_to_general: @utils.transition to @topic.general
+           return_to_general: @utils.transition to @subagent.general
 ```
 
 ### Creative Mode Override
 
 ```agentscript
-topic creative:
+subagent creative:
    description: "Creative brainstorming assistant"
 
    system:
@@ -205,7 +205,7 @@ topic creative:
              "What shall we dream up together?"
 
        actions:
-           return_to_general: @utils.transition to @topic.general
+           return_to_general: @utils.transition to @subagent.general
 ```
 
 ## Try It Out
@@ -213,13 +213,13 @@ topic creative:
 ### Example: Mode Switching
 
 ```text
-[start_agent routes to general topic]
+[start_agent routes to general subagent]
 
 Agent: Welcome! I adapt my behavior based on the conversation context.
 
 User: Switch to professional mode
 
-[Transitions to professional topic with system override]
+[Transitions to professional subagent with system override]
 
 Agent: [Professional Mode Engaged]
        I am now operating in professional mode with:
@@ -242,7 +242,7 @@ Agent: Certainly. I shall prepare a formal business communication.
 
 User: Switch to creative mode
 
-[Transitions to creative topic with different system override]
+[Transitions to creative subagent with different system override]
 
 Agent: [Creative Mode Activated] 🎨
        I'm now in creative brainstorming mode with:
@@ -265,7 +265,7 @@ Agent: Ooh, exciting! Let's think BIG! Here are some wild ideas:
 
 ### Use overrides when
 
-- Different topics need different tones
+- Different subagents need different tones
 - Switching between casual and formal contexts
 - Technical vs non-technical audiences
 - Creative vs analytical tasks
@@ -274,16 +274,16 @@ Agent: Ooh, exciting! Let's think BIG! Here are some wild ideas:
 ### Don't override when
 
 - Consistency is more important
-- Simple topic navigation is enough
+- Simple subagent navigation is enough
 - Personality stays the same throughout
 
 ## Best Practices
 
 ✅ **Clear persona definition** - Make behavior expectations explicit
 
-✅ **Consistent within topic** - Keep behavior uniform per topic
+✅ **Consistent within subagent** - Keep behavior uniform per subagent
 
-✅ **Document overrides** - Explain why each topic has different instructions
+✅ **Document overrides** - Explain why each subagent has different instructions
 
 ✅ **Test transitions** - Verify behavior changes appropriately
 
@@ -295,18 +295,18 @@ Agent: Ooh, exciting! Let's think BIG! Here are some wild ideas:
 
 ## Instruction Hierarchy
 
-1. **Topic-level system instructions** (highest priority)
+1. **Subagent-level system instructions** (highest priority)
 2. **Global system instructions** (fallback)
 
 ```text
-If topic has system.instructions: use topic's instructions
-If topic has no override: use global system.instructions
+If subagent has system.instructions: use subagent's instructions
+If subagent has no override: use global system.instructions
 ```
 
 ## What's Next
 
-- **MultiTopicOrchestration**: Combine with orchestration patterns
-- **TopicDelegation**: Use different personas for specialists
+- **MultiSubagentOrchestration**: Combine with orchestration patterns
+- **SubagentDelegation**: Use different personas for specialists
 - **ActionDescriptionOverrides**: Adapt action descriptions by context too
 
 ## Testing
@@ -315,26 +315,26 @@ Test persona switching:
 
 ### Test Case 1: Default Behavior
 
-- Stay in general topic
+- Stay in general subagent
 - Verify global instructions apply
 - Check casual tone
 
 ### Test Case 2: Professional Override
 
-- Transition to professional topic
+- Transition to professional subagent
 - Verify formal tone
 - Check business language
 - Transition back - verify returns to casual
 
 ### Test Case 3: Multiple Overrides
 
-- Visit professional topic
-- Visit technical topic
-- Visit creative topic
+- Visit professional subagent
+- Visit technical subagent
+- Visit creative subagent
 - Verify each has distinct behavior
 
 ### Test Case 4: Consistency Check
 
-- Stay in one overridden topic
+- Stay in one overridden subagent
 - Complete multiple interactions
 - Verify behavior stays consistent

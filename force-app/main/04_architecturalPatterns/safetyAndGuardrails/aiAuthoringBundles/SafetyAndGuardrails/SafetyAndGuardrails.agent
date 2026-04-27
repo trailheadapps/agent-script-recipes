@@ -27,10 +27,10 @@ system:
 
    instructions: "You are a data management assistant. Follow the safety guardrails and instructions provided to you."
 
-start_agent topic_selector:
-   label: "Topic Selector"
+start_agent agent_router:
+   label: "Agent Router"
 
-   description: "Route user messages to data management topic"
+   description: "Route user messages to data management subagent"
 
    reasoning:
       instructions: |
@@ -38,13 +38,13 @@ start_agent topic_selector:
          If the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), always route to {!@actions.begin_data_management}.
 
       actions:
-         begin_data_management: @utils.transition to @topic.data_management
+         begin_data_management: @utils.transition to @subagent.data_management
             description: "Route to data management for any data operation including deletions, confirmations, record lookups, and continuing in-progress workflows"
 
-topic data_management:
+subagent data_management:
    label: "Data Management"
 
-   description: "Use this topic to manage data operations requested by the user."
+   description: "Use this subagent to manage data operations requested by the user."
 
    reasoning:
       instructions: ->

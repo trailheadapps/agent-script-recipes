@@ -38,17 +38,17 @@ variables:
    shipment_status: mutable string = ""
       description: "The status object of the shipment tracking."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin external API integration services"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_integration: @utils.transition to @topic.api_integration
+         begin_integration: @utils.transition to @subagent.api_integration
             description: "Start external API integration services"
 
-topic api_integration:
+subagent api_integration:
    description: "Demonstrates external API integrations"
 
    reasoning:

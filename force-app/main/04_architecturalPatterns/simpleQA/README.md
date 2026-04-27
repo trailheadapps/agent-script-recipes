@@ -2,7 +2,7 @@
 
 ## Overview
 
-This recipe demonstrates how to build a focused **question-and-answer agent**. It shows the pattern for single-topic agents that handle one specific type of interaction - in this case, answering product questions with the ability to look up real product information.
+This recipe demonstrates how to build a focused **question-and-answer agent**. It shows the pattern for single-subagent agents that handle one specific type of interaction - in this case, answering product questions with the ability to look up real product information.
 
 ## Agent Flow
 
@@ -12,7 +12,7 @@ graph TD
     A[Agent Starts] --> B[Load Config & System]
     B --> C[Display Welcome Message]
     C --> D[start_agent routes to product_qa]
-    D --> E[product_qa Topic]
+    D --> E[product_qa Subagent]
     E --> F{User Question?}
     F -->|Product Query| G[Call get_product_info Action]
     G --> H[Receive: product_details, price, in_stock]
@@ -25,30 +25,30 @@ graph TD
 
 ## Key Concepts
 
-- **Single-topic agent pattern**: When one topic is sufficient for your use case
+- **Single-subagent agent pattern**: When one subagent is sufficient for your use case
 - **Focused agent design**: Building agents with a clear, limited scope
 - **System vs. reasoning instructions**: Separating personality from task-specific guidance
 - **Action integration**: Using external tools to fetch real data
-- **start_agent routing**: Entry point that transitions to main topic
+- **start_agent routing**: Entry point that transitions to main subagent
 
 ## How It Works
 
-### Single-Topic Pattern
+### Single-Subagent Pattern
 
-Unlike complex agents with multiple topics, many use cases work perfectly with just one topic:
+Unlike complex agents with multiple subagents, many use cases work perfectly with just one subagent:
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin answering their product questions"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start_qa: @utils.transition to @topic.product_qa
+         start_qa: @utils.transition to @subagent.product_qa
             description: "Begin product question and answer session"
 
-topic product_qa:
+subagent product_qa:
    description: "Answers questions about products, features, pricing, and availability"
 ```
 
@@ -119,10 +119,10 @@ actions:
 
 ## Key Code Snippets
 
-### Complete Topic Structure
+### Complete Subagent Structure
 
 ```agentscript
-topic product_qa:
+subagent product_qa:
    description: "Answers questions about products, features, pricing, and availability"
 
    actions:
@@ -234,15 +234,15 @@ Agent: I'm sorry, the 4K Monitor is currently out of stock.
 - Too vague: "Be helpful"
 - Missing tool guidance: Doesn't explain when to call actions
 
-### Single-Topic vs. Multi-Topic
+### Single-Subagent vs. Multi-Subagent
 
-Use single-topic when:
+Use single-subagent when:
 
 - The agent has one clear job
 - Conversations don't need different "modes"
 - All interactions follow similar patterns
 
-Use multi-topic when:
+Use multi-subagent when:
 
 - Different phases require different capabilities
 - You need to hand off between specialized behaviors
@@ -253,7 +253,7 @@ Use multi-topic when:
 This agent answers questions and can look up real product data. To add more capabilities:
 
 - **VariableManagement**: Store user preferences or conversation state
-- **MultiTopicNavigation**: Route to different specialists (sales, support, etc.)
+- **MultiSubagentNavigation**: Route to different specialists (sales, support, etc.)
 - **ActionCallbacks**: Chain actions for complex lookups
 - **TemplateExpressions**: Build dynamic responses with product data
 

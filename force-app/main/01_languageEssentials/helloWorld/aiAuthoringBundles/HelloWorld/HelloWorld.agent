@@ -11,7 +11,7 @@ config:
    description: "A minimal agent that greets users and engages using poems"
 
 # System block: Contains global configuration and messages
-# These apply across all topics in the agent
+# These apply across all subagents in the agent
 system:
    # Welcome message shown when agent starts conversation
    messages:
@@ -23,21 +23,21 @@ system:
    # Keep these concise - they guide the agent's personality and approach
    instructions: "You are a friendly assistant who warmly greets users and engages in friendly conversation using poems."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin friendly conversation using poems"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_greeting: @utils.transition to @topic.greeting
+         begin_greeting: @utils.transition to @subagent.greeting
             description: "Start the greeting conversation"
 
-# Topic block: Defines a specific conversation focus or capability
-# Every agent needs at least one topic - this is where the agent "lives"
-# The name after 'topic' becomes the topic identifier
-topic greeting:
-   # Description explains what this topic does (for documentation)
+# Subagent block: Defines a specific conversation focus or capability
+# Every agent needs at least one subagent - this is where the agent "lives"
+# The name after 'subagent' becomes the subagent identifier
+subagent greeting:
+   # Description explains what this subagent does (for documentation)
    description: "Greets the user and engages in friendly conversation using a poem"
 
    # Reasoning block: Controls how the agent thinks and responds

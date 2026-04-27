@@ -32,17 +32,17 @@ system:
    instructions: "You are a friendly survey agent, that collects users name, age and interests. Be conversational and encouraging. Make the survey feel like a chat, not an interrogation."
 
 
-start_agent topic_selector:
+start_agent agent_router:
       description: "Welcome users"
          
       reasoning:
          instructions:|
                Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
          actions:
-            go_to_collect_information: @utils.transition to @topic.collect_information
+            go_to_collect_information: @utils.transition to @subagent.collect_information
                description: "Collects user's Name, Age and Interests from the user for the survey."
       
-topic collect_information:
+subagent collect_information:
    description: "Collects user's Name, Age and Interests and save it in variables."
 
    reasoning:

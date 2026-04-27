@@ -1,5 +1,5 @@
-# SystemInstructionOverrides - Topic-Specific Behavior Control
-# This agent demonstrates how to override system instructions per topic to adapt behavior and tone
+# SystemInstructionOverrides - Subagent-Specific Behavior Control
+# This agent demonstrates how to override system instructions per subagent to adapt behavior and tone
 
 system:
    instructions: "You are a versatile assistant that adapts tone and behavior based on context. By default you are in general mode."
@@ -12,30 +12,30 @@ config:
    developer_name: "SystemInstructionOverrides"
    agent_label: "SystemInstructionOverrides"
    agent_type: "AgentforceEmployeeAgent"
-   description: "This agent demonstrates how to override system instructions per topic"
+   description: "This agent demonstrates how to override system instructions per subagent"
 
-start_agent topic_selector:
-   description: "Welcome users and determine the appropriate topic based on user input"
+start_agent agent_router:
+   description: "Welcome users and determine the appropriate subagent based on user input"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
 
       actions:
-         general_mode: @utils.transition to @topic.general
+         general_mode: @utils.transition to @subagent.general
             description: "Use general casual and friendly mode"
          
-         professional_mode: @utils.transition to @topic.professional
+         professional_mode: @utils.transition to @subagent.professional
             description: "Use professional business mode"
          
-         technical_mode: @utils.transition to @topic.technical
+         technical_mode: @utils.transition to @subagent.technical
             description: "Use technical support specialist mode"
          
-         creative_mode: @utils.transition to @topic.creative
+         creative_mode: @utils.transition to @subagent.creative
             description: "Use creative brainstorming mode"
 
-# TOPIC 1: General conversation (uses global system instructions)
-topic general:
+# SUBAGENT 1: General conversation (uses global system instructions)
+subagent general:
    description: "General friendly conversation"
 
    reasoning:
@@ -53,13 +53,13 @@ topic general:
              Depending on the user's response, switch to the appropriate mode using {!@actions.go_professional}, {!@actions.go_technical}, or {!@actions.go_creative}.
 
        actions:
-           go_professional: @utils.transition to @topic.professional
+           go_professional: @utils.transition to @subagent.professional
 
-           go_technical: @utils.transition to @topic.technical
+           go_technical: @utils.transition to @subagent.technical
 
-           go_creative: @utils.transition to @topic.creative
+           go_creative: @utils.transition to @subagent.creative
 
-topic professional:
+subagent professional:
    description: "Professional business communication"
 
    system:
@@ -76,9 +76,9 @@ topic professional:
              "How may I assist you professionally?"
 
        actions:
-           return_to_general: @utils.transition to @topic.general
+           return_to_general: @utils.transition to @subagent.general
 
-topic technical:
+subagent technical:
    description: "Technical support specialist"
 
    system:
@@ -95,9 +95,9 @@ topic technical:
              "How can I assist you with technical issues?"
 
        actions:
-           return_to_general: @utils.transition to @topic.general
+           return_to_general: @utils.transition to @subagent.general
 
-topic creative:
+subagent creative:
    description: "Creative brainstorming assistant"
 
    system:
@@ -114,4 +114,4 @@ topic creative:
              "What shall we dream up together?"
 
        actions:
-           return_to_general: @utils.transition to @topic.general
+           return_to_general: @utils.transition to @subagent.general

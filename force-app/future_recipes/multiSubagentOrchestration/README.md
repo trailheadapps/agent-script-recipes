@@ -1,31 +1,31 @@
-# MultiTopicOrchestration
+# MultiSubagentOrchestration
 
 ## Overview
 
-Master **complex multi-topic workflows** where an orchestrator topic coordinates multiple specialized topics. This travel booking example demonstrates building sophisticated agents with clear separation of concerns for flights, hotels, and car rentals.
+Master **complex multi-subagent workflows** where an orchestrator subagent coordinates multiple specialized subagents. This travel booking example demonstrates building sophisticated agents with clear separation of concerns for flights, hotels, and car rentals.
 
 ## Agent Flow
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Start] --> B[topic_selector]
+    A[Start] --> B[agent_router]
     B --> C[Transition to orchestrator]
-    C --> D[orchestrator Topic]
+    C --> D[orchestrator Subagent]
     D --> E{User Request}
     E -->|Book Flight| F[Transition to flight_booking]
     E -->|Book Hotel| G[Transition to hotel_booking]
     E -->|Book Car| H[Transition to car_booking]
     E -->|Complete| I[complete_booking Action]
-    F --> J[flight_booking Topic]
+    F --> J[flight_booking Subagent]
     J --> K[book_flight Action]
     K --> L[Set flight_booked = True]
     L --> D
-    G --> M[hotel_booking Topic]
+    G --> M[hotel_booking Subagent]
     M --> N[book_hotel Action]
     N --> O[Set hotel_booked = True]
     O --> D
-    H --> P[car_booking Topic]
+    H --> P[car_booking Subagent]
     P --> Q[book_car Action]
     Q --> R[Set car_booked = True]
     R --> D
@@ -35,20 +35,20 @@ graph TD
 
 ## Key Concepts
 
-- **Orchestrator pattern**: Central `orchestrator` topic as coordinator
-- **Specialized topics**: Domain-specific topics for each service
-- **State sharing**: Variables shared across all topics
+- **Orchestrator pattern**: Central `orchestrator` subagent as coordinator
+- **Specialized subagents**: Domain-specific subagents for each service
+- **State sharing**: Variables shared across all subagents
 - **Conditional completion**: Complete only when all services booked
-- **Return transitions**: Each topic returns to orchestrator
+- **Return transitions**: Each subagent returns to orchestrator
 
 ## How It Works
 
-### Orchestrator Topic
+### Orchestrator Subagent
 
 The central hub that manages navigation and tracks progress:
 
 ```agentscript
-topic orchestrator:
+subagent orchestrator:
    description: "Main orchestrator for travel booking workflow"
 
    reasoning:
@@ -67,11 +67,11 @@ topic orchestrator:
            What would you like to book first?
 
       actions:
-         start_flight_booking: @utils.transition to @topic.flight_booking
+         start_flight_booking: @utils.transition to @subagent.flight_booking
 
-         start_hotel_booking: @utils.transition to @topic.hotel_booking
+         start_hotel_booking: @utils.transition to @subagent.hotel_booking
 
-         start_car_booking: @utils.transition to @topic.car_booking
+         start_car_booking: @utils.transition to @subagent.car_booking
 
          complete_booking: @actions.send_itinerary
             available when @variables.flight_booked and @variables.hotel_booked and @variables.car_booked
@@ -82,10 +82,10 @@ topic orchestrator:
             set @variables.booking_complete = @outputs.sent
 ```
 
-### Specialized Topic: Flight Booking
+### Specialized Subagent: Flight Booking
 
 ```agentscript
-topic flight_booking:
+subagent flight_booking:
    description: "Handles flight booking workflow"
 
    reasoning:
@@ -108,13 +108,13 @@ topic flight_booking:
             set @variables.flight_confirmation = @outputs.confirmation_number
             set @variables.flight_booked = @outputs.success
             # Return to orchestrator after booking
-            transition to @topic.orchestrator
+            transition to @subagent.orchestrator
 ```
 
-### Specialized Topic: Hotel Booking
+### Specialized Subagent: Hotel Booking
 
 ```agentscript
-topic hotel_booking:
+subagent hotel_booking:
    description: "Handles hotel booking workflow"
 
    reasoning:
@@ -131,7 +131,7 @@ topic hotel_booking:
             set @variables.hotel_confirmation = @outputs.confirmation_number
             set @variables.hotel_booked = @outputs.success
             # Return to orchestrator
-            transition to @topic.orchestrator
+            transition to @subagent.orchestrator
 ```
 
 ## Key Code Snippets
@@ -185,7 +185,7 @@ Agent: Welcome to Travel Booking! I can help you book flights, hotels, and car r
 
 User: Book a flight
 
-[Transitions to flight_booking topic]
+[Transitions to flight_booking subagent]
 
 Agent: Let's book your flight! First, what's your name?
 
@@ -205,7 +205,7 @@ Agent: Welcome to Travel Booking!
 
 User: Hotel in London
 
-[Transitions to hotel_booking topic]
+[Transitions to hotel_booking subagent]
 ...
 
 [After all three are booked]
@@ -236,7 +236,7 @@ orchestrator → hotel_booking
              car_booking
 ```
 
-All specialized topics return to the central orchestrator.
+All specialized subagents return to the central orchestrator.
 
 ### Conditional Completion
 
@@ -250,9 +250,9 @@ available when @variables.flight_booked and @variables.hotel_booked and @variabl
 
 ✅ **Clear orchestrator** - Single entry point for coordination
 
-✅ **Specialized topics** - Each handles one domain
+✅ **Specialized subagents** - Each handles one domain
 
-✅ **Shared state** - Variables flow between topics
+✅ **Shared state** - Variables flow between subagents
 
 ✅ **Return transitions** - Always return to orchestrator
 
@@ -260,11 +260,11 @@ available when @variables.flight_booked and @variables.hotel_booked and @variabl
 
 ❌ **Don't skip orchestrator** - Keep flow centralized
 
-❌ **Don't deep nest** - Keep topic hierarchy flat
+❌ **Don't deep nest** - Keep subagent hierarchy flat
 
 ## What's Next
 
-- **TopicDelegation**: Learn consultation patterns
+- **SubagentDelegation**: Learn consultation patterns
 - **MultiStepWorkflows**: Combine with action chaining
 - **CustomerServiceAgent**: See orchestration in a complete agent
 
@@ -273,12 +273,12 @@ available when @variables.flight_booked and @variables.hotel_booked and @variabl
 ### Test Case 1: Sequential Booking
 
 - Book flight → return → book hotel → return → book car
-- Verify state persists across topics
+- Verify state persists across subagents
 - Confirm complete_booking available after all three
 
 ### Test Case 2: Data Flow
 
-- Set values in specialized topics
+- Set values in specialized subagents
 - Verify shared variables update correctly
 
 ### Test Case 3: Partial Booking

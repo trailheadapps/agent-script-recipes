@@ -36,16 +36,16 @@ variables:
    recommended_actions: mutable object = {}
       description: "AI-generated list of recommended next actions for the customer"
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin providing intelligent insights"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         view_insights: @utils.transition to @topic.intelligent_insights
+         view_insights: @utils.transition to @subagent.intelligent_insights
 
-topic intelligent_insights:
+subagent intelligent_insights:
    description: "Provides intelligent insights by synthesizing multiple data sources including your profile, account data, order history, and support tickets. Let me know your customer ID to load your complete customer intelligence dashboard."
 
    reasoning:

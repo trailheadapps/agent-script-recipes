@@ -153,10 +153,10 @@ variables:
       description: "Number of interactions in this session"
 ```
 
-### Complete Topic with Context Usage
+### Complete Subagent with Context Usage
 
 ```agentscript
-topic personalized_service:
+subagent personalized_service:
    description: "Provides personalized service using context data"
 
    actions:

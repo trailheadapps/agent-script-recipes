@@ -28,7 +28,7 @@ graph TD
 
 ## Key Concepts
 
-- **Actions block**: Where external capabilities are defined within a topic
+- **Actions block**: Where external capabilities are defined within a subagent
 - **Action structure**: description, inputs, outputs, target
 - **Action targets**: `flow://` for Flows, `apex://` for Apex classes
 - **Input binding**: Specifying action parameters with `with`
@@ -91,12 +91,12 @@ target: "apex://WeatherAlertService"
 - Class name follows `apex://`
 - Use for custom server-side logic
 
-### Defining Actions in Topics
+### Defining Actions in Subagents
 
-Actions are defined in the `actions:` block within a topic:
+Actions are defined in the `actions:` block within a subagent:
 
 ```agentscript
-topic weather_lookup:
+subagent weather_lookup:
    description: "Looks up and reports weather information"
 
    actions:

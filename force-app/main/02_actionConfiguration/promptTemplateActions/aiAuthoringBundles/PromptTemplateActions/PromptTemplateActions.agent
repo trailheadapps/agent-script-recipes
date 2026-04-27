@@ -14,17 +14,17 @@ config:
     agent_type: "AgentforceEmployeeAgent"
     description: "Provides guidance to guests by creating personalized schedules."
 
-start_agent topic_selector:
+start_agent agent_router:
     description: "Welcome users and begin providing personalized scheduling guidance."
 
     reasoning:
         instructions:|
             Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
         actions:
-            generate_schedule: @utils.transition to @topic.schedule_generation
+            generate_schedule: @utils.transition to @subagent.schedule_generation
                 description: "Route here for any scheduling request — no prior input needed before routing"
 
-topic schedule_generation:
+subagent schedule_generation:
     description: "Generates a personalized schedule of experiences — all required information is retrieved automatically from Salesforce; do not ask the user about goals, preferences, or interests before generating."
 
     reasoning:

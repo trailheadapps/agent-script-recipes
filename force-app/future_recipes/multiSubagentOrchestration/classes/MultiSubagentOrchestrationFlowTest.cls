@@ -1,9 +1,9 @@
 /**
- * @description Test class for Multi-Topic Orchestration Flows
- * Tests all flows used in the multi-topic orchestration recipe
+ * @description Test class for Multi-Subagent Orchestration Flows
+ * Tests all flows used in the multi-subagent orchestration recipe
  */
 @IsTest
-private class MultiTopicOrchestrationFlowTest {
+private class MultiSubagentOrchestrationFlowTest {
     @IsTest
     static void testBookFlight() {
         // Set input variables for the flow

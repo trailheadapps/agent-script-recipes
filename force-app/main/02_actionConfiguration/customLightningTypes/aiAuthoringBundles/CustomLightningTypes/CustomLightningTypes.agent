@@ -17,17 +17,17 @@ system:
       error: "Something went wrong while processing your case. Please try again."
    instructions: "You are a support assistant that helps users submit structured support cases using a custom form."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and route to case submission"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_case_submission: @utils.transition to @topic.case_submission
+         begin_case_submission: @utils.transition to @subagent.case_submission
             description: "Route to case submission. Call for case-related requests and ACTION_CONFIRM messages."
 
-topic case_submission:
+subagent case_submission:
    description: "Collects case details via a CLT form and displays the created case"
 
    reasoning:

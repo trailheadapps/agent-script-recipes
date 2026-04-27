@@ -2,14 +2,14 @@
 
 ## Overview
 
-Master **context-specific action descriptions** to improve LLM action selection. Learn how to define different action descriptions for different topics based on user expertise, context, and conversation state for more accurate tool calling.
+Master **context-specific action descriptions** to improve LLM action selection. Learn how to define different action descriptions for different subagents based on user expertise, context, and conversation state for more accurate tool calling.
 
 ## Agent Flow
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
 graph TD
-    A[Agent Starts] --> B[start_agent: topic_selector]
+    A[Agent Starts] --> B[start_agent: agent_router]
     B --> C{User Mode Selection}
     C -->|Beginner| D[Transition to beginner_mode]
     C -->|Advanced| E[Transition to advanced_mode]
@@ -30,20 +30,20 @@ graph TD
 
 ## Key Concepts
 
-- **Topic-level action definitions**: Each topic can define actions with different descriptions
+- **Subagent-level action definitions**: Each subagent can define actions with different descriptions
 - **Context-aware descriptions**: Adapt descriptions to user level and search context
 - **Expertise-based descriptions**: Different detail levels for beginners vs advanced users
-- **Mode switches**: Each topic exposes transitions (e.g., `switch_to_advanced`, `switch_to_beginner`) to change modes
+- **Mode switches**: Each subagent exposes transitions (e.g., `switch_to_advanced`, `switch_to_beginner`) to change modes
 - **Improved LLM selection**: Better descriptions = better tool choices
 
 ## How It Works
 
-### Base Action Definition in Topic
+### Base Action Definition in Subagent
 
-Each topic defines its own version of actions with appropriate descriptions:
+Each subagent defines its own version of actions with appropriate descriptions:
 
 ```agentscript
-topic beginner_mode:
+subagent beginner_mode:
    description: "Simplified interface for beginners"
 
    actions:
@@ -61,20 +61,20 @@ topic beginner_mode:
          target: "flow://PerformSearch"
 ```
 
-### Different Descriptions Per Topic
+### Different Descriptions Per Subagent
 
-The same underlying action can have different descriptions in different topics:
+The same underlying action can have different descriptions in different subagents:
 
 ```agentscript
 # Beginner mode - simple descriptions
-topic beginner_mode:
+subagent beginner_mode:
    actions:
       perform_search:
          description: "Search the knowledge base"
          ...
 
 # Advanced mode - detailed technical descriptions
-topic advanced_mode:
+subagent advanced_mode:
    actions:
       perform_search:
          description: "Execute knowledge base query with advanced filters (supports: type, date range, tags, custom fields). Returns paginated results with relevance scoring."
@@ -86,12 +86,12 @@ topic advanced_mode:
          ...
 ```
 
-### Context-Aware Search Topic
+### Context-Aware Search Subagent
 
-The `contextual_search` topic uses context-specific descriptions for the same `perform_search` action. The reasoning layer exposes a single `contextual_search` action that invokes `perform_search`:
+The `contextual_search` subagent uses context-specific descriptions for the same `perform_search` action. The reasoning layer exposes a single `contextual_search` action that invokes `perform_search`:
 
 ```agentscript
-topic contextual_search:
+subagent contextual_search:
    reasoning:
       actions:
          contextual_search: @actions.perform_search
@@ -101,30 +101,30 @@ topic contextual_search:
 
 ## Key Code Snippets
 
-### Topic Selector (Entry Point)
+### Agent Router (Entry Point)
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and determine their expertise level"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         beginner_mode: @utils.transition to @topic.beginner_mode
+         beginner_mode: @utils.transition to @subagent.beginner_mode
             description: "Use simplified interface for beginners. Choose this for general questions or when no specific search context (like Accounts or Cases) is mentioned."
 
-         advanced_mode: @utils.transition to @topic.advanced_mode
+         advanced_mode: @utils.transition to @subagent.advanced_mode
             description: "Use full technical interface for advanced users. Choose this when the user uses technical terms, asks for specific filters, or complex operations."
 
-         contextual_mode: @utils.transition to @topic.contextual_search
+         contextual_mode: @utils.transition to @subagent.contextual_search
             description: "Use context-aware search. Choose this ONLY when the user explicitly searches for specific business objects like Accounts, Contacts, or Cases."
 ```
 
 ### Beginner Mode with Simple Descriptions
 
 ```agentscript
-topic beginner_mode:
+subagent beginner_mode:
    description: "Simplified interface for beginners"
 
    actions:
@@ -152,13 +152,13 @@ topic beginner_mode:
             with query=...
             with filters=...
 
-         switch_to_advanced: @utils.transition to @topic.advanced_mode
+         switch_to_advanced: @utils.transition to @subagent.advanced_mode
 ```
 
 ### Advanced Mode with Technical Descriptions
 
 ```agentscript
-topic advanced_mode:
+subagent advanced_mode:
    description: "Full-featured interface for advanced users"
 
    actions:
@@ -186,13 +186,13 @@ topic advanced_mode:
             with query=...
             with filters=...
 
-         switch_to_beginner: @utils.transition to @topic.beginner_mode
+         switch_to_beginner: @utils.transition to @subagent.beginner_mode
 ```
 
 ### Context-Aware Search Actions
 
 ```agentscript
-topic contextual_search:
+subagent contextual_search:
    description: "Search with context-specific descriptions"
 
    actions:
@@ -257,8 +257,8 @@ Agent: [Calls perform_search with query="API" and complex filters]
 ```text
 User: I want to search for Accounts
 
-[Topic selector: user chose contextual_mode]
-Agent transitions to contextual_search topic
+[Subagent selector: user chose contextual_mode]
+Agent transitions to contextual_search subagent
 
 Agent sees action:
   contextual_search: "Search the knowledge base" (with context-specific descriptions)
@@ -351,7 +351,7 @@ Test description effectiveness:
 ### Test Case 3: Contextual Mode
 
 - Ask to search for Accounts, Contacts, or Cases
-- Verify topic selector routes to contextual_search
+- Verify subagent selector routes to contextual_search
 - Check contextual_search action is used
 
 ### Test Case 4: Ambiguous Request

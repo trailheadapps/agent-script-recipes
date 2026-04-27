@@ -35,17 +35,17 @@ system:
 
    instructions: "You are a task management assistant. Help users stay organized and productive."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin task management"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_task_management: @utils.transition to @topic.task_management
+         begin_task_management: @utils.transition to @subagent.task_management
             description: "Start managing tasks with complex state operations"
 
-topic task_management:
+subagent task_management:
    description: "Manages complex task list with state operations"
 
    actions:

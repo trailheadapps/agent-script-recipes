@@ -1,5 +1,5 @@
 # SimpleQA - Focused Question & Answer Agent
-# Demonstrates creating a single-topic Q&A agent with clear instructions and knowledge retrieval
+# Demonstrates creating a single-subagent Q&A agent with clear instructions and knowledge retrieval
 
 config:
    developer_name: "SimpleQA"
@@ -17,19 +17,19 @@ system:
    # Keep these focused on personality, not specific tasks
    instructions: "You are a knowledgeable product specialist who helps customers understand products and services. Be clear, concise, and helpful. If you don't know something, admit it honestly."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin answering their product questions"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start_qa: @utils.transition to @topic.product_qa
+         start_qa: @utils.transition to @subagent.product_qa
             description: "Begin product question and answer session"
 
-# Single topic agent pattern: One topic handles all interactions
+# Single subagent agent pattern: One subagent handles all interactions
 # This is appropriate for focused agents with a single purpose
-topic product_qa:
+subagent product_qa:
    description: "Answers questions about products, features, pricing, and availability"
 
    # Actions block: Define external tools the agent can use

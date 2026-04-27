@@ -25,17 +25,17 @@ system:
 
    instructions: "You are a helpful weather assistant. Provide accurate weather information for user-requested locations."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin providing weather information"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_weather_lookup: @utils.transition to @topic.weather_lookup
+         begin_weather_lookup: @utils.transition to @subagent.weather_lookup
             description: "Start helping with weather information"
 
-topic weather_lookup:
+subagent weather_lookup:
    description: "Looks up and reports weather information"
 
    # Actions block: Define external capabilities the agent can use

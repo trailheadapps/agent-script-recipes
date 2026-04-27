@@ -59,18 +59,18 @@ system:
 
    instructions: "You are a customer service agent. Classify issues, provide solutions from the knowledge base, create cases, and escalate when needed. Be empathetic, professional, and solution-oriented."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome customers and begin issue triage and resolution"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_triage: @utils.transition to @topic.triage
+         begin_triage: @utils.transition to @subagent.triage
             description: "Start the customer service triage process"
 
-# TOPIC 1: Initial Triage
-topic triage:
+# SUBAGENT 1: Initial Triage
+subagent triage:
    description: "Initial customer interaction and issue triage"
 
    actions:
@@ -210,10 +210,10 @@ topic triage:
             set @variables.issue_type = @outputs.issue_type
             set @variables.issue_priority = @outputs.priority
             # Transition to resolution workflow
-            transition to @topic.resolution
+            transition to @subagent.resolution
 
-# TOPIC 2: Resolution Workflow
-topic resolution:
+# SUBAGENT 2: Resolution Workflow
+subagent resolution:
    description: "Attempt to resolve issue using knowledge base"
 
    actions:
@@ -296,15 +296,15 @@ topic resolution:
                set @variables.case_status = "in_progress"
 
          # If KB solution found, present it
-         present_solution: @utils.transition to @topic.solution_presentation
+         present_solution: @utils.transition to @subagent.solution_presentation
             available when @variables.kb_article_found
 
          # If no KB solution, escalate
-         escalate_to_specialist: @utils.transition to @topic.escalation
+         escalate_to_specialist: @utils.transition to @subagent.escalation
             available when not @variables.kb_article_found
 
-# TOPIC 3: Solution Presentation
-topic solution_presentation:
+# SUBAGENT 3: Solution Presentation
+subagent solution_presentation:
    description: "Present solution and verify resolution"
 
    actions:
@@ -339,13 +339,13 @@ topic solution_presentation:
             set @variables.issue_resolved = True
             set @variables.case_status = "resolved"
             # Transition to closure
-            transition to @topic.closure
+            transition to @subagent.closure
 
          # Need more help - escalate
-         need_more_help: @utils.transition to @topic.escalation
+         need_more_help: @utils.transition to @subagent.escalation
 
-# TOPIC 4: Escalation
-topic escalation:
+# SUBAGENT 4: Escalation
+subagent escalation:
    description: "Escalate complex issues to specialists"
 
    actions:
@@ -405,10 +405,10 @@ topic escalation:
                set @variables.case_status = "escalated"
 
             # Transition to closure
-            transition to @topic.closure
+            transition to @subagent.closure
 
-# TOPIC 5: Closure
-topic closure:
+# SUBAGENT 5: Closure
+subagent closure:
    description: "Close conversation and collect feedback"
 
    actions:
@@ -451,4 +451,4 @@ topic closure:
             with case_id=@variables.case_id
 
          # Start new issue
-         new_issue: @utils.transition to @topic.triage
+         new_issue: @utils.transition to @subagent.triage
