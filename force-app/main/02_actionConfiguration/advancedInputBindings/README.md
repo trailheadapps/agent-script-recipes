@@ -115,20 +115,27 @@ subagent report_generation:
          inputs:
             report_type: string
                description: "Type of report to generate (e.g., sales, analytics, performance, financial)"
+               is_required: True
             start_date: object
                description: "Report start date in ISO format (YYYY-MM-DD) defining the beginning of the data range"
                complex_data_type_name: "lightning__dateType"
+               is_required: True
             end_date: object
                description: "Report end date in ISO format (YYYY-MM-DD) defining the end of the data range"
                complex_data_type_name: "lightning__dateType"
+               is_required: True
             user_id: string
                description: "The unique identifier of the user generating the report (for access control and audit)"
+               is_required: True
             format: string
                description: "Output format for the report (pdf, csv, excel, or html)"
+               is_required: False
             include_charts: boolean
                description: "Whether to include visual charts and graphs in the report output"
+               is_required: False
             options: string
                description: "Additional report configuration options such as filters, groupings, and custom parameters"
+               is_required: False
          outputs:
             report_url: string
                description: "URL where the generated report can be accessed or downloaded"

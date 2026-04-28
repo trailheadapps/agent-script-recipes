@@ -151,6 +151,7 @@ subagent task_management:
          inputs:
             tasks: list[object]
                description: "List of task objects to persist"
+               is_required: True
          outputs:
             success: boolean
                description: "Indicates whether tasks were saved"
@@ -163,6 +164,7 @@ subagent task_management:
          inputs:
             tasks: list[object]
                description: "List of task objects to calculate stats from"
+               is_required: True
          outputs:
             stats: object
                description: "Statistics object with completed, pending, rate"
