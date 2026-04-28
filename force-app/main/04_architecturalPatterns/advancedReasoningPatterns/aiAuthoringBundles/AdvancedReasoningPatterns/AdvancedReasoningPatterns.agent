@@ -141,6 +141,7 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose profile to fetch"
+               is_required: False
          outputs:
             profile: object
                description: "User profile object containing name, contact information, and account details"
@@ -152,6 +153,7 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose account data to retrieve"
+               is_required: False
          outputs:
             account: object
                description: "Account object with account status, balance, and membership information"
@@ -163,8 +165,10 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose order history to fetch"
+               is_required: False
             limit: number
                description: "Maximum number of recent orders to return (e.g., 10 for last 10 orders)"
+               is_required: False
          outputs:
             orders: list[object]
                description: "List of order objects containing order ID, date, amount, and items for each order"
@@ -176,6 +180,7 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose support history to retrieve"
+               is_required: False
          outputs:
             tickets: list[object]
                description: "List of support ticket objects with ticket ID, status, issue type, and resolution details"
@@ -187,9 +192,11 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the customer to calculate value for"
+               is_required: False
             orders: list[object]
                description: "List of customer's order history objects used for CLV calculation"
                complex_data_type_name: "lightning__recordInfoType"
+               is_required: False
          outputs:
             clv: number
                description: "Calculated customer lifetime value as a monetary amount"
@@ -203,12 +210,15 @@ subagent intelligent_insights:
             account: object
                description: "Customer account object with status and activity information"
                complex_data_type_name: "lightning__recordInfoType"
+               is_required: False
             orders: list[object]
                description: "List of customer orders used to analyze purchase patterns and frequency"
                complex_data_type_name: "lightning__recordInfoType"
+               is_required: False
             support_tickets: list[object]
                description: "List of support tickets used to identify potential dissatisfaction indicators"
                complex_data_type_name: "lightning__recordInfoType"
+               is_required: False
          outputs:
             risk_score: number
                description: "Churn risk score as a decimal between 0.0 (low risk) and 1.0 (high risk)"
@@ -223,10 +233,13 @@ subagent intelligent_insights:
             profile: object
                description: "Customer profile object with preferences and demographic information"
                complex_data_type_name: "lightning__recordInfoType"
+               is_required: False
             clv: number
                description: "Customer lifetime value used to tailor recommendations appropriately"
+               is_required: False
             churn_risk: number
                description: "Churn risk score (0.0-1.0) used to prioritize retention-focused recommendations"
+               is_required: False
          outputs:
             recommendations: list[object]
                description: "List of personalized action recommendations for engaging and retaining the customer"

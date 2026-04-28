@@ -82,12 +82,16 @@ subagent orchestrator:
          inputs:
             departure: string
                description: "Departure city or airport code"
+               is_required: True
             destination: string
                description: "Destination city or airport code"
+               is_required: True
             travel_date: string
                description: "Flight date in ISO format (YYYY-MM-DD)"
+               is_required: True
             traveler: string
                description: "Name of the traveler for the flight booking"
+               is_required: True
          outputs:
             confirmation_number: string
                description: "Flight booking confirmation number"
@@ -100,12 +104,16 @@ subagent orchestrator:
          inputs:
             city: string
                description: "City where the hotel is located"
+               is_required: True
             checkin: string
                description: "Hotel check-in date in ISO format (YYYY-MM-DD)"
+               is_required: True
             checkout: string
                description: "Hotel check-out date in ISO format (YYYY-MM-DD)"
+               is_required: True
             guest_name: string
                description: "Name of the guest for the hotel reservation"
+               is_required: True
          outputs:
             confirmation_number: string
                description: "Hotel booking confirmation number"
@@ -118,12 +126,16 @@ subagent orchestrator:
          inputs:
             city: string
                description: "City where the rental car will be picked up"
+               is_required: True
             start_date: string
                description: "Car rental start date in ISO format (YYYY-MM-DD)"
+               is_required: True
             end_date: string
                description: "Car rental end date in ISO format (YYYY-MM-DD)"
+               is_required: True
             renter_name: string
                description: "Name of the person renting the car"
+               is_required: True
          outputs:
             confirmation_number: string
                description: "Car rental confirmation number"
@@ -136,12 +148,16 @@ subagent orchestrator:
          inputs:
             email: string
                description: "Email address to send the complete travel itinerary to"
+               is_required: True
             flight_conf: string
                description: "Flight booking confirmation number to include in itinerary"
+               is_required: True
             hotel_conf: string
                description: "Hotel booking confirmation number to include in itinerary"
+               is_required: True
             car_conf: string
                description: "Car rental confirmation number to include in itinerary"
+               is_required: True
          outputs:
             sent: boolean
                description: "Indicates whether the itinerary email was sent successfully"
@@ -191,12 +207,16 @@ subagent flight_booking:
          inputs:
             departure: string
                description: "Departure city or airport code"
+               is_required: True
             destination: string
                description: "Destination city or airport code"
+               is_required: True
             travel_date: string
                description: "Flight date in ISO format (YYYY-MM-DD)"
+               is_required: True
             traveler: string
                description: "Name of the traveler for the flight booking"
+               is_required: True
          outputs:
             confirmation_number: string
                description: "Flight booking confirmation number"
@@ -240,12 +260,16 @@ subagent hotel_booking:
          inputs:
             city: string
                description: "City where the hotel is located"
+               is_required: True
             checkin: string
                description: "Hotel check-in date in ISO format (YYYY-MM-DD)"
+               is_required: True
             checkout: string
                description: "Hotel check-out date in ISO format (YYYY-MM-DD)"
+               is_required: True
             guest_name: string
                description: "Name of the guest for the hotel reservation"
+               is_required: True
          outputs:
             confirmation_number: string
                description: "Hotel booking confirmation number"
@@ -287,12 +311,16 @@ subagent car_booking:
          inputs:
             city: string
                description: "City where the rental car will be picked up"
+               is_required: True
             start_date: string
                description: "Car rental start date in ISO format (YYYY-MM-DD)"
+               is_required: True
             end_date: string
                description: "Car rental end date in ISO format (YYYY-MM-DD)"
+               is_required: True
             renter_name: string
                description: "Name of the person renting the car"
+               is_required: True
          outputs:
             confirmation_number: string
                description: "Car rental confirmation number"

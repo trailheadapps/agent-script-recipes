@@ -79,6 +79,7 @@ subagent triage:
          inputs:
             customer_id: string
                description: "The unique identifier of the customer to fetch information for"
+               is_required: True
          outputs:
             name: string
                description: "Customer's full name"
@@ -93,6 +94,7 @@ subagent triage:
          inputs:
             issue_description: string
                description: "The customer's description of their issue or problem"
+               is_required: True
          outputs:
             issue_type: string
                description: "Classified issue type (e.g., billing, technical, account, product)"
@@ -107,8 +109,10 @@ subagent triage:
          inputs:
             issue_type: string
                description: "The classified type of issue to search solutions for"
+               is_required: True
             keywords: string
                description: "Keywords extracted from the issue description for refined search"
+               is_required: True
          outputs:
             articles: list[object]
                description: "List of knowledge base article objects matching the search criteria"
@@ -121,14 +125,19 @@ subagent triage:
          inputs:
             customer_id: string
                description: "The unique identifier of the customer the case is for"
+               is_required: True
             subject: string
                description: "Brief subject line summarizing the case"
+               is_required: True
             case_description: string
                description: "Detailed description of the customer's issue"
+               is_required: True
             priority: string
                description: "Priority level of the case (low, medium, high, urgent)"
+               is_required: True
             issue_type: string
                description: "The classified type of issue (billing, technical, account, product)"
+               is_required: True
          outputs:
             case_id: string
                description: "Unique identifier assigned to the newly created case"
@@ -141,10 +150,13 @@ subagent triage:
          inputs:
             case_id: string
                description: "The unique identifier of the case to update"
+               is_required: True
             status: string
                description: "New status for the case (new, in_progress, resolved, escalated, closed)"
+               is_required: True
             notes: string
                description: "Notes or comments about the case update"
+               is_required: False
          outputs:
             updated: boolean
                description: "Indicates whether the case was updated successfully"
@@ -155,10 +167,13 @@ subagent triage:
          inputs:
             case_id: string
                description: "The unique identifier of the case to escalate"
+               is_required: True
             reason: string
                description: "Reason for escalation (e.g., complex issue, customer request, policy exception)"
+               is_required: True
             specialist_team: string
                description: "The specialist team to escalate to based on issue type"
+               is_required: True
          outputs:
             escalated: boolean
                description: "Indicates whether the case was escalated successfully"
@@ -171,8 +186,10 @@ subagent triage:
          inputs:
             customer_email: string
                description: "Email address to send the satisfaction survey to"
+               is_required: True
             case_id: string
                description: "The case ID to associate with the survey response"
+               is_required: True
          outputs:
             sent: boolean
                description: "Indicates whether the satisfaction survey was sent successfully"
@@ -222,8 +239,10 @@ subagent resolution:
          inputs:
             issue_type: string
                description: "The classified type of issue to search solutions for"
+               is_required: True
             keywords: string
                description: "Keywords extracted from the issue description for refined search"
+               is_required: True
          outputs:
             articles: list[object]
                description: "List of knowledge base article objects matching the search criteria"
@@ -236,14 +255,19 @@ subagent resolution:
          inputs:
             customer_id: string
                description: "The unique identifier of the customer the case is for"
+               is_required: True
             subject: string
                description: "Brief subject line summarizing the case"
+               is_required: True
             case_description: string
                description: "Detailed description of the customer's issue"
+               is_required: True
             priority: string
                description: "Priority level of the case (low, medium, high, urgent)"
+               is_required: True
             issue_type: string
                description: "The classified type of issue (billing, technical, account, product)"
+               is_required: True
          outputs:
             case_id: string
                description: "Unique identifier assigned to the newly created case"
@@ -256,10 +280,13 @@ subagent resolution:
          inputs:
             case_id: string
                description: "The unique identifier of the case to update"
+               is_required: True
             status: string
                description: "New status for the case (new, in_progress, resolved, escalated, closed)"
+               is_required: True
             notes: string
                description: "Notes or comments about the case update"
+               is_required: False
          outputs:
             updated: boolean
                description: "Indicates whether the case was updated successfully"
@@ -313,10 +340,13 @@ subagent solution_presentation:
          inputs:
             case_id: string
                description: "The unique identifier of the case to update"
+               is_required: True
             status: string
                description: "New status for the case (new, in_progress, resolved, escalated, closed)"
+               is_required: True
             notes: string
                description: "Notes or comments about the case update"
+               is_required: False
          outputs:
             updated: boolean
                description: "Indicates whether the case was updated successfully"
@@ -354,10 +384,13 @@ subagent escalation:
          inputs:
             case_id: string
                description: "The unique identifier of the case to escalate"
+               is_required: True
             reason: string
                description: "Reason for escalation (e.g., complex issue, customer request, policy exception)"
+               is_required: True
             specialist_team: string
                description: "The specialist team to escalate to based on issue type"
+               is_required: True
          outputs:
             escalated: boolean
                description: "Indicates whether the case was escalated successfully"
@@ -370,10 +403,13 @@ subagent escalation:
          inputs:
             case_id: string
                description: "The unique identifier of the case to update"
+               is_required: True
             status: string
                description: "New status for the case (new, in_progress, resolved, escalated, closed)"
+               is_required: True
             notes: string
                description: "Notes or comments about the case update"
+               is_required: False
          outputs:
             updated: boolean
                description: "Indicates whether the case was updated successfully"
@@ -417,8 +453,10 @@ subagent closure:
          inputs:
             customer_email: string
                description: "Email address to send the satisfaction survey to"
+               is_required: True
             case_id: string
                description: "The case ID to associate with the survey response"
+               is_required: True
          outputs:
             sent: boolean
                description: "Indicates whether the satisfaction survey was sent successfully"

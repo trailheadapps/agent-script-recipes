@@ -133,8 +133,10 @@ actions:
         inputs:
             email: string
                 description: "Customer's email address for account registration and verification"
+                is_required: True
             name: string
                 description: "Customer's full name for the account"
+                is_required: True
         outputs:
             customer_id: string
                 description: "Unique identifier assigned to the newly created customer account"
@@ -149,8 +151,10 @@ actions:
         inputs:
             customer_id: string
                 description: "The unique identifier of the customer to send verification email to"
+                is_required: True
             email: string
                 description: "The email address where the verification link will be sent"
+                is_required: True
         outputs:
             token: string
                 description: "Verification token generated for email confirmation"
@@ -163,8 +167,10 @@ actions:
         inputs:
             customer_id: string
                 description: "The unique identifier of the customer whose profile to set up"
+                is_required: True
             preferences: string
                 description: "Customer preferences as JSON object"
+                is_required: True
         outputs:
             profile_id: string
                 description: "Unique identifier for the newly created customer profile"
@@ -177,8 +183,10 @@ actions:
         inputs:
             customer_id: string
                 description: "The unique identifier of the customer whose settings to configure"
+                is_required: True
             settings: string
                 description: "Account privacy settings as JSON object"
+                is_required: True
         outputs:
             success: boolean
                 description: "Indicates whether the privacy settings were configured successfully"
@@ -189,6 +197,7 @@ actions:
         inputs:
             customer_id: string
                 description: "The unique identifier of the customer to finalize onboarding for"
+                is_required: True
         outputs:
             success: boolean
                 description: "Indicates whether onboarding was finalized successfully"

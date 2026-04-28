@@ -125,10 +125,13 @@ subagent hotel_browse:
          inputs:
             location: string
                description: "City or location to search for hotels in"
+               is_required: True
             check_in: string
                description: "Check-in date in ISO format (YYYY-MM-DD)"
+               is_required: True
             check_out: string
                description: "Check-out date in ISO format (YYYY-MM-DD)"
+               is_required: True
          outputs:
             hotels: list[object]
                description: "List of available hotel objects with name, price, rating, and amenities information"
@@ -167,10 +170,13 @@ subagent hotel_booking:
          inputs:
             hotel_name: string
                description: "Name of the hotel to book"
+               is_required: True
             check_in: string
                description: "Check-in date in ISO format (YYYY-MM-DD)"
+               is_required: True
             check_out: string
                description: "Check-out date in ISO format (YYYY-MM-DD)"
+               is_required: True
          outputs:
             booking_id: string
                description: "Unique booking confirmation identifier"

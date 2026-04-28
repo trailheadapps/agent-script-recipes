@@ -106,6 +106,7 @@ actions:
       inputs:
          product_name: string
             description: "Name of the product to look up information for"
+            is_required: True
       outputs:
          product_details: string
             description: "Detailed product information including features, specifications, and description"

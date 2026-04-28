@@ -74,6 +74,7 @@ subagent technical_specialist:
          inputs:
             issue_description: string
                description: "Detailed description of the technical issue to analyze"
+               is_required: True
          outputs:
             assessment: string
                description: "Technical assessment and diagnosis of the issue"
@@ -108,8 +109,10 @@ subagent billing_specialist:
          inputs:
             issue_description: string
                description: "Description of the billing issue or inquiry"
+               is_required: True
             customer_id: string
                description: "The unique identifier of the customer"
+               is_required: True
          outputs:
             analysis: string
                description: "Analysis of the billing issue"

@@ -51,8 +51,10 @@ subagent shopping_assistant:
          inputs:
             item_name: string
                description: "Name of the product item to add to the cart"
+               is_required: True
             price: number
                description: "Price of the item being added to the cart"
+               is_required: True
          outputs:
             success: boolean
                description: "Indicates whether the item was added to the cart successfully"
@@ -65,8 +67,10 @@ subagent shopping_assistant:
          inputs:
             budget: number
                description: "Customer's budget to tailor recommendations within their price range"
+               is_required: True
             product_name: string
                description: "The type of product to search for by name"
+               is_required: True
          outputs:
             recommendations: list[string]
                description: "List of personalized product recommendations matching budget and preferences"
