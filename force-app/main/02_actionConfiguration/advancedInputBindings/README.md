@@ -103,10 +103,10 @@ actions:
 
 ## Key Code Snippets
 
-### Complete Topic with All Patterns
+### Complete Subagent with All Patterns
 
 ```agentscript
-topic report_generation:
+subagent report_generation:
    description: "Generates reports with various input binding patterns"
 
    actions:

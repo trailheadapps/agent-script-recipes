@@ -1,9 +1,9 @@
 /**
- * @description Test class for Multi-Topic Navigation Flows
- * Tests all flows used in the multi-topic navigation recipe
+ * @description Test class for Multi-Subagent Navigation Flows
+ * Tests all flows used in the multi-subagent navigation recipe
  */
 @IsTest
-private class MultiTopicNavigationFlowTest {
+private class MultiSubagentNavigationFlowTest {
     @TestSetup
     static void setup() {
         // Create test hotel records

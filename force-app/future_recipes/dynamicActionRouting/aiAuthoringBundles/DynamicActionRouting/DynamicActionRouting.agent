@@ -29,16 +29,16 @@ variables:
    requires_escalation: mutable boolean = False
        description: "Whether ticket needs supervisor escalation"
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin managing support tickets"
 
    reasoning:
     instructions:|
         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
        actions:
-           manage_tickets: @utils.transition to @topic.ticket_management
+           manage_tickets: @utils.transition to @subagent.ticket_management
 
-topic ticket_management:
+subagent ticket_management:
    description: "Manages support tickets with context-aware actions. Available actions depend on ticket status, priority level, and your role/permissions. Let me know which ticket you'd like to work with."
 
    reasoning:

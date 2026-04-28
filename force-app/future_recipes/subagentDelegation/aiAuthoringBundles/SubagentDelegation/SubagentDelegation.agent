@@ -1,11 +1,11 @@
-# TopicDelegation
-# Demonstrates how to call a topic as a tool (delegation) rather than transitioning to it
+# SubagentDelegation
+# Demonstrates how to call a subagent as a tool (delegation) rather than transitioning to it
 
 config:
-   developer_name: "TopicDelegation"
-   agent_label: "TopicDelegation"
+   developer_name: "SubagentDelegation"
+   agent_label: "SubagentDelegation"
    agent_type: "AgentforceEmployeeAgent"
-   description: "Demonstrates calling topics as tools"
+   description: "Demonstrates calling subagents as tools"
 
 variables:
    user_id: mutable string = "user123"
@@ -16,17 +16,17 @@ system:
       error: "Something went wrong."
    instructions: "You are a helpful assistant."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Main entry point"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start: @utils.transition to @topic.general_support
+         start: @utils.transition to @subagent.general_support
 
-topic general_support:
-   description: "General support topic that delegates to specialist"
+subagent general_support:
+   description: "General support subagent that delegates to specialist"
    
    reasoning:
       instructions:->
@@ -36,15 +36,15 @@ topic general_support:
            I will wait for the specialist to finish and then I'll summarize their findings for you.
 
       actions:
-         # Topic Delegation Pattern
-         # This calls the specialist topic as a sub-function/tool
-         # Control returns here automatically after the specialist topic finishes
-         consult_specialist: @topic.specialist_topic
+         # Subagent Delegation Pattern
+         # This calls the specialist subagent as a sub-function/tool
+         # Control returns here automatically after the specialist subagent finishes
+         consult_specialist: @subagent.specialist
             description: "Consult the specialist for complex account issues"
             available when @variables.user_id != ""
 
-topic specialist_topic:
-   description: "Specialist topic for deep analysis"
+subagent specialist:
+   description: "Specialist subagent for deep analysis"
    
    actions:
       analyze_account:

@@ -139,10 +139,10 @@ variables:
       description: "Auto-incrementing task ID"
 ```
 
-### Topic with State Operations
+### Subagent with State Operations
 
 ```agentscript
-topic task_management:
+subagent task_management:
    description: "Manages complex task list with state operations"
 
    actions:

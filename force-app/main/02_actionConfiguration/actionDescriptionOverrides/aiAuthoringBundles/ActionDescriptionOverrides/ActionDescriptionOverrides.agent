@@ -17,24 +17,24 @@ system:
       error: "I had trouble performing the action. Please try again."
    instructions: "You adapt action descriptions based on user expertise and context. If the user's intent is unclear, start with the beginner interface."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and determine their expertise level"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         beginner_mode: @utils.transition to @topic.beginner_mode
+         beginner_mode: @utils.transition to @subagent.beginner_mode
             description: "Use simplified interface for beginners. Choose this for general questions or when no specific search context (like Accounts or Cases) is mentioned."
          
-         advanced_mode: @utils.transition to @topic.advanced_mode
+         advanced_mode: @utils.transition to @subagent.advanced_mode
             description: "Use full technical interface for advanced users. Choose this when the user uses technical terms, asks for specific filters, or complex operations."
          
-         contextual_mode: @utils.transition to @topic.contextual_search
+         contextual_mode: @utils.transition to @subagent.contextual_search
             description: "Use context-aware search. Choose this ONLY when the user explicitly searches for specific business objects like Accounts, Contacts, or Cases."
 
-# TOPIC 1: Beginner mode - simplified descriptions
-topic beginner_mode:
+# SUBAGENT 1: Beginner mode - simplified descriptions
+subagent beginner_mode:
    description: "Simplified interface for beginners"
 
    actions:
@@ -62,10 +62,10 @@ topic beginner_mode:
             with query=...
             with filters=...
 
-         switch_to_advanced: @utils.transition to @topic.advanced_mode
+         switch_to_advanced: @utils.transition to @subagent.advanced_mode
 
-# TOPIC 2: Advanced mode - detailed technical descriptions
-topic advanced_mode:
+# SUBAGENT 2: Advanced mode - detailed technical descriptions
+subagent advanced_mode:
    description: "Full-featured interface for advanced users"
 
    actions:
@@ -93,10 +93,10 @@ topic advanced_mode:
             with query=...
             with filters=...
 
-         switch_to_beginner: @utils.transition to @topic.beginner_mode
+         switch_to_beginner: @utils.transition to @subagent.beginner_mode
 
-# TOPIC 3: Context-aware descriptions
-topic contextual_search:
+# SUBAGENT 3: Context-aware descriptions
+subagent contextual_search:
    description: "Search with context-specific descriptions"
 
    actions:

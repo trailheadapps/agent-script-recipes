@@ -1,11 +1,11 @@
-# MultiTopicOrchestration
-# Demonstrates complex multi-topic workflows with orchestration patterns
+# MultiSubagentOrchestration
+# Demonstrates complex multi-subagent workflows with orchestration patterns
 
 config:
-   developer_name: "MultiTopicOrchestration"
-   agent_label: "MultiTopicOrchestration"
+   developer_name: "MultiSubagentOrchestration"
+   agent_label: "MultiSubagentOrchestration"
    agent_type: "AgentforceEmployeeAgent"
-   description: "Demonstrates complex multi-topic orchestration with specialized topics"
+   description: "Demonstrates complex multi-subagent orchestration with specialized subagents"
 
 
 # State for travel booking workflow
@@ -63,17 +63,17 @@ system:
 
    instructions: "You are a travel booking assistant that orchestrates complex multi-service bookings."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome travelers and coordinate their travel booking needs for flights, hotels, and car rentals"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start_booking: @utils.transition to @topic.orchestrator
+         start_booking: @utils.transition to @subagent.orchestrator
 
-# TOPIC 1: Orchestrator - Main entry point and coordination
-topic orchestrator:
+# SUBAGENT 1: Orchestrator - Main entry point and coordination
+subagent orchestrator:
    description: "Main orchestrator for travel booking workflow"
 
    actions:
@@ -165,13 +165,13 @@ topic orchestrator:
 
       actions:
          # Transition to flight booking
-         start_flight_booking: @utils.transition to @topic.flight_booking  
+         start_flight_booking: @utils.transition to @subagent.flight_booking  
 
          # Transition to hotel booking
-         start_hotel_booking: @utils.transition to @topic.hotel_booking
+         start_hotel_booking: @utils.transition to @subagent.hotel_booking
 
          # Transition to car booking
-         start_car_booking: @utils.transition to @topic.car_booking
+         start_car_booking: @utils.transition to @subagent.car_booking
 
          # Complete booking and send itinerary
          complete_booking: @actions.send_itinerary
@@ -181,8 +181,8 @@ topic orchestrator:
             with car_conf=@variables.car_confirmation
             set @variables.booking_complete = @outputs.sent
 
-# TOPIC 2: Flight Booking - Specialized for flights
-topic flight_booking:
+# SUBAGENT 2: Flight Booking - Specialized for flights
+subagent flight_booking:
    description: "Handles flight booking workflow"
 
    actions:
@@ -228,10 +228,10 @@ topic flight_booking:
             set @variables.flight_confirmation = @outputs.confirmation_number
             set @variables.flight_booked = @outputs.success
             # Return to orchestrator after booking
-            transition to @topic.orchestrator
+            transition to @subagent.orchestrator
 
-# TOPIC 3: Hotel Booking - Specialized for hotels
-topic hotel_booking:
+# SUBAGENT 3: Hotel Booking - Specialized for hotels
+subagent hotel_booking:
    description: "Handles hotel booking workflow"
 
    actions:
@@ -275,10 +275,10 @@ topic hotel_booking:
             set @variables.hotel_confirmation = @outputs.confirmation_number
             set @variables.hotel_booked = @outputs.success
             # Return to orchestrator
-            transition to @topic.orchestrator
+            transition to @subagent.orchestrator
 
-# TOPIC 4: Car Rental - Specialized for car rentals
-topic car_booking:
+# SUBAGENT 4: Car Rental - Specialized for car rentals
+subagent car_booking:
    description: "Handles car rental booking workflow"
 
    actions:
@@ -322,4 +322,4 @@ topic car_booking:
             set @variables.car_confirmation = @outputs.confirmation_number
             set @variables.car_booked = @outputs.success
             # Return to orchestrator
-            transition to @topic.orchestrator
+            transition to @subagent.orchestrator

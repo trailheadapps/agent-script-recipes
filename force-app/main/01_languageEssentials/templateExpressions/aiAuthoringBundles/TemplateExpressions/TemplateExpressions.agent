@@ -32,17 +32,17 @@ system:
    # Use {!expression} syntax to insert dynamic values
    instructions: "You are a helpful shopping assistant. Be friendly and personalized. Always refer to customers by name when you know it."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome customers and begin personalized shopping assistance"
    
    reasoning:
       instructions:|
           Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start_shopping: @utils.transition to @topic.shopping_assistant
+         start_shopping: @utils.transition to @subagent.shopping_assistant
             description: "Handle all shopping interactions: collecting the customer's name or budget, finding products, and adding items to the cart. Use this for ANY shopping-related message, including when the customer is responding to a prior question from the assistant."
 
-topic shopping_assistant:
+subagent shopping_assistant:
    description: "Gather customer's product requirements, help them find matching products and add them to their cart."
 
    actions:

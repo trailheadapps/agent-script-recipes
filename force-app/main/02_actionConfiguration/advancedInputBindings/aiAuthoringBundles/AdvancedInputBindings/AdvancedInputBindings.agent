@@ -33,16 +33,16 @@ system:
 
    instructions: "You are a report generation assistant."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin report generation"
    
    reasoning: 
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.     
       actions:
-         start_report_generation: @utils.transition to @topic.report_generation
+         start_report_generation: @utils.transition to @subagent.report_generation
 
-topic report_generation:
+subagent report_generation:
    description: "Generates reports with various input binding patterns"
 
    actions:

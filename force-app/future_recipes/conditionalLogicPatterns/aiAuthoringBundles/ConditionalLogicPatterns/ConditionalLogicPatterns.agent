@@ -39,17 +39,17 @@ system:
 
    instructions: "You are a loan evaluation assistant. Use clear logic to assess applications fairly and consistently."
 
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome applicants and begin loan evaluation process"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start_evaluation: @utils.transition to @topic.loan_evaluation
+         start_evaluation: @utils.transition to @subagent.loan_evaluation
             description: "Begin the loan evaluation with conditional logic"
 
-topic loan_evaluation:
+subagent loan_evaluation:
    description: "Evaluates loan applications with conditional logic"
 
    actions:

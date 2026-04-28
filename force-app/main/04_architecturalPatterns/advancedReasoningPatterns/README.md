@@ -126,10 +126,10 @@ reasoning:
 
 ## Key Code Snippets
 
-### Complete Topic with Multi-Source Loading
+### Complete Subagent with Multi-Source Loading
 
 ```agentscript
-topic intelligent_insights:
+subagent intelligent_insights:
    description: "Provides intelligent insights by synthesizing multiple data sources including your profile, account data, order history, and support tickets. Let me know your customer ID to load your complete customer intelligence dashboard."
 
    reasoning:

@@ -17,16 +17,16 @@ system:
 
    instructions: "You are a support assistant."
 
-start_agent topic_selector:
-   description: "Start topic"
+start_agent agent_router:
+   description: "Start subagent"
    
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         start: @utils.transition to @topic.case_management
+         start: @utils.transition to @subagent.case_management
 
-topic case_management:
+subagent case_management:
    description: "Manages support cases"
    
    actions:

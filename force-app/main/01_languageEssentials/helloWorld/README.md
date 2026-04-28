@@ -12,8 +12,8 @@ graph TD
     A[Agent Starts] --> B[Load Config Block]
     B --> C[Initialize System Block]
     C --> D[Display Welcome Message]
-    D --> E[start_agent: topic_selector]
-    E --> F[Transition to greeting Topic]
+    D --> E[start_agent: agent_router]
+    E --> F[Transition to greeting Subagent]
     F --> G[Apply Reasoning Instructions]
     G --> H{User Input?}
     H -->|Yes| I[Generate Poem-Style Response]
@@ -23,11 +23,11 @@ graph TD
 
 ## Key Concepts
 
-- **Agent structure**: The essential blocks every agent needs (`config`, `system`, `start_agent`, `topic`)
+- **Agent structure**: The essential blocks every agent needs (`config`, `system`, `start_agent`, `subagent`)
 - **Config block**: Defines agent metadata and identification
-- **System block**: Contains global settings that apply across all topics
-- **start_agent block**: Entry point that routes users to topics
-- **Topic block**: Defines a conversation focus with reasoning instructions
+- **System block**: Contains global settings that apply across all subagents
+- **start_agent block**: Entry point that routes users to subagents
+- **Subagent block**: Defines a conversation focus with reasoning instructions
 - **Procedural instructions**: Using `instructions:->` with `|` for multiline templates
 
 ## How It Works
@@ -66,32 +66,32 @@ The `system` block contains global configuration:
 - `messages`: Pre-defined messages shown to users
     - `welcome`: Displayed when the conversation starts
     - `error`: Shown if an error occurs
-- `instructions`: High-level guidance for the agent's behavior across all topics
+- `instructions`: High-level guidance for the agent's behavior across all subagents
 
 #### 3. start_agent Block
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin friendly conversation"
 
    reasoning:
       instructions:|
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
-         begin_greeting: @utils.transition to @topic.greeting
+         begin_greeting: @utils.transition to @subagent.greeting
             description: "Start the greeting conversation"
 ```
 
 The `start_agent` block is the entry point for the agent:
 
-- Routes users to the appropriate initial topic
-- Uses `@utils.transition to @topic.<name>` to navigate between topics
+- Routes users to the appropriate initial subagent
+- Uses `@utils.transition to @subagent.<name>` to navigate between subagents
 - The action `description` helps the LLM understand when to use this action
 
-#### 4. Topic Block
+#### 4. Subagent Block
 
 ```agentscript
-topic greeting:
+subagent greeting:
    description: "Greets the user and engages in friendly conversation using a poem"
 
    reasoning:
@@ -100,10 +100,10 @@ topic greeting:
            Always answer in the style of a poem.
 ```
 
-Every agent needs at least one `topic`. Topics define specific conversation focuses:
+Every agent needs at least one `subagent`. Subagents define specific conversation focuses:
 
-- Topic name (`greeting`) is used to reference this topic
-- `description`: Explains what this topic handles
+- Subagent name (`greeting`) is used to reference this subagent
+- `description`: Explains what this subagent handles
 - `reasoning.instructions:->`: Procedural instructions using the template syntax
 
 ### Procedural Instructions with Templates
@@ -125,10 +125,10 @@ Key points:
 
 ## Key Code Snippets
 
-### Minimal Topic with Procedural Instructions
+### Minimal Subagent with Procedural Instructions
 
 ```agentscript
-topic greeting:
+subagent greeting:
    description: "Greets the user and engages in friendly conversation using a poem"
 
    reasoning:
@@ -137,15 +137,15 @@ topic greeting:
            Always answer in the style of a poem.
 ```
 
-### Topic Navigation with start_agent
+### Subagent Navigation with start_agent
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
    description: "Welcome users and begin friendly conversation"
 
    reasoning:
       actions:
-         begin_greeting: @utils.transition to @topic.greeting
+         begin_greeting: @utils.transition to @subagent.greeting
             description: "Start the greeting conversation"
 ```
 
@@ -154,7 +154,7 @@ start_agent topic_selector:
 When you run this agent, here's what happens:
 
 1. **Welcome message**: The user sees: "Hello! I'm a simple agent here to say hi."
-2. **Topic selection**: The `start_agent` block transitions to the `greeting` topic
+2. **Subagent selection**: The `start_agent` block transitions to the `greeting` subagent
 3. **Agent greeting**: Following its reasoning instructions, the agent greets the user in a poem style
 4. **Conversation**: The agent responds to messages using poetic language
 
@@ -184,12 +184,12 @@ This minimal agent demonstrates the foundation, but real agents need more capabi
 
 - **VariableManagement**: Store and track state across conversation turns
 - **ActionDefinitions**: Call external systems and tools
-- **MultiTopicNavigation**: Handle different conversation flows
+- **MultiSubagentNavigation**: Handle different conversation flows
 - **TemplateExpressions**: Build dynamic content with variable interpolation
 
 ## Notes
 
-- **Naming rules**: Agent names, topic names, and other identifiers must contain only letters, numbers, and underscores. They must start with a letter, cannot end with an underscore, and cannot have consecutive underscores. Maximum length is 80 characters.
+- **Naming rules**: Agent names, subagent names, and other identifiers must contain only letters, numbers, and underscores. They must start with a letter, cannot end with an underscore, and cannot have consecutive underscores. Maximum length is 80 characters.
 - **Indentation**: Agent Script uses whitespace indentation (like Python). Use 3 spaces per indentation level.
 - **Comments**: Lines starting with `#` are comments and are ignored by the system.
 - **Procedural syntax**: The `:->` syntax enables procedural code blocks that can include conditionals, action calls, and template strings.

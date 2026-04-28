@@ -43,17 +43,17 @@ graph TD
 
 ### Start Agent Routing
 
-The agent uses a topic selector that routes to data management. When the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), it routes to `{!@actions.begin_data_management}`:
+The agent uses a subagent selector that routes to data management. When the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), it routes to `{!@actions.begin_data_management}`:
 
 ```agentscript
-start_agent topic_selector:
+start_agent agent_router:
    reasoning:
       instructions: |
          Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
          If the user is continuing an ongoing data management conversation (such as confirming a deletion, providing a record ID, or answering a follow-up question), always route to {!@actions.begin_data_management}.
 
       actions:
-         begin_data_management: @utils.transition to @topic.data_management
+         begin_data_management: @utils.transition to @subagent.data_management
             description: "Route to data management for any data operation including deletions, confirmations, record lookups, and continuing in-progress workflows"
 ```
 
