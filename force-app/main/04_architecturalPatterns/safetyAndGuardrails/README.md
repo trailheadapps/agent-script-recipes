@@ -149,6 +149,7 @@ actions:
       inputs:
          record_id: string
             description: "The unique identifier of the record to check for dependencies"
+            is_required: True
       outputs:
          count: number
             description: "The number of dependent records that would be affected by deletion"
@@ -159,6 +160,7 @@ actions:
       inputs:
          record_id: string
             description: "The unique identifier of the record to permanently delete"
+            is_required: True
       outputs:
          success: boolean
             description: "Indicates whether the record was deleted successfully"

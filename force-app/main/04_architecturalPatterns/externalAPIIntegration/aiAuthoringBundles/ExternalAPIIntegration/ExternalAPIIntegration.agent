@@ -96,6 +96,7 @@ subagent api_integration:
          description: "Fetch weather data from external API via Flow"
          inputs:
             cityName: string
+               is_required: True
          outputs:
             temperature: object
                complex_data_type_name: "lightning__integerType"
@@ -111,8 +112,11 @@ subagent api_integration:
          description: "Process payment via external payment gateway using Apex"
          inputs:
             amount: number
+               is_required: True
             paymentToken: string
+               is_required: True
             currencyName: string
+               is_required: False
          outputs:
             transactionId: string
             status: string
@@ -125,7 +129,9 @@ subagent api_integration:
          description: "Track shipment via external shipping API"
          inputs:
             tracking_number: string
+               is_required: True
             carrier: string
+               is_required: False
          outputs:
             status: string
             estimated_delivery: string

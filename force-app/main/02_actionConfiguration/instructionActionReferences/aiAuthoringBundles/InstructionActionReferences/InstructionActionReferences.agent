@@ -35,6 +35,7 @@ subagent case_management:
          inputs:
             subject: string
                description: "Subject of the case"
+               is_required: True
          outputs:
             case_number: string
                description: "The created case number"

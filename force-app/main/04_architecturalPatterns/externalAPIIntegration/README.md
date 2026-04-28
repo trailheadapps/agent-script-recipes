@@ -46,6 +46,7 @@ actions:
       description: "Fetch weather data from external API via Apex"
       inputs:
          cityName: string
+            is_required: True
       outputs:
          temperature: object
             complex_data_type_name: "lightning__integerType"
@@ -65,8 +66,11 @@ actions:
       description: "Process payment via external payment gateway using Apex"
       inputs:
          amount: number
+            is_required: True
          paymentToken: string
+            is_required: True
          currencyName: string
+            is_required: False
       outputs:
          transactionId: string
          status: string
@@ -83,7 +87,9 @@ actions:
       description: "Track shipment via external shipping API"
       inputs:
          tracking_number: string
+            is_required: True
          carrier: string
+            is_required: False
       outputs:
          status: string
          estimated_delivery: string
@@ -171,6 +177,7 @@ actions:
       description: "Fetch weather data from external API via Apex"
       inputs:
          cityName: string
+            is_required: True
       outputs:
          temperature: object
             complex_data_type_name: "lightning__integerType"
@@ -185,8 +192,11 @@ actions:
       description: "Process payment via external payment gateway using Apex"
       inputs:
          amount: number
+            is_required: True
          paymentToken: string
+            is_required: True
          currencyName: string
+            is_required: False
       outputs:
          transactionId: string
          status: string
@@ -198,7 +208,9 @@ actions:
       description: "Track shipment via external shipping API"
       inputs:
          tracking_number: string
+            is_required: True
          carrier: string
+            is_required: False
       outputs:
          status: string
          estimated_delivery: string

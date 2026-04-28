@@ -144,8 +144,10 @@ subagent payment_processing:
          inputs:
             amount: number
                description: "The payment amount to be processed"
+               is_required: True
             method: string
                description: "The mode of the payment"
+               is_required: True
          outputs:
             transaction_id: string
                description: "Unique identifier for the completed transaction"
@@ -158,8 +160,10 @@ subagent payment_processing:
          inputs:
             transaction_id: string
                description: "The transaction ID to include in the receipt"
+               is_required: True
             amount: number
                description: "The payment amount to display on the receipt"
+               is_required: True
          outputs:
             sent: boolean
                description: "Indicates whether the receipt was sent successfully"
@@ -170,6 +174,7 @@ subagent payment_processing:
          inputs:
             amount: number
                description: "The payment amount used to calculate loyalty points"
+               is_required: True
          outputs:
             points: number
                description: "The number of loyalty points awarded to the customer"
@@ -180,6 +185,7 @@ subagent payment_processing:
          inputs:
             transaction_id: string
                description: "The transaction ID to be logged for audit purposes"
+               is_required: True
          outputs:
             success: boolean
                description: "Indicates whether the transaction was logged successfully"

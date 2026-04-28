@@ -141,6 +141,7 @@ subagent order_status:
          inputs:
             order_id: string
                description: "The unique order identifier to check the status for"
+               is_required: True
          outputs:
             status: string
                description: "Current order status (pending, shipped, delivered, cancelled)"

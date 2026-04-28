@@ -187,6 +187,7 @@ subagent intelligent_insights:
                is_required: True
             limit: number
                description: "Maximum number of recent orders to return (e.g., 10 for last 10 orders)"
+               is_required: False
          outputs:
             orders: list[object]
                description: "List of ASR_Order__c records containing order ID, date, amount, and items for each order"

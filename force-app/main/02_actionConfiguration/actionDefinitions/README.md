@@ -48,8 +48,10 @@ get_current_weather:
    inputs:
       city_name: string
          description: "The name of the city to get weather for"
+         is_required: True
       units: string
          description: "Temperature units to use (fahrenheit, celsius, or kelvin)"
+         is_required: False
    outputs:
       temperature: number
          description: "Current temperature value in the specified units"
@@ -105,8 +107,10 @@ subagent weather_lookup:
          inputs:
             city_name: string
                description: "The name of the city to get weather for"
+               is_required: True
             units: string
                description: "Temperature units to use (fahrenheit, celsius, or kelvin)"
+               is_required: False
          outputs:
             temperature: number
                description: "Current temperature value in the specified units"
@@ -203,8 +207,10 @@ actions:
       inputs:
          city_name: string
             description: "The name of the city to get weather for"
+            is_required: True
          units: string
             description: "Temperature units to use (fahrenheit, celsius, or kelvin)"
+            is_required: False
       outputs:
          temperature: number
             description: "Current temperature value in the specified units"
@@ -225,8 +231,10 @@ get_forecast:
    inputs:
       city_name: string
          description: "The name of the city to get forecast for"
+         is_required: True
       days: number
          description: "Number of days to include in the forecast (1-10)"
+         is_required: False
    outputs:
       forecast_data: list[object]
          description: "List of daily forecast objects containing temperature, conditions, and precipitation data"
@@ -242,8 +250,10 @@ send_weather_alert:
    inputs:
       message: string
          description: "The alert message content to send to the user"
+         is_required: True
       severity: string
          description: "Severity level of the alert (low, medium, high, or critical)"
+         is_required: True
    outputs:
       alertMessage: string
          description: "The formatted weather alert message that was sent"

@@ -52,8 +52,10 @@ subagent beginner_mode:
          inputs:
             query: string
                description: "Search query text to find relevant knowledge base articles"
+               is_required: True
             filters: string
                description: "Filter criteria object to refine search results (e.g., type, date range, tags)"
+               is_required: False
          outputs:
             results: list[object]
                description: "List of search result objects containing matching knowledge base articles"
@@ -81,8 +83,10 @@ subagent advanced_mode:
          inputs:
             query: string
                description: "Search query text with support for advanced syntax and operators"
+               is_required: True
             filters: string
                description: "Advanced filter criteria object with type, date range, tags, and custom field filters"
+               is_required: False
          ...
 ```
 
@@ -133,8 +137,10 @@ subagent beginner_mode:
          inputs:
             query: string
                description: "Search query text to find relevant knowledge base articles"
+               is_required: True
             filters: string
                description: "Filter criteria object to refine search results (e.g., type, date range, tags)"
+               is_required: False
          outputs:
             results: list[object]
                description: "List of search result objects containing matching knowledge base articles"
