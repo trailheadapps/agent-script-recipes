@@ -110,7 +110,7 @@ topic triage:
             keywords: string
                description: "Keywords extracted from the issue description for refined search"
          outputs:
-            articles: list[object]
+            articles: list[string]
                description: "List of knowledge base article objects matching the search criteria"
             top_article: object
                description: "The most relevant knowledge base article object with solution content"
@@ -225,7 +225,7 @@ topic resolution:
             keywords: string
                description: "Keywords extracted from the issue description for refined search"
          outputs:
-            articles: list[object]
+            articles: list[string]
                description: "List of knowledge base article objects matching the search criteria"
             top_article: object
                description: "The most relevant knowledge base article object with solution content"

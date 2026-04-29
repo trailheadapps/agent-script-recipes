@@ -75,7 +75,7 @@ topic weather_lookup:
             days: number
                description: "Number of days to include in the forecast (1-10)"
          outputs:
-            forecast_data: list[object]
+            forecast_data: list[string]
                description: "List of daily forecast objects containing temperature, conditions, and precipitation data"
                complex_data_type_name: "lightning__textType"
          target: "flow://GetWeatherForecast"

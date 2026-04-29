@@ -1,30 +1,12 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
-    <environments>Default</environments>
-    <interviewLabel
-    >CalculateCustomerValue {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Calculate Customer Value</label>
-    <processMetadataValues>
-        <name>BuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
-    </processMetadataValues>
-    <processType>AutoLaunchedFlow</processType>
-    <start>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Mock_Calculation</targetReference>
-        </connector>
-    </start>
-    <status>Active</status>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Mock_Calculation</name>
         <label>Mock Calculation</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>clv</assignToReference>
             <operator>Assign</operator>
@@ -40,21 +22,31 @@
             </value>
         </assignmentItems>
     </assignments>
-    <variables>
-        <name>user_id</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>orders</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-        <objectType>ASR_Order__c</objectType>
-    </variables>
+    <environments>Default</environments>
+    <interviewLabel
+    >CalculateCustomerValue {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Calculate Customer Value</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Mock_Calculation</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
     <variables>
         <name>clv</name>
         <dataType>Number</dataType>
@@ -69,5 +61,12 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>user_id</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>

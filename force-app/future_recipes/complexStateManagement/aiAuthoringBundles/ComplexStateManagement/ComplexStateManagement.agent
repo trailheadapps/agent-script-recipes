@@ -53,7 +53,7 @@ topic task_management:
       save_tasks:
          description: "Persists task list to storage"
          inputs:
-            tasks: list[object]
+            tasks: list[string]
                description: "List of task objects to persist to storage, each containing id, title, status, and priority"
          outputs:
             success: boolean
@@ -66,7 +66,7 @@ topic task_management:
       calculate_stats:
          description: "Calculates task statistics"
          inputs:
-            tasks: list[object]
+            tasks: list[string]
                description: "List of task objects to calculate statistics from"
          outputs:
             stats: object
