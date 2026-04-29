@@ -67,7 +67,7 @@ subagent hotel_browse:
                is_required: True
          outputs:
             hotels: list[object]
-               description: "List of available hotel objects with name, price, rating, and amenities information"
+               description: "List of available ASR_Hotel__c records with name, price, rating, and amenities information"
                complex_data_type_name: "lightning__recordInfoType"
          target: "flow://SearchHotels"
 

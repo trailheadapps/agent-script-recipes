@@ -48,7 +48,7 @@ subagent beginner_mode:
                description: "Filter criteria object to refine search results (e.g., type, date range, tags)"
                is_required: False
          outputs:
-            results: list[object]
+            results: list[string]
                description: "List of search result objects containing matching knowledge base articles"
                complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
@@ -81,7 +81,7 @@ subagent advanced_mode:
                description: "Advanced filter criteria object with type, date range, tags, and custom field filters"
                is_required: False
          outputs:
-            results: list[object]
+            results: list[string]
                description: "Paginated list of search result objects with relevance scores"
                complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"
@@ -114,7 +114,7 @@ subagent contextual_search:
                description: "Context-specific filter criteria object"
                is_required: False
          outputs:
-            results: list[object]
+            results: list[string]
                description: "List of context-relevant search result objects"
                complex_data_type_name: "lightning__textType"
          target: "flow://PerformSearch"

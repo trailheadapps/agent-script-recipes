@@ -1,6 +1,48 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Forecast</name>
+        <label>Assign Forecast</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>forecast_data</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>Monday: Partly cloudy, high of 67°F</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>forecast_data</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>Tuesday: Sunny, high of 70°F</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>forecast_data</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>Wednesday: Cloudy, high of 64°F</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>forecast_data</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>Thursday: Rain, high of 61°F</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>forecast_data</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <stringValue>Friday: Partly cloudy, high of 66°F</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <environments>Default</environments>
     <interviewLabel>GetWeatherForecast {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Get Weather Forecast</label>
@@ -10,28 +52,21 @@
             <stringValue>LightningFlowBuilder</stringValue>
         </value>
     </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Assign_Forecast</targetReference>
         </connector>
     </start>
     <status>Active</status>
-    <assignments>
-        <name>Assign_Forecast</name>
-        <label>Assign Forecast</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
-        <assignmentItems>
-            <assignToReference>forecast_data</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <stringValue>Sunny</stringValue>
-            </value>
-        </assignmentItems>
-    </assignments>
     <variables>
         <name>city_name</name>
         <dataType>String</dataType>

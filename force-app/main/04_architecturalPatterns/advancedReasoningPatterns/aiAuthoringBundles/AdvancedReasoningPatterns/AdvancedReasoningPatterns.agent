@@ -75,7 +75,6 @@ subagent intelligent_insights:
             # Compute insights
             run @actions.calculate_customer_value
                with user_id=@variables.user_id
-               with orders=@variables.recent_orders
                set @variables.customer_lifetime_value = @outputs.clv
                set @variables.loyalty_status = @outputs.loyalty_tier
             run @actions.assess_churn_risk
@@ -91,21 +90,17 @@ subagent intelligent_insights:
 
             | Customer Intelligence Dashboard
 
-         if @variables.user_id!="" and @variables.user_profile:
-            | Customer Profile:
          if @variables.user_profile:
+            | Customer Profile:
             | Name: {!@variables.user_profile.name}
               - Loyalty Status: {!@variables.loyalty_status}
-              - Lifetime Value: ${!@variables.customer_lifetime_value}
-         else:
-            | Name: "N/A"
-             
+              - Lifetime Value: ${!@variables.customer_lifetime_value}             
             | Account Health:
-         if @variables.churn_risk_score < 0.3:
+         if @variables.user_profile and @variables.churn_risk_score < 0.3:
             | ✅ Low churn risk ({!@variables.churn_risk_score}%)
-         if @variables.churn_risk_score >= 0.3 and @variables.churn_risk_score < 0.7:
+         if @variables.user_profile and @variables.churn_risk_score >= 0.3 and @variables.churn_risk_score < 0.7:
             | ⚠️ Moderate churn risk ({!@variables.churn_risk_score}%)
-         if @variables.churn_risk_score >= 0.7:
+         if @variables.user_profile and @variables.churn_risk_score >= 0.7:
             | 🚨 High churn risk ({!@variables.churn_risk_score}%)
           
          | Recent Activity:
@@ -119,8 +114,6 @@ subagent intelligent_insights:
          if @variables.recommended_actions:
             | Recommended Actions:
               {!@variables.recommended_actions}
-          
-         | What would you like to know more about?
 
       actions:
          # Load all data sources during reasoning
@@ -128,12 +121,38 @@ subagent intelligent_insights:
             description: "Set the user ID to load customer data"
             with user_id=...
          fetch_user_profile: @actions.fetch_user_profile
+            available when @variables.user_id != ""
+            with user_id=@variables.user_id
          fetch_account_data: @actions.fetch_account_data
+            available when @variables.user_id != ""
+            with user_id=@variables.user_id
+            set @variables.account_data = @outputs.account
          fetch_order_history: @actions.fetch_order_history
+            available when @variables.user_id != ""
+            with user_id=@variables.user_id
+            with limit=10
+            set @variables.recent_orders = @outputs.orders
          fetch_support_history: @actions.fetch_support_history
+            available when @variables.user_id != ""
+            with user_id=@variables.user_id
+            set @variables.support_history = @outputs.tickets
          calculate_customer_value: @actions.calculate_customer_value
+            available when @variables.user_id != ""
+            with user_id=@variables.user_id
+            set @variables.customer_lifetime_value = @outputs.clv
+            set @variables.loyalty_status = @outputs.loyalty_tier
          assess_churn_risk: @actions.assess_churn_risk
+            available when @variables.user_id != ""
+            with account=@variables.account_data
+            with orders=@variables.recent_orders
+            with support_tickets=@variables.support_history
+            set @variables.churn_risk_score = @outputs.risk_score
          generate_recommendations: @actions.generate_recommendations
+            available when @variables.user_id != ""
+            with profile=@variables.user_profile
+            with clv=@variables.customer_lifetime_value
+            with churn_risk=@variables.churn_risk_score
+            set @variables.recommended_actions = @outputs.recommendations
 
    actions:
       fetch_user_profile:
@@ -141,7 +160,7 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose profile to fetch"
-               is_required: False
+               is_required: True
          outputs:
             profile: object
                description: "User profile object containing name, contact information, and account details"
@@ -153,7 +172,7 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose account data to retrieve"
-               is_required: False
+               is_required: True
          outputs:
             account: object
                description: "Account object with account status, balance, and membership information"
@@ -165,13 +184,13 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose order history to fetch"
-               is_required: False
+               is_required: True
             limit: number
                description: "Maximum number of recent orders to return (e.g., 10 for last 10 orders)"
                is_required: False
          outputs:
             orders: list[object]
-               description: "List of order objects containing order ID, date, amount, and items for each order"
+               description: "List of ASR_Order__c records containing order ID, date, amount, and items for each order"
                complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchOrderHistory"
 
@@ -180,10 +199,10 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the user whose support history to retrieve"
-               is_required: False
+               is_required: True
          outputs:
             tickets: list[object]
-               description: "List of support ticket objects with ticket ID, status, issue type, and resolution details"
+               description: "List of Case records with ticket ID, status, issue type, and resolution details"
                complex_data_type_name: "lightning__recordInfoType"
          target: "flow://FetchSupportHistory"
 
@@ -192,11 +211,7 @@ subagent intelligent_insights:
          inputs:
             user_id: string
                description: "The unique identifier of the customer to calculate value for"
-               is_required: False
-            orders: list[object]
-               description: "List of customer's order history objects used for CLV calculation"
-               complex_data_type_name: "lightning__recordInfoType"
-               is_required: False
+               is_required: True
          outputs:
             clv: number
                description: "Calculated customer lifetime value as a monetary amount"
@@ -210,19 +225,19 @@ subagent intelligent_insights:
             account: object
                description: "Customer account object with status and activity information"
                complex_data_type_name: "lightning__recordInfoType"
-               is_required: False
+               is_required: True
             orders: list[object]
                description: "List of customer orders used to analyze purchase patterns and frequency"
                complex_data_type_name: "lightning__recordInfoType"
-               is_required: False
+               is_required: True
             support_tickets: list[object]
                description: "List of support tickets used to identify potential dissatisfaction indicators"
                complex_data_type_name: "lightning__recordInfoType"
-               is_required: False
+               is_required: True
          outputs:
             risk_score: number
                description: "Churn risk score as a decimal between 0.0 (low risk) and 1.0 (high risk)"
-            risk_factors: list[object]
+            risk_factors: list[string]
                description: "List of identified factors contributing to churn risk (e.g., decreased purchase frequency, unresolved tickets)"
                complex_data_type_name: "lightning__textType"
          target: "flow://AssessChurnRisk"
@@ -233,15 +248,15 @@ subagent intelligent_insights:
             profile: object
                description: "Customer profile object with preferences and demographic information"
                complex_data_type_name: "lightning__recordInfoType"
-               is_required: False
+               is_required: True
             clv: number
                description: "Customer lifetime value used to tailor recommendations appropriately"
-               is_required: False
+               is_required: True
             churn_risk: number
                description: "Churn risk score (0.0-1.0) used to prioritize retention-focused recommendations"
-               is_required: False
+               is_required: True
          outputs:
-            recommendations: list[object]
+            recommendations: list[string]
                description: "List of personalized action recommendations for engaging and retaining the customer"
                complex_data_type_name: "lightning__textType"
          target: "flow://GenerateRecommendations"
