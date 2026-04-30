@@ -1,6 +1,6 @@
 # CustomLightningTypes
 
-> **Known Platform Bug**: The CLT output renderer card does **not** render in the Agentforce **Builder preview panel**. This is a bug. You have to commit and activate the agent to test this recipe. Use the Builder to activate the recipe.
+> **Known Platform Bug**: The CLT output renderer card does **not** render in the Agentforce **Builder preview panel if the agent is in Draft mode**. This is a bug. You have to commit and activate the agent to get it to work. Use the Agentforce Builder to commit the recipe and then activate to test this recipe.
 
 > **Setup Requirement**: To test this recipe in the deployed experience like Salesforce app, the user's Permission Set must include **Agent access to the CustomLightningTypes agent**. Without this, the agent will not be available in the Agentforce chat experience.
 
