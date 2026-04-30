@@ -36,12 +36,12 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 **Connect to the world!** Learn how agents interact with external systems and Salesforce.
 
 - **ActionDefinitions** - Define actions, inputs/outputs, and connect to Flows/Apex
-- **ActionCallbacks** - Process action results and chain operations (one-level)
+- **ActionChaining** - Chain actions sequentially with `run` (one-level)
 - **AdvancedInputBindings** - Master fixed, bound, and LLM-filled parameters (called slots)
 - **ActionDescriptionOverrides** - Provide context-specific action descriptions
 - **PromptTemplateActions** - Invoke Salesforce Prompt Templates as an action
 
-**Recommended order:** ActionDefinitions → ActionCallbacks → AdvancedInputBindings → ActionDescriptionOverrides, then explore based on your needs
+**Recommended order:** ActionDefinitions → ActionChaining → AdvancedInputBindings → ActionDescriptionOverrides, then explore based on your needs
 
 ### 📁 03_reasoningMechanics
 
@@ -100,7 +100,7 @@ Building on the foundation with more sophisticated patterns.
 | **DynamicActionRouting**     | Action filtering            | `available when`, context-based selection                 |
 | **ConditionalLogicPatterns** | Control flow                | `if`/`else`, comparisons, logical operators               |
 | **ContextHandling**          | Session data                | `readonly` variables, context sources, session management |
-| **ActionCallbacks**          | Post-action hooks           | Processing results, one-level chaining                    |
+| **ActionChaining**           | Action chaining             | Sequential action execution with `run`, one-level depth   |
 | **AdvancedInputBindings**    | Action inputs               | Fixed vs bound vs LLM-filled parameters                   |
 | **PromptTemplateActions**    | Prompt Templates as actions | Invoke Prompt Templates via actions, bind inputs/outputs  |
 | **SafetyAndGuardrails**      | Production safety           | Confirmation patterns, validation, safety checks          |

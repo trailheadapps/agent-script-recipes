@@ -1,9 +1,9 @@
 /**
- * @description Test class for Action Callbacks Flows
- * Tests all flows used in the action callbacks recipe
+ * @description Test class for Action Chaining Flows
+ * Tests all flows used in the action chaining recipe
  */
 @IsTest
-private class ActionCallbacksFlowTest {
+private class ActionChainingFlowTest {
     @IsTest
     static void testProcessPaymentSuccess() {
         // Set input variables for the flow

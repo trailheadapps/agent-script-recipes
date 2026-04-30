@@ -330,7 +330,7 @@ calculate_stats: @actions.calculate_stats
 ## What's Next
 
 - **MultiStepWorkflows**: Process complex data through workflows
-- **ActionCallbacks**: Update state after each action
+- **ActionChaining**: Update state after each action
 - **DynamicActionRouting**: Show actions based on state
 
 ## Testing

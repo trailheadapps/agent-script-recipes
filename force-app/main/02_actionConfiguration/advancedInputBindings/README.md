@@ -379,7 +379,7 @@ create_ticket: @actions.create_ticket
 ## What's Next
 
 - **ActionDefinitions**: Define actions that use these patterns
-- **ActionCallbacks**: Chain actions with `run` keyword
+- **ActionChaining**: Chain actions with `run` keyword
 - **ComplexStateManagement**: Work with complex variable types
 - **VariableManagement**: Store data for binding
 
