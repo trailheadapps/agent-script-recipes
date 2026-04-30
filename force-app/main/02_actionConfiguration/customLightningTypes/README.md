@@ -1,6 +1,6 @@
 # CustomLightningTypes
 
-> **Known Platform Bug**: The CLT output renderer card does **not** render sometimes in the Agentforce **Builder preview panel**. The data pipeline is fully functional — the `result` array is correctly populated with `copilotActionOutput/Submit_Case` and the case data — but the Builder preview UI does not instantiate the renderer LWC. The CLT output card **does render correctly** in the actual deployed Agentforce experience. The CLT input editor works in both the Builder preview and the deployed experience. This appears to be a Salesforce platform limitation specific to the Builder preview for output renderers.
+> **Known Platform Bug**: The CLT output renderer card does **not** render in the Agentforce **Builder preview panel if the agent is in Draft mode**. This is a bug. You have to commit and activate the agent to get it to work. Use the Agentforce Builder to commit the recipe and then activate to test this recipe.
 
 > **Setup Requirement**: To test this recipe in the deployed experience like Salesforce app, the user's Permission Set must include **Agent access to the CustomLightningTypes agent**. Without this, the agent will not be available in the Agentforce chat experience.
 
