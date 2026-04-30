@@ -250,6 +250,6 @@ When the user says "I need to submit a support case":
 ## What's Next
 
 - **ActionDefinitions**: Learn the basics of defining actions and calling external systems
-- **ActionCallbacks**: Chain multiple actions together with `run` for multi-step workflows
+- **ActionChaining**: Chain multiple actions together with `run` for multi-step workflows
 - **AdvancedInputBindings**: Master all input binding patterns including variable binding and fixed values
 - **PromptTemplateActions**: Use prompt templates to generate dynamic responses

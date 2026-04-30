@@ -387,7 +387,7 @@ When user says "San Francisco":
 
 Actions are powerful, but this recipe shows basics. To learn more:
 
-- **ActionCallbacks**: Chain actions with `run` for multi-step processes
+- **ActionChaining**: Chain actions with `run` for multi-step processes
 - **AdvancedInputBindings**: Master all input binding patterns
 - **ActionDescriptionOverrides**: Adapt descriptions by context
 - **DynamicActionRouting**: Control action availability with `available when`

@@ -334,7 +334,7 @@ Agent: [Calls perform_search with query="Accounts"]
 
 ## What's Next
 
-- **ActionCallbacks**: Combine with action callbacks for richer behavior
+- **ActionChaining**: Combine with action chaining for richer behavior
 - **SystemInstructionOverrides**: Use with persona changes
 - **AdvancedReasoningPatterns**: Build sophisticated selection logic
 

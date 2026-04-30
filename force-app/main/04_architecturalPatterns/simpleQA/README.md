@@ -255,7 +255,7 @@ This agent answers questions and can look up real product data. To add more capa
 
 - **VariableManagement**: Store user preferences or conversation state
 - **MultiSubagentNavigation**: Route to different specialists (sales, support, etc.)
-- **ActionCallbacks**: Chain actions for complex lookups
+- **ActionChaining**: Chain actions for complex lookups
 - **TemplateExpressions**: Build dynamic responses with product data
 
 ## Testing

@@ -306,7 +306,7 @@ Behind the scenes, the agent is tracking:
 This recipe shows how to declare and reference variables in instructions. To learn how to modify variables programmatically:
 
 - **ActionDefinitions**: Learn about actions that capture outputs into variables
-- **ActionCallbacks**: Use `set @variables.name = @outputs.value` to store action results
+- **ActionChaining**: Use `set @variables.name = @outputs.value` to store action results
 - **ReasoningInstructions**: Use the `set` keyword in procedural instructions
 
 ## Notes

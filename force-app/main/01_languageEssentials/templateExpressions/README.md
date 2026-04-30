@@ -400,7 +400,7 @@ description: "Helps {!@variables.name}"  # This won't work
 Template expressions are powerful for dynamic content. To expand your agent's capabilities:
 
 - **ReasoningInstructions**: Build complex dynamic instructions with action calls
-- **ActionCallbacks**: Process action results and use them in templates
+- **ActionChaining**: Process action results and use them in templates
 - **ContextHandling**: Use platform context variables in templates
 - **MultiStepWorkflows**: Chain actions and display results dynamically
 

@@ -178,4 +178,4 @@ Agent: Here is your personalized schedule of experiences ...
 
 - **AdvancedInputBindings**: Explore richer ways to bind variables and inputs into actions.
 - **ActionDefinitions**: Learn how to define and document actions the planner can select automatically.
-- **ActionCallbacks**: Add post-processing logic (validation, formatting, side effects) after an action runs.
+- **ActionChaining**: Add post-processing logic (validation, formatting, side effects) after an action runs.
