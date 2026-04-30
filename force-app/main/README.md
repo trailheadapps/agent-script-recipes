@@ -39,9 +39,10 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 - **ActionCallbacks** - Process action results and chain operations (one-level)
 - **AdvancedInputBindings** - Master fixed, bound, and LLM-filled parameters (called slots)
 - **ActionDescriptionOverrides** - Provide context-specific action descriptions
+- **AvailableWhenFiltering** - Filter actions based on context with `available when`
 - **PromptTemplateActions** - Invoke Salesforce Prompt Templates as an action
 
-**Recommended order:** ActionDefinitions → ActionCallbacks → AdvancedInputBindings → ActionDescriptionOverrides, then explore based on your needs
+**Recommended order:** ActionDefinitions → ActionCallbacks → AdvancedInputBindings → AvailableWhenFiltering → ActionDescriptionOverrides, then explore based on your needs
 
 ### 📁 03_reasoningMechanics
 
@@ -64,7 +65,6 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 - **BidirectionalNavigation** - Implement supervision patterns with transitions
 - **MultiStepWorkflows** - Chain actions and pass data between steps
 - **ComplexStateManagement** - Handle complex objects, lists, and state patterns
-- **DynamicActionRouting** - Filter actions based on context with `available when`
 - **ErrorHandling** - Validation, guard clauses, and error handling patterns
 - **SafetyAndGuardrails** - Safety with confirmation patterns
 - **ExternalAPIIntegration** - External system integration
@@ -97,7 +97,7 @@ Building on the foundation with more sophisticated patterns.
 | ---------------------------- | --------------------------- | --------------------------------------------------------- |
 | **MultiStepWorkflows**       | Action sequences            | Chaining actions, passing data between steps              |
 | **ComplexStateManagement**   | Advanced state              | Object manipulation, list operations, state patterns      |
-| **DynamicActionRouting**     | Action filtering            | `available when`, context-based selection                 |
+| **AvailableWhenFiltering**   | Action filtering            | `available when`, context-based action visibility         |
 | **ConditionalLogicPatterns** | Control flow                | `if`/`else`, comparisons, logical operators               |
 | **ContextHandling**          | Session data                | `readonly` variables, context sources, session management |
 | **ActionCallbacks**          | Post-action hooks           | Processing results, one-level chaining                    |

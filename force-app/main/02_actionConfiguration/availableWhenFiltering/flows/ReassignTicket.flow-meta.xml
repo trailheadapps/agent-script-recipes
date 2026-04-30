@@ -1,24 +1,23 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
+    <assignments>
+        <name>Assign_Success</name>
+        <label>Assign Success</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignmentItems>
+            <assignToReference>success</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <environments>Default</environments>
     <interviewLabel>ReassignTicket {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Reassign Ticket</label>
-    <processMetadataValues>
-        <name>BuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
-    </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <start>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Update_Assignment</targetReference>
-        </connector>
-    </start>
-    <status>Active</status>
     <recordUpdates>
         <name>Update_Assignment</name>
         <label>Update Assignment</label>
@@ -43,19 +42,14 @@
         </inputAssignments>
         <object>Case</object>
     </recordUpdates>
-    <assignments>
-        <name>Assign_Success</name>
-        <label>Assign Success</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
-        <assignmentItems>
-            <assignToReference>success</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-    </assignments>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Assignment</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
     <variables>
         <name>ticket_id</name>
         <dataType>String</dataType>
