@@ -323,7 +323,7 @@ primary: @actions.primary_action
 
 ## What's Next
 
-- **ActionCallbacks**: Learn more about the `run` keyword for chaining actions
+- **ActionChaining**: Learn more about the `run` keyword for chaining actions
 - **MultiSubagentOrchestration**: Split complex workflows across multiple subagents
 - **ErrorHandling**: Handle step failures gracefully
 

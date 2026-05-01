@@ -320,7 +320,7 @@ make_payment: @actions.process_payment
 
 - **ErrorHandling**: Build robust error handling
 - **MultiStepWorkflows**: Chain multiple API calls
-- **ActionCallbacks**: Process API results
+- **ActionChaining**: Process API results
 
 ## Testing
 

@@ -1,11 +1,11 @@
-# ActionCallbacks - Post-Action Processing
-# This agent demonstrates running code after actions complete
+# ActionChaining - Post-Action Processing
+# This agent demonstrates chaining multiple actions sequentially using the run keyword
 
 config:
-   developer_name: "ActionCallbacks"
-   agent_label: "ActionCallbacks"
+   developer_name: "ActionChaining"
+   agent_label: "ActionChaining"
    agent_type: "AgentforceEmployeeAgent"
-   description: "Processes payments with post-action callbacks"
+   description: "Processes payments with post-action chaining"
 
 variables:
    payment_amount: mutable number = 0

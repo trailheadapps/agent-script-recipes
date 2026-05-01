@@ -6,6 +6,7 @@ config:
    agent_label: "CustomLightningTypes"
    agent_type: "AgentforceEmployeeAgent"
    description: "Submits support cases using Custom Lightning Types for rich input and output UI"
+   additional_parameter__enable_graph_runtime: True
 
 variables:
    case_submitted: mutable boolean = False
