@@ -99,7 +99,7 @@
         <queriedFields>Status</queriedFields>
         <queriedFields>Priority</queriedFields>
     </recordLookups>
-    <runInMode>SystemModeWithSharing</runInMode>
+    <runInMode>DefaultMode</runInMode>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
