@@ -47,7 +47,7 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.4.0",
         "playwright": "^1.59.1",
-        "prettier": "^3.8.1",
+        "prettier": "^3.8.3",
         "prettier-plugin-apex": "^2.2.6"
     },
     "volta": {
