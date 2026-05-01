@@ -1,0 +1,223 @@
+# AvailableWhenFiltering - Conditional Action Availability
+# This agent demonstrates how to show/hide actions based on context using 'available when'
+
+system:
+	instructions: "You are a support ticket management assistant. Filter available actions based on context and permissions."
+	messages:
+		welcome: "Welcome to support! I'll help you manage tickets efficiently."
+		error: "Unable to process that action. Please check permissions and ticket status."
+
+config:
+	developer_name: "AvailableWhenFiltering"
+	agent_label: "AvailableWhenFiltering"
+	agent_type: "AgentforceEmployeeAgent"
+	description: "Manages support tickets with context-aware action filtering using available when"
+
+variables:
+	ticket_id: mutable string = ""
+		description: "Current support ticket/case ID"
+	ticket_number: mutable string = ""
+		description: "Current support ticket number or the case number"
+	ticket_status: mutable string = ""
+		description: "Ticket status: New, Working, Escalated, Closed"
+	ticket_priority: mutable string = ""
+		description: "Priority: Low, Medium, High"
+	user_role: mutable string = "agent"
+		description: "User role: agent, supervisor, admin"
+	assigned_to: mutable string = ""
+		description: "Agent assigned to this ticket"
+
+start_agent agent_router:
+	description: "Welcome users and begin managing support tickets"
+
+	reasoning:
+		instructions: |
+			Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+		actions:
+			manage_tickets: @utils.transition to @subagent.ticket_management
+				description: "Route to ticket management for viewing, assigning, updating, escalating, or closing support tickets"
+
+subagent ticket_management:
+	description: "Manages support tickets with context-aware actions. Available actions depend on ticket status, priority level, and your role/permissions. Let me know which ticket you'd like to work with."
+	reasoning:
+		instructions: ->
+			| Ticket Management
+
+			if @variables.ticket_number:
+				| Ticket: {!@variables.ticket_number}
+			else:
+				| Ticket: None
+
+			if @variables.ticket_status:
+				| Status: {!@variables.ticket_status}
+			else:
+				| Status: N/A
+
+			if @variables.ticket_priority:
+				| Priority: {!@variables.ticket_priority}
+			else:
+				| Priority: N/A
+
+			| Your role: {!@variables.user_role}
+
+			if @variables.assigned_to:
+				| Assigned to: {!@variables.assigned_to}
+			else:
+				| Assigned to: Unassigned
+
+			| Available actions depend on ticket status, priority level, your role/permissions, and current assignment.
+			| If the user requests an action that is not available to you, explain why based on the current ticket state and suggest the actions you can perform instead.
+			| For example, assigning requires status New, updating status requires Working, closing requires Working or Escalated, escalating requires High priority.
+
+		actions:
+			view_ticket: @actions.view_ticket
+				with ticket_number = ...
+				set @variables.ticket_id = @outputs.case_id
+				set @variables.ticket_number = @outputs.case_number
+				set @variables.ticket_status = @outputs.ticket_status
+				set @variables.ticket_priority = @outputs.ticket_priority
+
+			add_comment: @actions.add_comment
+				with ticket_id = @variables.ticket_id
+				with comment = ...
+
+			assign_ticket: @actions.assign_ticket
+				available when @variables.ticket_status == "New"
+				with ticket_id = @variables.ticket_id
+				with agent = ...
+
+			update_status: @actions.update_status
+				available when @variables.ticket_status == "Working"
+				with ticket_id = @variables.ticket_id
+				with new_status = ...
+
+			close_ticket: @actions.close_ticket
+				available when @variables.ticket_status == "Working" or @variables.ticket_status == "Escalated"
+				with ticket_id = @variables.ticket_id
+
+			escalate_ticket: @actions.escalate_ticket
+				available when @variables.ticket_priority == "High"
+				with ticket_id = @variables.ticket_id
+				with reason = ...
+
+			reassign_ticket: @actions.reassign_ticket
+				available when @variables.user_role == "supervisor" or @variables.user_role == "admin"
+				with ticket_id = @variables.ticket_id
+				with new_agent = ...
+
+			delete_ticket: @actions.delete_ticket
+				available when @variables.user_role == "admin"
+				with ticket_id = @variables.ticket_id
+
+	actions:
+		view_ticket:
+			description: "Views ticket details"
+			inputs:
+				ticket_number: string
+					description: "The unique identifier of the ticket/case to view"
+					is_required: True
+			outputs:
+				case_id: string
+					description: "The Salesforce record ID of the ticket, or empty if not found"
+				case_number: string
+					description: "The case number of the ticket"
+				ticket_info: object
+					description: "Complete ticket information including status, priority, description, and history"
+					complex_data_type_name: "lightning__recordInfoType"
+				ticket_status: string
+					description: "The current status of the ticket (New, Working, Escalated, Closed)"
+				ticket_priority: string
+					description: "The priority level of the ticket (Low, Medium, High)"
+			target: "flow://ViewTicket"
+
+		add_comment:
+			description: "Adds a comment to the ticket"
+			inputs:
+				ticket_id: string
+					description: "The unique identifier of the ticket to add a comment to"
+					is_required: True
+				comment: string
+					description: "The comment text to add to the ticket"
+					is_required: True
+			outputs:
+				success: boolean
+					description: "Indicates whether the comment was added successfully"
+			target: "flow://AddTicketComment"
+
+		assign_ticket:
+			description: "Assigns ticket to an agent"
+			inputs:
+				ticket_id: string
+					description: "The unique identifier of the ticket to assign"
+					is_required: True
+				agent: string
+					description: "The name or ID of the agent to assign the ticket to"
+					is_required: True
+			outputs:
+				success: boolean
+					description: "Indicates whether the ticket was assigned successfully"
+			target: "flow://AssignTicket"
+
+		update_status:
+			description: "Updates ticket status"
+			inputs:
+				ticket_id: string
+					description: "The unique identifier of the ticket to update"
+					is_required: True
+				new_status: string
+					description: "New status to set (Working, Escalated, Closed)"
+					is_required: True
+			outputs:
+				success: boolean
+					description: "Indicates whether the status was updated successfully"
+			target: "flow://UpdateTicketStatus"
+
+		close_ticket:
+			description: "Closes a resolved ticket"
+			inputs:
+				ticket_id: string
+					description: "The unique identifier of the resolved ticket to close"
+					is_required: True
+			outputs:
+				success: boolean
+					description: "Indicates whether the ticket was closed successfully"
+			target: "flow://CloseTicket"
+
+		escalate_ticket:
+			description: "Escalates ticket to supervisor"
+			inputs:
+				ticket_id: string
+					description: "The unique identifier of the ticket to escalate"
+					is_required: True
+				reason: string
+					description: "Reason for escalation (e.g., complexity, urgency, customer request)"
+					is_required: True
+			outputs:
+				success: boolean
+					description: "Indicates whether the ticket was escalated successfully"
+			target: "flow://EscalateTicket"
+
+		delete_ticket:
+			description: "Permanently deletes a ticket"
+			inputs:
+				ticket_id: string
+					description: "The unique identifier of the ticket to permanently delete"
+					is_required: True
+			outputs:
+				success: boolean
+					description: "Indicates whether the ticket was deleted successfully"
+			target: "flow://DeleteTicket"
+
+		reassign_ticket:
+			description: "Reassigns ticket to different agent"
+			inputs:
+				ticket_id: string
+					description: "The unique identifier of the ticket to reassign"
+					is_required: True
+				new_agent: string
+					description: "The name or ID of the agent to reassign the ticket to"
+					is_required: True
+			outputs:
+				success: boolean
+					description: "Indicates whether the ticket was reassigned successfully"
+			target: "flow://ReassignTicket"

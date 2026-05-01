@@ -1,9 +1,9 @@
 /**
- * @description Test class for Dynamic Action Routing Flows
- * Tests all flows used in the dynamic action routing recipe
+ * @description Test class for Available When Filtering Flows
+ * Tests all flows used in the available when filtering recipe
  */
 @IsTest
-private class DynamicActionRoutingFlowTest {
+private class AvailableWhenFilteringFlowTest {
     @TestSetup
     static void setup() {
         // Create test account and contact
