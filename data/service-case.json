@@ -9,13 +9,34 @@
         },
         {
             "attributes": { "type": "Case", "referenceId": "case2" },
+            "Subject": "Printer not working",
+            "Status": "New",
+            "Priority": "Low",
+            "Origin": "Phone"
+        },
+        {
+            "attributes": { "type": "Case", "referenceId": "case3" },
+            "Subject": "Server outage affecting customers",
+            "Status": "New",
+            "Priority": "High",
+            "Origin": "Email"
+        },
+        {
+            "attributes": { "type": "Case", "referenceId": "case4" },
+            "Subject": "VPN connection dropping intermittently",
+            "Status": "Working",
+            "Priority": "High",
+            "Origin": "Web"
+        },
+        {
+            "attributes": { "type": "Case", "referenceId": "case5" },
             "Subject": "Billing inquiry",
             "Status": "Closed",
             "Priority": "Low",
             "Origin": "Phone"
         },
         {
-            "attributes": { "type": "Case", "referenceId": "case3" },
+            "attributes": { "type": "Case", "referenceId": "case6" },
             "Subject": "Shipping delay",
             "Status": "Escalated",
             "Priority": "High",

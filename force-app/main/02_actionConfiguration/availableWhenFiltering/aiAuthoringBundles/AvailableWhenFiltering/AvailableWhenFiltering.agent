@@ -19,9 +19,9 @@ variables:
 	ticket_number: mutable string = ""
 		description: "Current support ticket number or the case number"
 	ticket_status: mutable string = ""
-		description: "Ticket status: New, Assigned, In Progress, Resolved, Closed"
+		description: "Ticket status: New, Working, Escalated, Closed"
 	ticket_priority: mutable string = ""
-		description: "Priority: Low, Medium, High, Urgent"
+		description: "Priority: Low, Medium, High"
 	user_role: mutable string = "agent"
 		description: "User role: agent, supervisor, admin"
 	assigned_to: mutable string = ""
@@ -67,7 +67,7 @@ topic ticket_management:
 
 			| Available actions depend on ticket status, priority level, your role/permissions, and current assignment.
 			| If the user requests an action that is not available to you, explain why based on the current ticket state and suggest the actions you can perform instead.
-			| For example, assigning requires status New, updating status requires Assigned or In Progress, closing requires Resolved, escalating requires High or Urgent priority.
+			| For example, assigning requires status New, updating status requires Working, closing requires Working or Escalated, escalating requires High priority.
 
 		actions:
 			view_ticket: @actions.view_ticket
@@ -87,16 +87,16 @@ topic ticket_management:
 				with agent = ...
 
 			update_status: @actions.update_status
-				available when @variables.ticket_status == "Assigned" or @variables.ticket_status == "In Progress"
+				available when @variables.ticket_status == "Working"
 				with ticket_id = @variables.ticket_id
 				with new_status = ...
 
 			close_ticket: @actions.close_ticket
-				available when @variables.ticket_status == "Resolved"
+				available when @variables.ticket_status == "Working" or @variables.ticket_status == "Escalated"
 				with ticket_id = @variables.ticket_id
 
 			escalate_ticket: @actions.escalate_ticket
-				available when @variables.ticket_priority == "High" or @variables.ticket_priority == "Urgent"
+				available when @variables.ticket_priority == "High"
 				with ticket_id = @variables.ticket_id
 				with reason = ...
 
@@ -125,9 +125,9 @@ topic ticket_management:
 					description: "Complete ticket information including status, priority, description, and history"
 					complex_data_type_name: "lightning__recordInfoType"
 				ticket_status: string
-					description: "The current status of the ticket (New, Assigned, In Progress, Resolved, Closed)"
+					description: "The current status of the ticket (New, Working, Escalated, Closed)"
 				ticket_priority: string
-					description: "The priority level of the ticket (Low, Medium, High, Urgent)"
+					description: "The priority level of the ticket (Low, Medium, High)"
 			target: "flow://ViewTicket"
 
 		add_comment:
@@ -165,7 +165,7 @@ topic ticket_management:
 					description: "The unique identifier of the ticket to update"
 					is_required: True
 				new_status: string
-					description: "New status to set (Assigned, In Progress, Resolved, Closed)"
+					description: "New status to set (Working, Escalated, Closed)"
 					is_required: True
 			outputs:
 				success: boolean
