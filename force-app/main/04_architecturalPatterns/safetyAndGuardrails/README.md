@@ -219,7 +219,7 @@ Agent: Warning: 3 dependent records found. This affects data integrity and workf
 ## What's Next
 
 - **ErrorHandling**: Learn more validation and error handling patterns
-- **DynamicActionRouting**: Combine safety with conditional action availability
+- **AvailableWhenFiltering**: Combine safety with conditional action availability
 - **CustomerServiceAgent**: See safety patterns applied in a complete production agent
 
 ## Testing

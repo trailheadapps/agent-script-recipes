@@ -354,7 +354,7 @@ go_next: @utils.transition to @subagent.next
 - **SubagentDelegation**: Learn about delegation (consulting other subagents)
 - **MultiSubagentOrchestration**: Handle complex workflows with 4+ subagents
 - **SystemInstructionOverrides**: Customize behavior per subagent
-- **DynamicActionRouting**: Control action availability
+- **AvailableWhenFiltering**: Control action availability
 
 ## Testing
 

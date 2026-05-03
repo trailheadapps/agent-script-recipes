@@ -256,7 +256,7 @@ Agent: [billing_specialist subagent]
 ## What's Next
 
 - **MultiSubagentOrchestration**: Build complex multi-service workflows
-- **DynamicActionRouting**: More conditional action patterns
+- **AvailableWhenFiltering**: Conditional action filtering patterns
 - **CustomerServiceAgent**: See a complete service agent example
 
 ## Testing

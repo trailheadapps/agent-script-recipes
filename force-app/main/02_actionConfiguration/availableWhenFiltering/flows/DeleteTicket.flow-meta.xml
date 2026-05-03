@@ -2,9 +2,22 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_Success</name>
+        <label>Assign Success</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>success</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <environments>Default</environments>
-    <interviewLabel>ViewTicket {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>View Ticket</label>
+    <interviewLabel>DeleteTicket {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Delete Ticket</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -14,50 +27,45 @@
     <processMetadataValues>
         <name>CanvasMode</name>
         <value>
-            <stringValue>FREE_FORM_CANVAS</stringValue>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordLookups>
-        <name>Get_Case</name>
-        <label>Get Case</label>
-        <locationX>176</locationX>
-        <locationY>133</locationY>
-        <assignNullValuesIfNoRecordsFound
-        >true</assignNullValuesIfNoRecordsFound>
+    <recordDeletes>
+        <name>Delete_Case</name>
+        <label>Delete Case</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Assign_Success</targetReference>
+        </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>CaseNumber</field>
+            <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>ticket_number</elementReference>
+                <elementReference>ticket_id</elementReference>
             </value>
         </filters>
         <object>Case</object>
-        <outputReference>ticket_info</outputReference>
-        <queriedFields>Subject</queriedFields>
-        <queriedFields>Status</queriedFields>
-        <queriedFields>Priority</queriedFields>
-    </recordLookups>
-    <runInMode>SystemModeWithoutSharing</runInMode>
+    </recordDeletes>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Case</targetReference>
+            <targetReference>Delete_Case</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>ticket_info</name>
-        <dataType>SObject</dataType>
+        <name>success</name>
+        <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
-        <objectType>Case</objectType>
     </variables>
     <variables>
-        <name>ticket_number</name>
+        <name>ticket_id</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>

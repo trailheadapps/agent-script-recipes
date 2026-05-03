@@ -102,7 +102,7 @@ if not @variables.has_collateral and @variables.credit_score < 700:
 
 ## What's Next
 
-- **DynamicActionRouting**: Use conditions with `available when`
+- **AvailableWhenFiltering**: Use conditions with `available when`
 - **ErrorHandling**: Validate with conditionals
 - **ReasoningInstructions**: Build dynamic logic
 

@@ -75,5 +75,5 @@ Agent: Connecting you with a human agent...
 
 ## What's Next
 
-- **DynamicActionRouting**: Learn how to route based on complex conditions.
+- **AvailableWhenFiltering**: Filter actions based on complex conditions.
 - **ErrorHandling**: Implement robust error handling patterns.

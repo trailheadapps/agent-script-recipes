@@ -1,27 +1,26 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
+    <assignments>
+        <name>Assign_Success</name>
+        <label>Assign Success</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignmentItems>
+            <assignToReference>success</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+    </assignments>
     <environments>Default</environments>
-    <interviewLabel>EscalateTicket {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Escalate Ticket</label>
-    <processMetadataValues>
-        <name>BuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
-    </processMetadataValues>
+    <interviewLabel>ReassignTicket {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Reassign Ticket</label>
     <processType>AutoLaunchedFlow</processType>
-    <start>
-        <locationX>50</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Update_Escalation</targetReference>
-        </connector>
-    </start>
-    <status>Active</status>
     <recordUpdates>
-        <name>Update_Escalation</name>
-        <label>Update Escalation</label>
+        <name>Update_Assignment</name>
+        <label>Update Assignment</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
         <connector>
@@ -36,32 +35,21 @@
             </value>
         </filters>
         <inputAssignments>
-            <field>Status</field>
+            <field>Assigned_Agent__c</field>
             <value>
-                <stringValue>Escalated</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>Escalation_Reason__c</field>
-            <value>
-                <elementReference>reason</elementReference>
+                <elementReference>new_agent</elementReference>
             </value>
         </inputAssignments>
         <object>Case</object>
     </recordUpdates>
-    <assignments>
-        <name>Assign_Success</name>
-        <label>Assign Success</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
-        <assignmentItems>
-            <assignToReference>success</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
-    </assignments>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Assignment</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
     <variables>
         <name>ticket_id</name>
         <dataType>String</dataType>
@@ -70,7 +58,7 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>reason</name>
+        <name>new_agent</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
