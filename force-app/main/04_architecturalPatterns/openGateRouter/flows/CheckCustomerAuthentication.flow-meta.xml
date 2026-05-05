@@ -49,7 +49,7 @@
             <targetReference>Assign_Auth_Result</targetReference>
         </connector>
     </start>
-    <status>Obsolete</status>
+    <status>Active</status>
     <variables>
         <name>account_number</name>
         <dataType>String</dataType>
