@@ -38,7 +38,7 @@ system:
 		welcome: "Welcome to Customer Support! I can help you with product returns and other inquiries."
 		error: "I encountered an issue. Let me get you back on track."
 
-	instructions: "You are a customer service agent. Help customers with product returns. Authentication is required before processing returns."
+	instructions: "You are a customer service agent. Help customers with product returns. Authentication is handled by dedicated subagents — do not block routing based on authentication status."
 
 start_agent agent_router:
 	description: "Route users to the appropriate subagent with deterministic gate-based re-routing"
@@ -50,7 +50,7 @@ start_agent agent_router:
 			if @variables.open_gate == "customer_authentication":
 				transition to @subagent.customer_authentication
 
-			| Select the tool that best matches the user's message and conversation history. Route to the matching subagent immediately based on the user's intent.
+			| Select the tool that best matches the user's message and conversation history. Route to the matching subagent immediately based on the user's intent. Do not ask for authentication or additional information — just route. Authentication is handled by the downstream subagents.
 		actions:
 			start_return: @utils.transition to @subagent.product_return
 				description: "Help with a product return, exchange, or refund"
