@@ -5,273 +5,189 @@
 @IsTest
 private class IssueClassifierTest {
     @IsTest
-    static void testClassifyGeneralIssue() {
-        // Test with general issue description
-        List<String> descriptions = new List<String>{
-            'I need help with my account'
-        };
+    static void testClassifyAccountIssue() {
+        IssueClassifier.IssueRequest req = new IssueClassifier.IssueRequest();
+        req.issueDescription = 'I need help with my account';
 
-        // Execute test
         Test.startTest();
         List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
+            new List<IssueClassifier.IssueRequest>{ req }
         );
         Test.stopTest();
 
-        // Verify results
         Assert.areEqual(1, results.size(), 'Should return one result');
         Assert.areEqual(
-            'General',
+            'account',
             results[0].issueType,
-            'Issue type should be General'
+            'Default issue type should be account'
         );
         Assert.areEqual(
-            'Medium',
+            'medium',
             results[0].priority,
-            'Priority should be Medium'
-        );
-        Assert.areNotEqual(
-            null,
-            results[0].suggestedKbArticles,
-            'KB articles should be provided'
-        );
-        Assert.areEqual(
-            2,
-            results[0].suggestedKbArticles.size(),
-            'Should have two KB articles'
+            'Default priority should be medium'
         );
     }
 
     @IsTest
     static void testClassifyUrgentIssue() {
-        // Test with urgent keyword
-        List<String> descriptions = new List<String>{
-            'This is an urgent matter that needs immediate attention'
-        };
+        IssueClassifier.IssueRequest req = new IssueClassifier.IssueRequest();
+        req.issueDescription = 'This is an urgent matter that needs immediate attention';
 
-        // Execute test
         Test.startTest();
         List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
+            new List<IssueClassifier.IssueRequest>{ req }
         );
         Test.stopTest();
 
-        // Verify priority is set to High
-        Assert.areEqual(1, results.size(), 'Should return one result');
         Assert.areEqual(
-            'High',
+            'high',
             results[0].priority,
-            'Priority should be High for urgent issue'
+            'Priority should be high for urgent issue'
         );
         Assert.areEqual(
-            'General',
+            'account',
             results[0].issueType,
-            'Issue type should remain General'
+            'Issue type should remain account'
         );
     }
 
     @IsTest
-    static void testClassifyCriticalIssue() {
-        // Test with critical keyword
-        List<String> descriptions = new List<String>{
-            'This is a critical system failure'
-        };
+    static void testClassifyTechnicalIssue() {
+        IssueClassifier.IssueRequest req = new IssueClassifier.IssueRequest();
+        req.issueDescription = 'I cannot login to my account';
 
-        // Execute test
         Test.startTest();
         List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
+            new List<IssueClassifier.IssueRequest>{ req }
         );
         Test.stopTest();
 
-        // Verify priority is set to High
-        Assert.areEqual(1, results.size(), 'Should return one result');
         Assert.areEqual(
-            'High',
-            results[0].priority,
-            'Priority should be High for critical issue'
-        );
-    }
-
-    @IsTest
-    static void testClassifyLoginIssue() {
-        // Test with login keyword
-        List<String> descriptions = new List<String>{
-            'I cannot login to my account'
-        };
-
-        // Execute test
-        Test.startTest();
-        List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
-        );
-        Test.stopTest();
-
-        // Verify issue type is Login Issue
-        Assert.areEqual(1, results.size(), 'Should return one result');
-        Assert.areEqual(
-            'Login Issue',
+            'technical',
             results[0].issueType,
-            'Issue type should be Login Issue'
+            'Login issues should be technical'
         );
         Assert.areEqual(
-            'Medium',
+            'medium',
             results[0].priority,
-            'Priority should be Medium'
+            'Priority should be medium'
         );
     }
 
     @IsTest
     static void testClassifyPasswordIssue() {
-        // Test with password keyword
-        List<String> descriptions = new List<String>{
-            'I forgot my password and need to reset it'
-        };
+        IssueClassifier.IssueRequest req = new IssueClassifier.IssueRequest();
+        req.issueDescription = 'I forgot my password and need to reset it';
 
-        // Execute test
         Test.startTest();
         List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
+            new List<IssueClassifier.IssueRequest>{ req }
         );
         Test.stopTest();
 
-        // Verify issue type is Login Issue
-        Assert.areEqual(1, results.size(), 'Should return one result');
         Assert.areEqual(
-            'Login Issue',
+            'technical',
             results[0].issueType,
-            'Issue type should be Login Issue'
+            'Password issues should be technical'
         );
     }
 
     @IsTest
-    static void testClassifyUrgentLoginIssue() {
-        // Test with both urgent and login keywords
-        List<String> descriptions = new List<String>{
-            'This is an urgent login problem that needs immediate attention'
-        };
+    static void testClassifyBillingIssue() {
+        IssueClassifier.IssueRequest req = new IssueClassifier.IssueRequest();
+        req.issueDescription = 'I was incorrectly charged on my bill';
 
-        // Execute test
         Test.startTest();
         List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
+            new List<IssueClassifier.IssueRequest>{ req }
         );
         Test.stopTest();
 
-        // Verify both conditions are met
-        Assert.areEqual(1, results.size(), 'Should return one result');
         Assert.areEqual(
-            'Login Issue',
+            'billing',
             results[0].issueType,
-            'Issue type should be Login Issue'
+            'Billing keywords should classify as billing'
+        );
+    }
+
+    @IsTest
+    static void testClassifyProductIssue() {
+        IssueClassifier.IssueRequest req = new IssueClassifier.IssueRequest();
+        req.issueDescription = 'I have a question about a product feature';
+
+        Test.startTest();
+        List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
+            new List<IssueClassifier.IssueRequest>{ req }
+        );
+        Test.stopTest();
+
+        Assert.areEqual(
+            'product',
+            results[0].issueType,
+            'Product keywords should classify as product'
+        );
+    }
+
+    @IsTest
+    static void testClassifyNullDescription() {
+        IssueClassifier.IssueRequest req = new IssueClassifier.IssueRequest();
+        req.issueDescription = null;
+
+        Test.startTest();
+        List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
+            new List<IssueClassifier.IssueRequest>{ req }
+        );
+        Test.stopTest();
+
+        Assert.areEqual(
+            'account',
+            results[0].issueType,
+            'Null description should default to account'
         );
         Assert.areEqual(
-            'High',
+            'medium',
             results[0].priority,
-            'Priority should be High for urgent issue'
+            'Null description should default to medium'
         );
     }
 
     @IsTest
     static void testClassifyBulkIssues() {
-        // Test bulk processing with multiple descriptions
-        List<String> descriptions = new List<String>{
-            'General question about my account',
-            'URGENT: System is down',
-            'I cannot login',
-            'Critical security breach detected',
-            'Password reset needed'
-        };
+        List<IssueClassifier.IssueRequest> requests = new List<IssueClassifier.IssueRequest>();
 
-        // Execute test
+        IssueClassifier.IssueRequest req1 = new IssueClassifier.IssueRequest();
+        req1.issueDescription = 'General question about my account';
+        requests.add(req1);
+
+        IssueClassifier.IssueRequest req2 = new IssueClassifier.IssueRequest();
+        req2.issueDescription = 'URGENT: System is down';
+        requests.add(req2);
+
+        IssueClassifier.IssueRequest req3 = new IssueClassifier.IssueRequest();
+        req3.issueDescription = 'I cannot login';
+        requests.add(req3);
+
         Test.startTest();
         List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
+            requests
         );
         Test.stopTest();
 
-        // Verify all issues were classified
-        Assert.areEqual(5, results.size(), 'Should return five results');
-
-        // Verify first issue (General)
+        Assert.areEqual(3, results.size(), 'Should return three results');
         Assert.areEqual(
-            'General',
+            'account',
             results[0].issueType,
-            'First issue should be General'
+            'First should be account'
         );
         Assert.areEqual(
-            'Medium',
-            results[0].priority,
-            'First issue priority should be Medium'
-        );
-
-        // Verify second issue (Urgent)
-        Assert.areEqual(
-            'High',
+            'high',
             results[1].priority,
-            'Second issue priority should be High'
+            'Second should be high priority'
         );
-
-        // Verify third issue (Login)
         Assert.areEqual(
-            'Login Issue',
+            'technical',
             results[2].issueType,
-            'Third issue should be Login Issue'
-        );
-
-        // Verify fourth issue (Critical)
-        Assert.areEqual(
-            'High',
-            results[3].priority,
-            'Fourth issue priority should be High'
-        );
-
-        // Verify fifth issue (Password)
-        Assert.areEqual(
-            'Login Issue',
-            results[4].issueType,
-            'Fifth issue should be Login Issue'
-        );
-    }
-
-    @IsTest
-    static void testClassifyCaseInsensitive() {
-        // Test case-insensitive matching
-        List<String> descriptions = new List<String>{
-            'URGENT issue',
-            'CRITICAL problem',
-            'LOGIN error',
-            'PASSWORD reset'
-        };
-
-        // Execute test
-        Test.startTest();
-        List<IssueClassifier.IssueResult> results = IssueClassifier.classify(
-            descriptions
-        );
-        Test.stopTest();
-
-        // Verify case-insensitive matching works
-        Assert.areEqual(4, results.size(), 'Should return four results');
-        Assert.areEqual(
-            'High',
-            results[0].priority,
-            'URGENT should be detected'
-        );
-        Assert.areEqual(
-            'High',
-            results[1].priority,
-            'CRITICAL should be detected'
-        );
-        Assert.areEqual(
-            'Login Issue',
-            results[2].issueType,
-            'LOGIN should be detected'
-        );
-        Assert.areEqual(
-            'Login Issue',
-            results[3].issueType,
-            'PASSWORD should be detected'
+            'Third should be technical'
         );
     }
 }
