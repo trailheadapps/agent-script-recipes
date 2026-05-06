@@ -1,6 +1,6 @@
 # Service Agent Recipes
 
-This directory contains Agentforce **Service Agent** examples. Service Agents are external-facing agents (customer support, self-service portals) that run under a dedicated agent user rather than the logged-in user.
+This directory contains Agentforce **Service Agent** examples. Service Agents are external-facing agents that run under a dedicated agent user rather than the logged-in user.
 
 ## Key Difference from Employee Agents
 
