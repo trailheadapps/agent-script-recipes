@@ -16,6 +16,8 @@ Detailed rules and guidelines are in the `.airules/` directory. Read the relevan
 
 ## Project Layout
 
-- **Agent scripts:** `force-app/**/aiAuthoringBundles/**/*.agent`
-- **Apex services:** `force-app/**/classes/*.cls`
+- **Employee Agent scripts:** `force-app/**/aiAuthoringBundles/**/*.agent`
+- **Service Agent scripts:** `force-app-service/**/aiAuthoringBundles/**/*.agent`
+- **Apex services:** `force-app/**/classes/*.cls` and `force-app-service/classes/*.cls`
 - **Recipes:** each subdirectory under `force-app/main/` is a self-contained recipe
+- **Service Agent recipes:** `force-app-service/` contains service agent examples that require a `default_agent_user`

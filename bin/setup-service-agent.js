@@ -1,0 +1,113 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+const SERVICE_AGENT_DIR = path.resolve(__dirname, '..', 'force-app-service');
+const PLACEHOLDER = '__AGENT_USER_PLACEHOLDER__';
+
+function parseArgs() {
+    const args = process.argv.slice(2);
+    let targetOrg = null;
+
+    for (let i = 0; i < args.length; i++) {
+        if (args[i] === '--target-org' && args[i + 1]) {
+            targetOrg = args[i + 1];
+            i++;
+        }
+    }
+
+    return { targetOrg };
+}
+
+function findAgentFiles(dir) {
+    const results = [];
+
+    function walk(currentDir) {
+        const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+        for (const entry of entries) {
+            const fullPath = path.join(currentDir, entry.name);
+            if (entry.isDirectory()) {
+                walk(fullPath);
+            } else if (entry.name.endsWith('.agent')) {
+                results.push(fullPath);
+            }
+        }
+    }
+
+    walk(dir);
+    return results;
+}
+
+function createAgentUser(targetOrg) {
+    const orgFlag = targetOrg ? ` -o ${targetOrg}` : '';
+    const cmd = `sf org create agent-user${orgFlag} --json`;
+
+    console.log(`Running: ${cmd}`);
+
+    try {
+        const output = execSync(cmd, { encoding: 'utf8' });
+        const result = JSON.parse(output);
+
+        if (result.status !== 0) {
+            console.error('Failed to create agent user:', result.message);
+            process.exit(1);
+        }
+
+        return result.result.username;
+    } catch (error) {
+        console.error('Error creating agent user:', error.message);
+        process.exit(1);
+    }
+}
+
+function replacePlaceholders(username) {
+    if (!fs.existsSync(SERVICE_AGENT_DIR)) {
+        console.error(
+            `Service agent directory not found: ${SERVICE_AGENT_DIR}`
+        );
+        process.exit(1);
+    }
+
+    const agentFiles = findAgentFiles(SERVICE_AGENT_DIR);
+
+    if (agentFiles.length === 0) {
+        console.error('No .agent files found in force-app-service/');
+        process.exit(1);
+    }
+
+    let replacedCount = 0;
+
+    for (const filePath of agentFiles) {
+        let content = fs.readFileSync(filePath, 'utf8');
+
+        if (content.includes(PLACEHOLDER)) {
+            content = content.replace(PLACEHOLDER, username);
+            fs.writeFileSync(filePath, content, 'utf8');
+            console.log(
+                `Updated: ${path.relative(SERVICE_AGENT_DIR, filePath)}`
+            );
+            replacedCount++;
+        }
+    }
+
+    if (replacedCount === 0) {
+        console.warn(
+            `Warning: No files contained the placeholder "${PLACEHOLDER}". They may have already been replaced.`
+        );
+    } else {
+        console.log(
+            `\nReplaced placeholder in ${replacedCount} file(s) with agent user: ${username}`
+        );
+        console.log(
+            '\nReminder: Do not commit the modified agent file(s). The pre-commit hook will restore the placeholder automatically.'
+        );
+    }
+}
+
+const { targetOrg } = parseArgs();
+const username = createAgentUser(targetOrg);
+replacePlaceholders(username);

@@ -4,7 +4,8 @@
 config:
    developer_name: "CustomerService_Agent"
    agent_label: "Customer Service Agent"
-   agent_type: "AgentforceEmployeeAgent"
+   agent_type: "AgentforceServiceAgent"
+   default_agent_user: "__AGENT_USER_PLACEHOLDER__"
    description: "Complete customer service agent with issue classification, resolution workflows, and escalation"
 
 variables:

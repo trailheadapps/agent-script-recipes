@@ -78,6 +78,30 @@ If you don't have an org yet, you can sign up for a free [Developer Edition Org]
     sf data import tree --plan data/data-plan.json
     ```
 
+1. **(Service Agent recipes)** Install npm dependencies. This is required for the setup script that creates and configures the agent user:
+
+    ```bash
+    npm install
+    ```
+
+1. **(Service Agent recipes)** Create the agent user and prepare the service agent metadata for deployment. Service Agents (unlike Employee Agents) require a `default_agent_user` — an org-specific user that the agent runs as. This script creates that user and injects it into all `.agent` files under `force-app-service/`:
+
+    ```bash
+    npm run setup:service-agent
+    ```
+
+    If deploying to a specific org (not your default), pass the target org alias:
+
+    ```bash
+    npm run setup:service-agent -- --target-org my-org-alias
+    ```
+
+1. **(Service Agent recipes)** Deploy the service agent metadata:
+
+    ```bash
+    sf project deploy start --source-dir force-app-service
+    ```
+
 1. Open your org with the **Agentforce Studio** app displayed:
 
     ```bash
@@ -86,6 +110,9 @@ If you don't have an org yet, you can sign up for a free [Developer Edition Org]
 
 > [!TIP]
 > **Agentforce Studio** can be reached from the App Launcher. From there, click **View All** then select the **Agentforce Studio** app.
+
+> [!NOTE]
+> **What is a Service Agent?** Unlike Employee Agents (which run as the logged-in user), Service Agents are external-facing agents that run under a dedicated agent user. This user is org-specific, which is why the `npm run setup:service-agent` step is needed to dynamically create and configure it before deployment.
 
 **Post installation:** when working with the recipes, assign the **Agent Script Recipes Data** permission set to your agent user to avoid access issues.
 

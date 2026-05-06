@@ -180,9 +180,9 @@ jobs:
             - name: 'Assign Manage Prompt Template permission set'
               run: sf org assign permset -n EinsteinGPTPromptTemplateManager
 
-            # Deploy source to scratch org
-            - name: 'Push source to scratch org'
-              run: sf project deploy start --dev-debug
+            # Deploy employee agent source to scratch org
+            - name: 'Deploy employee agent recipes'
+              run: sf project deploy start --source-dir force-app --dev-debug
 
             # Assign permission sets
             - name: 'Assign permission sets to default user'
@@ -193,6 +193,14 @@ jobs:
             # Import sample data
             - name: 'Import sample data'
               run: sf data tree import -p ./data/data-plan.json
+
+            # Create agent user for service agent deployment
+            - name: 'Create agent user for service agent'
+              run: node bin/setup-service-agent.js --target-org scratch-org
+
+            # Deploy service agent source to scratch org
+            - name: 'Deploy service agent recipes'
+              run: sf project deploy start --source-dir force-app-service --dev-debug
 
             # Run Apex tests in scratch org
             - name: 'Run Apex tests'

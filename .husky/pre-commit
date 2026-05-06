@@ -1,1 +1,2 @@
+node bin/clean-service-agent.js
 npm run precommit
