@@ -1,0 +1,185 @@
+# OpenGateRouter - Deterministic Gate-Based Routing
+# Demonstrates the Open Gate pattern: variable-driven routing that bypasses LLM classification
+# to guarantee return paths through authentication gates
+
+config:
+	developer_name: "OpenGateRouter"
+	agent_label: "OpenGateRouter"
+	agent_type: "AgentforceEmployeeAgent"
+	description: "Demonstrates deterministic gate-based routing with authentication prerequisite"
+
+variables:
+	open_gate: mutable string = ""
+		description: "The subagent that currently holds an open gate. When set, the router bypasses LLM classification and transitions directly to this subagent."
+
+	next_subagent: mutable string = ""
+		description: "Breadcrumb tracking which subagent to resume after gate completion"
+
+	authenticated: mutable boolean = False
+		description: "Whether the customer has been authenticated"
+
+	customer_id: mutable string = ""
+		description: "The authenticated customer's unique ID"
+
+	customer_name: mutable string = ""
+		description: "The authenticated customer's name"
+
+	order_id: mutable string = ""
+		description: "The order ID for the product return"
+
+	return_reason: mutable string = ""
+		description: "The reason for the product return"
+
+	return_confirmation: mutable string = ""
+		description: "Return confirmation number after processing"
+
+system:
+	messages:
+		welcome: "Welcome to Customer Support! I can help you with product returns and other inquiries."
+		error: "I encountered an issue. Let me get you back on track."
+
+	instructions: "You are a customer service agent. Help customers with product returns. Authentication is handled by dedicated subagents — do not block routing based on authentication status."
+
+start_agent agent_router:
+	description: "Route users to the appropriate subagent with deterministic gate-based re-routing"
+
+	reasoning:
+		instructions:->
+			if @variables.open_gate == "product_return":
+				transition to @subagent.product_return
+			if @variables.open_gate == "customer_authentication":
+				transition to @subagent.customer_authentication
+
+			| Select the tool that best matches the user's message and conversation history. Route to the matching subagent immediately based on the user's intent. Do not ask for authentication or additional information — just route. Authentication is handled by the downstream subagents.
+		actions:
+			start_return: @utils.transition to @subagent.product_return
+				description: "Help with a product return, exchange, or refund"
+
+			general_help: @utils.transition to @subagent.general_help
+				description: "Answer general questions about orders, shipping, or policies"
+
+subagent customer_authentication:
+	description: "Verify customer identity before allowing protected operations"
+
+	actions:
+		check_authentication:
+			description: "Verify customer identity using account number and verification code"
+			inputs:
+				account_number: string
+					description: "The customer's account number"
+					is_required: True
+				verification_code: string
+					description: "The verification code sent to customer's phone or email"
+					is_required: True
+			outputs:
+				is_authenticated: boolean
+					description: "Whether authentication was successful"
+				customer_id: string
+					description: "The verified customer ID"
+				customer_name: string
+					description: "The verified customer name"
+			target: "flow://CheckCustomerAuthentication"
+
+	reasoning:
+		instructions:->
+			set @variables.open_gate = "customer_authentication"
+
+			if @variables.authenticated == True:
+				| You are already verified. Redirecting you now.
+
+			if @variables.authenticated == False:
+				| To access your account, I need to verify your identity. Please provide your account number and the verification code sent to your registered phone or email.
+
+		actions:
+			verify_customer: @actions.check_authentication
+				with account_number=...
+				with verification_code=...
+				set @variables.authenticated = @outputs.is_authenticated
+				set @variables.customer_id = @outputs.customer_id
+				set @variables.customer_name = @outputs.customer_name
+
+	after_reasoning:
+		if @variables.authenticated == True and @variables.next_subagent == "product_return":
+			set @variables.open_gate = "product_return"
+			transition to @subagent.product_return
+
+subagent product_return:
+	description: "Process product returns for authenticated customers"
+
+	actions:
+		process_return:
+			description: "Process a product return request"
+			inputs:
+				customer_id: string
+					description: "The authenticated customer's ID"
+					is_required: True
+				order_id: string
+					description: "The order ID to return"
+					is_required: True
+				reason: string
+					description: "Reason for the return"
+					is_required: True
+			outputs:
+				confirmation_number: string
+					description: "Return confirmation number"
+				success: boolean
+					description: "Whether the return was processed successfully"
+			target: "flow://ProcessProductReturn"
+
+	reasoning:
+		instructions:->
+			if @variables.authenticated == False:
+				set @variables.next_subagent = "product_return"
+				transition to @subagent.customer_authentication
+
+			set @variables.open_gate = "product_return"
+
+			| Hello {!@variables.customer_name}! I can help you process a product return. Please provide your order ID and the reason for the return (defective, wrong item, changed mind, etc.).
+
+		actions:
+			collect_return_info: @utils.setVariables
+				description: "Collect the order ID and return reason from the conversation"
+				with order_id=...
+				with return_reason=...
+
+			submit_return: @actions.process_return
+				description: "Submit the product return for processing"
+				available when @variables.order_id and @variables.return_reason
+				with customer_id=@variables.customer_id
+				with order_id=@variables.order_id
+				with reason=@variables.return_reason
+				set @variables.return_confirmation = @outputs.confirmation_number
+				transition to @subagent.return_confirmation
+
+			exit_to_general: @utils.transition to @subagent.general_help
+				description: "Switch to general help if the user asks about something else"
+
+subagent return_confirmation:
+	description: "Display return confirmation details and offer next steps"
+
+	reasoning:
+		instructions:->
+			set @variables.open_gate = ""
+			| Your return has been processed successfully!
+			| Confirmation Number: {!@variables.return_confirmation}
+			| Order: {!@variables.order_id}
+			| Reason: {!@variables.return_reason}
+			| You will receive an email with return shipping instructions. Is there anything else I can help you with?
+
+		actions:
+			start_new_return: @utils.transition to @subagent.product_return
+				description: "Process another product return"
+
+			general_questions: @utils.transition to @subagent.general_help
+				description: "Ask about something else"
+
+subagent general_help:
+	description: "Answer general questions about orders, shipping, and return policies"
+
+	reasoning:
+		instructions:->
+			| I can help with general questions about order status, shipping policies, return and refund policies, and product information. What would you like to know?
+
+		actions:
+			need_return: @utils.transition to @subagent.product_return
+				description: "Process a product return (authentication required)"
