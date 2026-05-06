@@ -82,7 +82,7 @@ subagent triage:
          outputs:
             articles: list[string]
                description: "List of matching knowledge base articles"
-            top_article: object
+            top_article: string
                description: "The most relevant article with solution content"
          target: "flow://SearchKnowledgeBase"
 
@@ -94,9 +94,15 @@ subagent triage:
             | Hello! Welcome to Customer Service. How can I help you today?
 
          if not @variables.issue_description:
-            | Please describe the issue you're experiencing.
+            | First, use {!@actions.collect_info} to save the customer ID and issue description from the conversation. If the user has not yet described their issue, ask them to do so.
 
       actions:
+         collect_info: @utils.setVariables
+            description: "Save the customer ID and issue description from the conversation"
+            available when not @variables.issue_description
+            with customer_id=...
+            with issue_description=...
+
          identify_customer: @actions.fetch_customer
             available when @variables.customer_id and not @variables.customer_name
             with customer_id=@variables.customer_id
