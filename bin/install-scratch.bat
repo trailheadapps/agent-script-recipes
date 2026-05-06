@@ -47,7 +47,7 @@ call :checkForError
 @echo:
 
 echo Assigning permission set to agent user...
-for /f "tokens=*" %%a in ('node -e "const fs=require(\"fs\"),p=require(\"path\");const f=fs.readFileSync(p.resolve(\"force-app-service/aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent\"),\"utf8\");const m=f.match(/default_agent_user:\s*\"([^_][^\"]+)\"/);if(m)process.stdout.write(m[1])"') do set AGENT_USER=%%a
+for /f "tokens=*" %%a in ('node -e "const fs=require(\"fs\"),p=require(\"path\");const f=fs.readFileSync(p.resolve(\"force-app-service/customerServiceAgent/aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent\"),\"utf8\");const m=f.match(/default_agent_user:\s*\"([^_][^\"]+)\"/);if(m)process.stdout.write(m[1])"') do set AGENT_USER=%%a
 cmd.exe /c sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of %AGENT_USER%
 call :checkForError
 @echo:

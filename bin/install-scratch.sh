@@ -40,7 +40,7 @@ node bin/setup-service-agent.js && \
 echo "" && \
 
 echo "Assigning permission set to agent user..." && \
-agent_user=$(grep -oP 'default_agent_user:\s*"\K[^"]+' force-app-service/aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent) && \
+agent_user=$(grep -oP 'default_agent_user:\s*"\K[^"]+' force-app-service/customerServiceAgent/aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent) && \
 sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of "$agent_user" && \
 echo "" && \
 

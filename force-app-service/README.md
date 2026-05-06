@@ -17,6 +17,6 @@ A pre-commit hook automatically restores the placeholder before any commit so or
 
 ## Recipes
 
-| Recipe                                                                                     | Description                                                                                       |
-| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| [CustomerServiceAgent](aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent) | Service agent that classifies issues, searches the knowledge base, and creates or escalates cases |
+| Recipe                                        | Description                                                                                       |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [CustomerServiceAgent](customerServiceAgent/) | Service agent that classifies issues, searches the knowledge base, and creates or escalates cases |
