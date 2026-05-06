@@ -182,7 +182,7 @@ jobs:
 
             # Deploy employee agent source to scratch org
             - name: 'Deploy employee agent recipes'
-              run: sf project deploy start --source-dir force-app --dev-debug
+              run: sf project deploy start --source-dir force-app
 
             # Assign permission sets
             - name: 'Assign permission sets to default user'
@@ -206,7 +206,7 @@ jobs:
 
             # Deploy service agent source to scratch org
             - name: 'Deploy service agent recipes'
-              run: sf project deploy start --source-dir force-app-service --dev-debug
+              run: sf project deploy start --source-dir force-app-service
 
             # Run Apex tests in scratch org
             - name: 'Run Apex tests'
