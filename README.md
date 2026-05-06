@@ -102,6 +102,14 @@ If you don't have an org yet, you can sign up for a free [Developer Edition Org]
     sf project deploy start --source-dir force-app-service
     ```
 
+1. **(Service Agent recipes)** Assign the required permission set to the agent user so the service agent can access recipe data:
+
+    ```bash
+    sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of <agent-username>
+    ```
+
+    Replace `<agent-username>` with the username printed by the `setup:service-agent` script in the previous step.
+
 1. Open your org with the **Agentforce Studio** app displayed:
 
     ```bash
@@ -113,8 +121,6 @@ If you don't have an org yet, you can sign up for a free [Developer Edition Org]
 
 > [!NOTE]
 > **What is a Service Agent?** Unlike Employee Agents (which run as the logged-in user), Service Agents are external-facing agents that run under a dedicated agent user. This user is org-specific, which is why the `npm run setup:service-agent` step is needed to dynamically create and configure it before deployment.
-
-**Post installation:** when working with the recipes, assign the **Agent Script Recipes Data** permission set to your agent user to avoid access issues.
 
 ## Optional Installation Instructions
 

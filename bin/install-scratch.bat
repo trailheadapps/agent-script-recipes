@@ -23,8 +23,8 @@ cmd.exe /c sf org assign permset -n EinsteinGPTPromptTemplateManager
 call :checkForError
 @echo:
 
-echo Pushing source...
-cmd.exe /c sf project deploy start
+echo Deploying employee agent recipes...
+cmd.exe /c sf project deploy start --source-dir force-app
 call :checkForError
 @echo:
 
@@ -36,11 +36,24 @@ cmd.exe /c sf org assign permset -n Agent_Script_Recipes_App
 call :checkForError
 @echo:
 
+echo Importing sample data...
+cmd.exe /c sf data tree import -p data/data-plan.json
 call :checkForError
 @echo:
 
-echo Importing sample data...
-cmd.exe /c sf data tree import -p data/data-plan.json
+echo Creating agent user for service agent...
+cmd.exe /c node bin/setup-service-agent.js
+call :checkForError
+@echo:
+
+echo Assigning permission set to agent user...
+for /f "tokens=*" %%a in ('node -e "const fs=require(\"fs\"),p=require(\"path\");const f=fs.readFileSync(p.resolve(\"force-app-service/aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent\"),\"utf8\");const m=f.match(/default_agent_user:\s*\"([^_][^\"]+)\"/);if(m)process.stdout.write(m[1])"') do set AGENT_USER=%%a
+cmd.exe /c sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of %AGENT_USER%
+call :checkForError
+@echo:
+
+echo Deploying service agent recipes...
+cmd.exe /c sf project deploy start --source-dir force-app-service
 call :checkForError
 @echo:
 
