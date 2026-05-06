@@ -1,261 +1,131 @@
 # CustomerServiceAgent
-# Complete real-world customer service agent
+# Service Agent recipe: demonstrates agent_type + default_agent_user config
 
 config:
    developer_name: "CustomerService_Agent"
    agent_label: "Customer Service Agent"
    agent_type: "AgentforceServiceAgent"
    default_agent_user: "__AGENT_USER_PLACEHOLDER__"
-   description: "Complete customer service agent with issue classification, resolution workflows, and escalation"
+   description: "Customer service agent that classifies issues, searches the knowledge base, and creates or escalates cases"
 
 variables:
-   # Customer information
    customer_id: mutable string = ""
       description: "Unique identifier for the customer"
    customer_name: mutable string = ""
       description: "Full name of the customer"
-   customer_email: mutable string = ""
-      description: "Email address of the customer"
    customer_tier: mutable string = "standard"
       description: "Customer loyalty tier (standard, premium, enterprise)"
-
-   # Issue tracking
-   issue_type: mutable string = ""
-      description: "Category of the customer's issue (e.g., billing, technical)"
    issue_description: mutable string = ""
       description: "Detailed description of the issue provided by the customer"
+   issue_type: mutable string = ""
+      description: "Category of the customer's issue (billing, technical, account, product)"
    issue_priority: mutable string = "medium"
       description: "Priority level of the issue (low, medium, high, urgent)"
-   issue_resolved: mutable boolean = False
-      description: "Flag indicating if the issue has been resolved"
-
-   # Case management
-   case_id: mutable string = ""
-      description: "Salesforce Case ID associated with the interaction"
-   case_status: mutable string = "new"
-      description: "Current status of the case (new, in_progress, resolved, escalated, closed)"
-
-   # Knowledge base
    kb_article_found: mutable boolean = False
-      description: "Flag indicating if a relevant KB article was found"
-   kb_article_content: mutable string = ""
-      description: "Content of the found KB article"
-
-   # Escalation
-   requires_escalation: mutable boolean = False
-      description: "Flag indicating if the issue needs escalation to a human agent"
-   escalation_reason: mutable string = ""
-      description: "Reason for escalation"
-
-   # Resolution tracking
-   resolution_steps: mutable object = {}
-      description: "List of steps taken to resolve the issue"
-   customer_satisfied: mutable boolean = False
-      description: "Flag indicating customer satisfaction with the resolution"
+      description: "Whether a relevant knowledge base article was found"
 
 system:
-   messages:
-      welcome: "Welcome to Customer Service! I'm here to help resolve your issue quickly."
-      error: "I encountered an issue processing your request. Please try again or contact support."
-
-   instructions: "You are a customer service agent. Classify issues, provide solutions from the knowledge base, create cases, and escalate when needed. Be empathetic, professional, and solution-oriented."
+   instructions: "You are a customer service agent. Identify the customer, classify their issue, search the knowledge base for solutions, and create or escalate cases as needed. Be empathetic and solution-oriented."
 
 start_agent agent_router:
-   description: "Welcome customers and begin issue triage and resolution"
-   
+   description: "Welcome customers and route to triage"
+
    reasoning:
       instructions:|
-         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         Greet the customer and begin the triage process.
       actions:
          begin_triage: @utils.transition to @subagent.triage
             description: "Start the customer service triage process"
 
-# SUBAGENT 1: Initial Triage
+# SUBAGENT 1: Triage
 subagent triage:
-   description: "Initial customer interaction and issue triage"
+   description: "Identify the customer, classify their issue, and search the knowledge base"
 
    actions:
       fetch_customer:
-         description: "Fetch customer information"
+         description: "Fetch customer information by their ID"
          inputs:
             customer_id: string
-               description: "The unique identifier of the customer to fetch information for"
+               description: "The unique identifier of the customer"
                is_required: True
          outputs:
             name: string
                description: "Customer's full name"
             email: string
-               description: "Customer's email address for communication"
+               description: "Customer's email address"
             tier: string
-               description: "Customer tier level (standard, premium, enterprise) determining service priority"
+               description: "Customer tier level (standard, premium, enterprise)"
          target: "flow://FetchCustomer"
 
       classify_issue:
-         description: "Classify customer issue type"
+         description: "Classify the customer's issue type and priority"
          inputs:
             issue_description: string
-               description: "The customer's description of their issue or problem"
+               description: "The customer's description of their problem"
                is_required: True
          outputs:
             issue_type: string
-               description: "Classified issue type (e.g., billing, technical, account, product)"
+               description: "Classified issue type (billing, technical, account, product)"
             priority: string
-               description: "Issue priority level (low, medium, high, urgent) based on classification"
-            suggested_kb_articles: list[string]
-               description: "List of relevant knowledge base article IDs that may help resolve the issue"
+               description: "Issue priority level (low, medium, high, urgent)"
          target: "apex://IssueClassifier"
 
       search_knowledge_base:
-         description: "Search knowledge base for solutions"
+         description: "Search the knowledge base for relevant solutions"
          inputs:
             issue_type: string
-               description: "The classified type of issue to search solutions for"
+               description: "The classified type of issue to search for"
                is_required: True
             keywords: string
-               description: "Keywords extracted from the issue description for refined search"
+               description: "Keywords from the issue description for search"
                is_required: True
          outputs:
             articles: list[string]
-               description: "List of knowledge base article objects matching the search criteria"
+               description: "List of matching knowledge base articles"
             top_article: object
-               description: "The most relevant knowledge base article object with solution content"
+               description: "The most relevant article with solution content"
          target: "flow://SearchKnowledgeBase"
-
-      create_case:
-         description: "Create support case"
-         inputs:
-            customer_id: string
-               description: "The unique identifier of the customer the case is for"
-               is_required: True
-            subject: string
-               description: "Brief subject line summarizing the case"
-               is_required: True
-            case_description: string
-               description: "Detailed description of the customer's issue"
-               is_required: True
-            priority: string
-               description: "Priority level of the case (low, medium, high, urgent)"
-               is_required: True
-            issue_type: string
-               description: "The classified type of issue (billing, technical, account, product)"
-               is_required: True
-         outputs:
-            case_id: string
-               description: "Unique identifier assigned to the newly created case"
-            case_number: string
-               description: "Human-readable case number for customer reference"
-         target: "flow://CreateCase"
-
-      update_case:
-         description: "Update case status"
-         inputs:
-            case_id: string
-               description: "The unique identifier of the case to update"
-               is_required: True
-            status: string
-               description: "New status for the case (new, in_progress, resolved, escalated, closed)"
-               is_required: True
-            notes: string
-               description: "Notes or comments about the case update"
-               is_required: False
-         outputs:
-            updated: boolean
-               description: "Indicates whether the case was updated successfully"
-         target: "flow://UpdateCase"
-
-      escalate_case:
-         description: "Escalate case to specialist"
-         inputs:
-            case_id: string
-               description: "The unique identifier of the case to escalate"
-               is_required: True
-            reason: string
-               description: "Reason for escalation (e.g., complex issue, customer request, policy exception)"
-               is_required: True
-            specialist_team: string
-               description: "The specialist team to escalate to based on issue type"
-               is_required: True
-         outputs:
-            escalated: boolean
-               description: "Indicates whether the case was escalated successfully"
-            specialist_assigned: string
-               description: "Name or ID of the specialist assigned to handle the escalated case"
-         target: "flow://EscalateCase"
-
-      send_satisfaction_survey:
-         description: "Send customer satisfaction survey"
-         inputs:
-            customer_email: string
-               description: "Email address to send the satisfaction survey to"
-               is_required: True
-            case_id: string
-               description: "The case ID to associate with the survey response"
-               is_required: True
-         outputs:
-            sent: boolean
-               description: "Indicates whether the satisfaction survey was sent successfully"
-         target: "flow://SendSatisfactionSurvey"
-
-
-   # Load customer data if available
-   before_reasoning:
-      if @variables.customer_id and not @variables.customer_name:
-         run @actions.fetch_customer
-            with customer_id=@variables.customer_id
-            set @variables.customer_name = @outputs.name
-            set @variables.customer_email = @outputs.email
-            set @variables.customer_tier = @outputs.tier
 
    reasoning:
       instructions:->
          if @variables.customer_name:
-            | Hello {!@variables.customer_name}! 👋
+            | Hello {!@variables.customer_name}! How can I help you today?
          if not @variables.customer_name:
-            | Hello! Welcome to Customer Service. 👋
-          
-         | I'm here to help resolve your issue quickly.
-          
+            | Hello! Welcome to Customer Service. How can I help you today?
+
          if not @variables.issue_description:
             | Please describe the issue you're experiencing.
-         if @variables.issue_description and not @variables.issue_type:
-            | Let me classify your issue...
 
       actions:
-         # Classify the issue
+         identify_customer: @actions.fetch_customer
+            available when @variables.customer_id and not @variables.customer_name
+            with customer_id=@variables.customer_id
+            set @variables.customer_name = @outputs.name
+            set @variables.customer_tier = @outputs.tier
+
          classify_customer_issue: @actions.classify_issue
             available when @variables.issue_description and not @variables.issue_type
             with issue_description=@variables.issue_description
             set @variables.issue_type = @outputs.issue_type
             set @variables.issue_priority = @outputs.priority
-            # Transition to resolution workflow
+
+         search_kb: @actions.search_knowledge_base
+            available when @variables.issue_type and not @variables.kb_article_found
+            with issue_type=@variables.issue_type
+            with keywords=@variables.issue_description
+            set @variables.kb_article_found = True
             transition to @subagent.resolution
 
-# SUBAGENT 2: Resolution Workflow
+# SUBAGENT 2: Resolution
 subagent resolution:
-   description: "Attempt to resolve issue using knowledge base"
+   description: "Create a case or escalate based on knowledge base results"
 
    actions:
-      search_knowledge_base:
-         description: "Search knowledge base for solutions"
-         inputs:
-            issue_type: string
-               description: "The classified type of issue to search solutions for"
-               is_required: True
-            keywords: string
-               description: "Keywords extracted from the issue description for refined search"
-               is_required: True
-         outputs:
-            articles: list[string]
-               description: "List of knowledge base article objects matching the search criteria"
-            top_article: object
-               description: "The most relevant knowledge base article object with solution content"
-         target: "flow://SearchKnowledgeBase"
-
       create_case:
-         description: "Create support case"
+         description: "Create a support case for the customer"
          inputs:
             customer_id: string
-               description: "The unique identifier of the customer the case is for"
+               description: "The unique identifier of the customer"
                is_required: True
             subject: string
                description: "Brief subject line summarizing the case"
@@ -264,230 +134,59 @@ subagent resolution:
                description: "Detailed description of the customer's issue"
                is_required: True
             priority: string
-               description: "Priority level of the case (low, medium, high, urgent)"
+               description: "Priority level (low, medium, high, urgent)"
                is_required: True
             issue_type: string
-               description: "The classified type of issue (billing, technical, account, product)"
+               description: "The classified issue type (billing, technical, account, product)"
                is_required: True
          outputs:
             case_id: string
-               description: "Unique identifier assigned to the newly created case"
+               description: "Unique identifier of the created case"
             case_number: string
-               description: "Human-readable case number for customer reference"
+               description: "Human-readable case number for reference"
          target: "flow://CreateCase"
 
-      update_case:
-         description: "Update case status"
-         inputs:
-            case_id: string
-               description: "The unique identifier of the case to update"
-               is_required: True
-            status: string
-               description: "New status for the case (new, in_progress, resolved, escalated, closed)"
-               is_required: True
-            notes: string
-               description: "Notes or comments about the case update"
-               is_required: False
-         outputs:
-            updated: boolean
-               description: "Indicates whether the case was updated successfully"
-         target: "flow://UpdateCase"
-
-   reasoning:
-      instructions:->
-         | Issue Classification:
-           - Type: {!@variables.issue_type}
-           - Priority: {!@variables.issue_priority}
-          
-         if @variables.customer_tier == "premium":
-            | (Premium customer - prioritizing resolution)
-          
-         | Searching knowledge base for solutions...
-
-      actions:
-         # Search knowledge base
-         find_solution: @actions.search_knowledge_base
-            available when @variables.issue_type and not @variables.kb_article_found
-            with issue_type=@variables.issue_type
-            with keywords=@variables.issue_description
-            set @variables.kb_article_found = True
-            set @variables.kb_article_content = @outputs.top_article
-
-            # Create case for tracking
-            run @actions.create_case
-               with customer_id=@variables.customer_id
-               with subject="{!@variables.issue_type}: {!@variables.issue_description}"
-               with case_description=@variables.issue_description
-               with priority=@variables.issue_priority
-               with issue_type=@variables.issue_type
-               set @variables.case_id = @outputs.case_id
-               set @variables.case_status = "in_progress"
-
-         # If KB solution found, present it
-         present_solution: @utils.transition to @subagent.solution_presentation
-            available when @variables.kb_article_found
-
-         # If no KB solution, escalate
-         escalate_to_specialist: @utils.transition to @subagent.escalation
-            available when not @variables.kb_article_found
-
-# SUBAGENT 3: Solution Presentation
-subagent solution_presentation:
-   description: "Present solution and verify resolution"
-
-   actions:
-      update_case:
-         description: "Update case status"
-         inputs:
-            case_id: string
-               description: "The unique identifier of the case to update"
-               is_required: True
-            status: string
-               description: "New status for the case (new, in_progress, resolved, escalated, closed)"
-               is_required: True
-            notes: string
-               description: "Notes or comments about the case update"
-               is_required: False
-         outputs:
-            updated: boolean
-               description: "Indicates whether the case was updated successfully"
-         target: "flow://UpdateCase"
-
-   reasoning:
-      instructions:->
-         | I found a solution for your {!@variables.issue_type} issue!
-          
-           {!@variables.kb_article_content}
-          
-           Does this resolve your issue?
-
-      actions:
-         # Mark resolved
-         mark_resolved: @actions.update_case
-            with case_id=@variables.case_id
-            with status="resolved"
-            with notes="Resolved using KB article"
-            set @variables.issue_resolved = True
-            set @variables.case_status = "resolved"
-            # Transition to closure
-            transition to @subagent.closure
-
-         # Need more help - escalate
-         need_more_help: @utils.transition to @subagent.escalation
-
-# SUBAGENT 4: Escalation
-subagent escalation:
-   description: "Escalate complex issues to specialists"
-
-   actions:
       escalate_case:
-         description: "Escalate case to specialist"
+         description: "Escalate a complex issue to a specialist team"
          inputs:
             case_id: string
                description: "The unique identifier of the case to escalate"
                is_required: True
             reason: string
-               description: "Reason for escalation (e.g., complex issue, customer request, policy exception)"
+               description: "Reason for escalation"
                is_required: True
             specialist_team: string
-               description: "The specialist team to escalate to based on issue type"
+               description: "The specialist team to escalate to"
                is_required: True
          outputs:
             escalated: boolean
-               description: "Indicates whether the case was escalated successfully"
+               description: "Whether the case was escalated successfully"
             specialist_assigned: string
-               description: "Name or ID of the specialist assigned to handle the escalated case"
+               description: "Name of the assigned specialist"
          target: "flow://EscalateCase"
 
-      update_case:
-         description: "Update case status"
-         inputs:
-            case_id: string
-               description: "The unique identifier of the case to update"
-               is_required: True
-            status: string
-               description: "New status for the case (new, in_progress, resolved, escalated, closed)"
-               is_required: True
-            notes: string
-               description: "Notes or comments about the case update"
-               is_required: False
-         outputs:
-            updated: boolean
-               description: "Indicates whether the case was updated successfully"
-         target: "flow://UpdateCase"
-
    reasoning:
       instructions:->
-         | This issue requires specialist attention.
-          
-         if @variables.issue_priority == "high" or @variables.issue_priority == "urgent":
-            | Due to the high priority, I'm escalating this immediately.
+         if @variables.kb_article_found:
+            | I found a knowledge base article that may help resolve your {!@variables.issue_type} issue.
+              Let me create a case to track this.
+         if not @variables.kb_article_found:
+            | I couldn't find a matching solution. Let me escalate this to a specialist.
+
          if @variables.customer_tier == "premium":
-            | As a premium customer, connecting you with a senior specialist.
-          
-         | Creating escalation...
+            | (Priority handling for premium customer)
 
       actions:
-         escalate_issue: @actions.escalate_case
-            with case_id=@variables.case_id
-            with reason=@variables.escalation_reason
+         create_support_case: @actions.create_case
+            available when @variables.kb_article_found
+            with customer_id=@variables.customer_id
+            with subject="{!@variables.issue_type}: {!@variables.issue_description}"
+            with case_description=@variables.issue_description
+            with priority=@variables.issue_priority
+            with issue_type=@variables.issue_type
+
+         escalate_to_specialist: @actions.escalate_case
+            available when not @variables.kb_article_found
+            with case_id=""
+            with reason="No knowledge base solution found for {!@variables.issue_type} issue"
             with specialist_team=@variables.issue_type
-            set @variables.requires_escalation = True
-
-            # Update case
-            run @actions.update_case
-               with case_id=@variables.case_id
-               with status="escalated"
-               with notes="Escalated to {!@variables.issue_type} team"
-               set @variables.case_status = "escalated"
-
-            # Transition to closure
-            transition to @subagent.closure
-
-# SUBAGENT 5: Closure
-subagent closure:
-   description: "Close conversation and collect feedback"
-
-   actions:
-      send_satisfaction_survey:
-         description: "Send customer satisfaction survey"
-         inputs:
-            customer_email: string
-               description: "Email address to send the satisfaction survey to"
-               is_required: True
-            case_id: string
-               description: "The case ID to associate with the survey response"
-               is_required: True
-         outputs:
-            sent: boolean
-               description: "Indicates whether the satisfaction survey was sent successfully"
-         target: "flow://SendSatisfactionSurvey"
-            
-   reasoning:
-      instructions:->
-         if @variables.issue_resolved:
-            | ✅ Great! Your issue has been resolved.
-              Case ID: {!@variables.case_id}
-             
-              I'm sending a satisfaction survey to {!@variables.customer_email}.
-         if @variables.requires_escalation:
-            | Your case ({!@variables.case_id}) has been escalated to our specialist team.
-              They will contact you within:
-         if @variables.issue_priority == "urgent":
-            | - 1 hour
-         if @variables.issue_priority == "high":
-            | - 4 hours
-         if @variables.issue_priority == "medium":
-            | - 24 hours
-             
-         | Is there anything else I can help you with?
-
-      actions:
-         # Send satisfaction survey
-         send_survey: @actions.send_satisfaction_survey
-            available when @variables.issue_resolved
-            with customer_email=@variables.customer_email
-            with case_id=@variables.case_id
-
-         # Start new issue
-         new_issue: @utils.transition to @subagent.triage

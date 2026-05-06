@@ -91,54 +91,6 @@ private class CustomerServiceAgentFlowTest {
     }
 
     @IsTest
-    static void testUpdateCaseSuccess() {
-        // Create a test case first
-        Contact testContact = [
-            SELECT Id
-            FROM Contact
-            WHERE Customer_ID__c = 'CUST-12345'
-            LIMIT 1
-        ];
-        Case testCase = new Case(
-            Subject = 'Original Subject',
-            Description = 'Original Description',
-            ContactId = testContact.Id,
-            Status = 'New'
-        );
-        insert testCase;
-
-        // Set input variables for the flow
-        Map<String, Object> inputs = new Map<String, Object>();
-        inputs.put('case_id', testCase.Id);
-        inputs.put('status', 'In Progress');
-        inputs.put('notes', 'Updated notes');
-
-        // Run the flow
-        Test.startTest();
-        Flow.Interview.UpdateCase flowInterview = new Flow.Interview.UpdateCase(
-            inputs
-        );
-        flowInterview.start();
-        Test.stopTest();
-
-        // Verify the expected outcome
-        Boolean updated = (Boolean) flowInterview.getVariableValue('updated');
-        Assert.areEqual(true, updated, 'Update should be successful');
-
-        // Verify case was updated
-        Case updatedCase = [
-            SELECT Id, Status
-            FROM Case
-            WHERE Id = :testCase.Id
-        ];
-        Assert.areEqual(
-            'In Progress',
-            updatedCase.Status,
-            'Status should be updated'
-        );
-    }
-
-    @IsTest
     static void testSearchKnowledgeBase() {
         // Set input variables for the flow
         Map<String, Object> inputs = new Map<String, Object>();
@@ -220,47 +172,5 @@ private class CustomerServiceAgentFlowTest {
             escalatedCase.Status,
             'Status should be Escalated'
         );
-    }
-
-    @IsTest
-    static void testSendSatisfactionSurvey() {
-        // Create a test case first
-        Contact testContact = [
-            SELECT Id
-            FROM Contact
-            WHERE Customer_ID__c = 'CUST-12345'
-            LIMIT 1
-        ];
-        Case testCase = new Case(
-            Subject = 'Test Case',
-            ContactId = testContact.Id,
-            Status = 'Closed'
-        );
-        insert testCase;
-
-        // Set input variables for the flow
-        Map<String, Object> inputs = new Map<String, Object>();
-        inputs.put('case_id', testCase.Id);
-        inputs.put('customer_email', 'test@example.com');
-
-        // Run the flow
-        Test.startTest();
-        Flow.Interview.SendSatisfactionSurvey flowInterview = new Flow.Interview.SendSatisfactionSurvey(
-            inputs
-        );
-        flowInterview.start();
-        Test.stopTest();
-
-        // Verify the expected outcome
-        Boolean sent = (Boolean) flowInterview.getVariableValue('sent');
-        Assert.areEqual(true, sent, 'Survey should be sent');
-
-        // Verify survey log was created
-        List<ASR_Survey_Log__c> surveyLogs = [
-            SELECT Id
-            FROM ASR_Survey_Log__c
-            WHERE Case__c = :testCase.Id
-        ];
-        Assert.areEqual(1, surveyLogs.size(), 'Survey log should be created');
     }
 }
