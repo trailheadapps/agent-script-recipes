@@ -32,7 +32,7 @@ start_agent agent_router:
 
    reasoning:
       instructions:|
-         Greet the customer and begin the triage process.
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
       actions:
          begin_triage: @utils.transition to @subagent.triage
             description: "Start the customer service triage process"
