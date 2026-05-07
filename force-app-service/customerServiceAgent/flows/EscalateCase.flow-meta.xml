@@ -46,7 +46,7 @@
             <targetReference>Assign_Result</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>case_id</name>
         <dataType>String</dataType>

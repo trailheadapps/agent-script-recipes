@@ -36,11 +36,10 @@ sf data import tree --plan data/data-plan.json && \
 echo "" && \
 
 echo "Creating agent user for service agent..." && \
-node bin/setup-service-agent.js && \
+agent_user=$(node scripts/setup-service-agent.js) && \
 echo "" && \
 
 echo "Assigning base permission set to agent user..." && \
-agent_user=$(grep -oP 'default_agent_user:\s*"\K[^"]+' force-app-service/customerServiceAgent/aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent) && \
 sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of "$agent_user" && \
 echo "" && \
 

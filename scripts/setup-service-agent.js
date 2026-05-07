@@ -42,14 +42,21 @@ function findAgentFiles(dir) {
     return results;
 }
 
+function log(msg) {
+    process.stderr.write(msg + '\n');
+}
+
 function createAgentUser(targetOrg) {
     const orgFlag = targetOrg ? ` -o ${targetOrg}` : '';
     const cmd = `sf org create agent-user${orgFlag} --json`;
 
-    console.log(`Running: ${cmd}`);
+    log(`Running: ${cmd}`);
 
     try {
-        const output = execSync(cmd, { encoding: 'utf8' });
+        const output = execSync(cmd, {
+            encoding: 'utf8',
+            stdio: ['pipe', 'pipe', 'pipe']
+        });
         const result = JSON.parse(output);
 
         if (result.status !== 0) {
@@ -87,22 +94,20 @@ function replacePlaceholders(username) {
         if (content.includes(PLACEHOLDER)) {
             content = content.replace(PLACEHOLDER, username);
             fs.writeFileSync(filePath, content, 'utf8');
-            console.log(
-                `Updated: ${path.relative(SERVICE_AGENT_DIR, filePath)}`
-            );
+            log(`Updated: ${path.relative(SERVICE_AGENT_DIR, filePath)}`);
             replacedCount++;
         }
     }
 
     if (replacedCount === 0) {
-        console.warn(
+        log(
             `Warning: No files contained the placeholder "${PLACEHOLDER}". They may have already been replaced.`
         );
     } else {
-        console.log(
+        log(
             `\nReplaced placeholder in ${replacedCount} file(s) with agent user: ${username}`
         );
-        console.log(
+        log(
             '\nReminder: Do not commit the modified agent file(s). The pre-commit hook will restore the placeholder automatically.'
         );
     }
@@ -111,3 +116,5 @@ function replacePlaceholders(username) {
 const { targetOrg } = parseArgs();
 const username = createAgentUser(targetOrg);
 replacePlaceholders(username);
+
+process.stdout.write(username);
