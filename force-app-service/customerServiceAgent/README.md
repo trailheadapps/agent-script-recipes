@@ -140,7 +140,7 @@ This recipe requires additional setup compared to Employee Agent recipes:
 
 1. `npm run setup:service-agent` — creates the agent user and replaces the placeholder in all `.agent` files
 2. `sf project deploy start --source-dir force-app-service` — deploys the metadata
-3. `sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of <agent-username>` — grants data access
+3. `sf org assign permset -n Customer_Service_Agent_Data --on-behalf-of <agent-username>` — grants service agent data access
 
 A pre-commit hook automatically restores the placeholder before commits.
 

@@ -39,13 +39,17 @@ echo "Creating agent user for service agent..." && \
 node bin/setup-service-agent.js && \
 echo "" && \
 
-echo "Assigning permission set to agent user..." && \
+echo "Assigning base permission set to agent user..." && \
 agent_user=$(grep -oP 'default_agent_user:\s*"\K[^"]+' force-app-service/customerServiceAgent/aiAuthoringBundles/CustomerServiceAgent/CustomerServiceAgent.agent) && \
 sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of "$agent_user" && \
 echo "" && \
 
 echo "Deploying service agent recipes..." && \
 sf project deploy start --source-dir force-app-service && \
+echo "" && \
+
+echo "Assigning service agent permission set..." && \
+sf org assign permset -n Customer_Service_Agent_Data --on-behalf-of "$agent_user" && \
 echo "" && \
 
 echo "Opening org..." && \
