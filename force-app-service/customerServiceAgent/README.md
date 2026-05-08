@@ -94,7 +94,7 @@ subagent resolution:
 
 ## Try It Out
 
-### Example: Issue Resolved via Knowledge Base
+### Example 1: Happy Path — KB Resolution
 
 ```text
 Agent: Hello! Welcome to Customer Service. How can I help you today?
@@ -115,24 +115,52 @@ Agent: I've created case 00001234 for your password reset issue.
        Here's the solution from our knowledge base: ...
 ```
 
-### Example: Issue Escalated
+**What to verify**: All three triage actions fire in sequence (`fetch_customer` → `classify_issue` → `search_knowledge_base`), then the agent transitions to the resolution subagent and creates a case.
+
+### Example 2: Escalation Path — No KB Match
 
 ```text
 Agent: Hello! Welcome to Customer Service. How can I help you today?
 
-User: I'm being charged incorrectly on my enterprise contract.
+User: I need a custom enterprise pricing adjustment.
 
 [classify_issue → type="billing", priority="high"]
 [search_knowledge_base → kb_article_found=False (no match)]
 [transitions to resolution]
 
-Agent: I couldn't find a matching solution. Let me escalate this to a specialist.
+Agent: I couldn't find a matching solution in our knowledge base.
+       Let me escalate this to a specialist who can help.
 
 [escalate_case → escalated=True, specialist_assigned="Billing Support"]
 
 Agent: I've escalated your billing issue to our specialist team.
        They will reach out to you shortly.
 ```
+
+**What to verify**: After KB search returns no relevant articles, the agent escalates via `escalate_case` instead of creating a standard case. Note that `fetch_customer` is skipped because no customer ID was provided.
+
+### Example 3: Unknown Customer — Direct Classification
+
+```text
+Agent: Hello! Welcome to Customer Service. How can I help you today?
+
+User: I need help with my billing. I was charged twice for last month's subscription.
+
+[classify_issue → type="billing", priority="medium"]
+[search_knowledge_base → kb_article_found=False (no match)]
+[transitions to resolution]
+
+Agent: I couldn't find a matching solution in our knowledge base.
+       Let me escalate this to a specialist.
+
+[escalate_case → escalated=True, specialist_assigned="Technical Support"]
+
+Agent: I am escalating your billing issue to a specialist who can review
+       your account and resolve the double charge. You will be contacted
+       soon with an update.
+```
+
+**What to verify**: `fetch_customer` is never called because no `customer_id` was provided. The agent proceeds directly to classification and escalation in a single turn.
 
 ## Deployment
 
@@ -150,45 +178,13 @@ A pre-commit hook automatically restores the placeholder before commits.
 - **OpenGateRouter**: Deterministic gate-based routing with authentication
 - **ActionChaining**: Sequential action execution patterns
 
-## Testing
+## Stub Flow Behavior
 
-### Stub Flow Behavior
+The included flows return hardcoded values so you can try the agent without real data:
 
-The included flows return hardcoded values for testing:
-
-| Flow                  | Always Returns                                                  |
-| --------------------- | --------------------------------------------------------------- |
-| `FetchCustomer`       | `name="Customer"`, `email="test@example.com"`, `tier="Premium"` |
-| `SearchKnowledgeBase` | `articles=["..."]`, `top_article={...}`                         |
-| `CreateCase`          | `case_id="500..."`, `case_number="00001234"`                    |
-| `EscalateCase`        | `escalated=true`, `specialist_assigned="Technical Support"`     |
-
-### Test 1: Happy Path — KB Resolution
-
-```text
-User: My account is CUST-12345. I can't log in.
-
-Agent: [fetches customer, classifies issue, searches KB, creates case]
-```
-
-**Expected**: All three triage actions fire in sequence, then transitions to resolution and creates a case.
-
-### Test 2: Escalation Path — No KB Match
-
-```text
-User: I need a custom enterprise pricing adjustment.
-
-Agent: [classifies issue, searches KB (no match), escalates]
-```
-
-**Expected**: After KB search returns no relevant articles, the agent escalates instead of creating a standard case.
-
-### Test 3: Unknown Customer
-
-```text
-User: I need help with my billing.
-
-Agent: [classifies issue directly, skips fetch_customer since no customer_id]
-```
-
-**Expected**: `fetch_customer` is not called because `customer_id` is empty. Agent proceeds with classification.
+| Flow                  | Returns                                                                        |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `FetchCustomer`       | `name="Customer"`, `email="test@example.com"`, `tier="Premium"`                |
+| `SearchKnowledgeBase` | If `issue_type="technical"`: articles + top_article. Otherwise: empty results. |
+| `CreateCase`          | `case_number="00001234"`                                                       |
+| `EscalateCase`        | `escalated=true`, `specialist_assigned="Technical Support"`                    |

@@ -25,6 +25,8 @@ variables:
       description: "Whether a relevant knowledge base article was found"
    kb_article_content: mutable string = ""
       description: "Content of the top knowledge base article found"
+   kb_search_complete: mutable boolean = False
+      description: "Whether the knowledge base search has been executed"
 
 system:
    instructions: "You are a customer service agent. Identify the customer, classify their issue, search the knowledge base for solutions, and create or escalate cases as needed. Be empathetic and solution-oriented."
@@ -100,12 +102,13 @@ subagent triage:
                with issueDescription=@variables.issue_description
                set @variables.issue_type = @outputs.issueType
                set @variables.issue_priority = @outputs.priority
-         if @variables.issue_type and not @variables.kb_article_found:
+         if @variables.issue_type and not @variables.kb_search_complete:
             run @actions.search_knowledge_base
                with issue_type=@variables.issue_type
                with keywords=@variables.issue_description
-               set @variables.kb_article_found = True
                set @variables.kb_article_content = @outputs.top_article
+               set @variables.kb_article_found = @outputs.top_article != ""
+               set @variables.kb_search_complete = True
 
          if @variables.customer_name:
             | Hello {!@variables.customer_name}! How can I help you today?
@@ -113,8 +116,8 @@ subagent triage:
             | Hello! Welcome to Customer Service. How can I help you today?
 
          if not @variables.issue_description:
-            | Use {!@actions.collect_info} to save whatever the user provided. Extract customer_id if mentioned (otherwise leave empty) and issue_description from the conversation. If the user has not described any issue at all, ask them to do so.
-         if @variables.kb_article_found:
+            | You MUST call {!@actions.collect_info} immediately. Extract customer_id if mentioned (otherwise leave empty) and issue_description from the user's messages. Any mention of a problem or topic counts as an issue description — save it even if brief. Never ask clarifying questions before calling collect_info.
+         if @variables.kb_search_complete:
             | Triage is complete. Inform the customer their issue has been identified and you are resolving it.
 
       actions:
@@ -125,7 +128,7 @@ subagent triage:
             with issue_description=...
 
    after_reasoning:
-      if @variables.kb_article_found:
+      if @variables.kb_search_complete:
          transition to @subagent.resolution
 
 # SUBAGENT 2: Resolution

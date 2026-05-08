@@ -2,6 +2,31 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_Issue_Type</name>
+        <label>Check Issue Type</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>No_Results</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Match</defaultConnectorLabel>
+        <rules>
+            <name>Is_Technical</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>issue_type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>technical</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mock_Results</targetReference>
+            </connector>
+            <label>Is Technical</label>
+        </rules>
+    </decisions>
     <assignments>
         <name>Mock_Results</name>
         <label>Mock Results</label>
@@ -23,7 +48,21 @@
             </value>
         </assignmentItems>
     </assignments>
-    <description>Stub flow for Search Knowledge Base</description>
+    <assignments>
+        <name>No_Results</name>
+        <label>No Results</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>top_article</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue />
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description
+    >Stub flow for Search Knowledge Base — returns articles only for technical issues</description>
     <environments>Default</environments>
     <interviewLabel
     >SearchKnowledgeBase {!$Flow.CurrentDateTime}</interviewLabel>
@@ -45,7 +84,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Mock_Results</targetReference>
+            <targetReference>Check_Issue_Type</targetReference>
         </connector>
     </start>
     <status>Active</status>
