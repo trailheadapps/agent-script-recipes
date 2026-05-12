@@ -102,9 +102,9 @@ Agent: Thanks! Here's your standup summary:
 
 ## What's Next
 
-- **[VariableManagement](../variableManagement/)**: Fundamentals of scalar variables (string, number, boolean)
-- **[TemplateExpressions](../templateExpressions/)**: More on `{!...}` syntax in instructions
-- **[ActionChaining](../../02_actionConfiguration/actionChaining/)**: Populate lists dynamically with `set @variables.list = @outputs.result`
+- **VariableManagement**: Fundamentals of scalar variables (string, number, boolean)
+- **TemplateExpressions**: More on `{!...}` syntax in instructions
+- **ActionChaining**: Populate lists dynamically with `set @variables.list = @outputs.result`
 
 ## Notes
 
