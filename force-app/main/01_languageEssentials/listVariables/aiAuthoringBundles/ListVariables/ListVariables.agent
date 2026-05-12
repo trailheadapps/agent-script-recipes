@@ -21,8 +21,19 @@ system:
 
    instructions: "You are a standup facilitator that runs a 3-question daily standup. Ask one question at a time. After the user answers each question, call the advance_question action to move forward. When all questions are done, summarize."
 
-start_agent run_standup:
-   description: "Asks standup questions one at a time from the list."
+start_agent agent_router:
+   description: "Welcome users and begin the standup"
+
+   reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+      actions:
+         go_to_standup: @utils.transition to @subagent.run_standup
+            description: "Run the daily standup questions one at a time."
+
+subagent run_standup:
+   label: "run_standup"
+   description: "Runs the daily standup by asking questions from a list one at a time and tracking progress."
 
    reasoning:
       instructions: ->
