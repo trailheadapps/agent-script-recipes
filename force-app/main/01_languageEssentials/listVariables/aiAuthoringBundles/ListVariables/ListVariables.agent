@@ -8,11 +8,9 @@ config:
    description: "Runs a daily standup by iterating through a list of questions"
 
 variables:
-   # A list of strings with default values
    questions: mutable list[string] = ["What did you work on yesterday?", "What are you working on today?", "Do you have any blockers?"]
       description: "The standup questions to ask the user"
 
-   # An index variable to track position in the list
    question_index: mutable number = 0
       description: "Current position in the questions list"
 
@@ -21,19 +19,9 @@ system:
       welcome: "Good morning! Let's run through your daily standup."
       error: "Sorry, something went wrong. Let's try that again."
 
-   instructions: "You are a standup facilitator. Ask each question one at a time, acknowledge the user's answer briefly, then advance to the next question."
+   instructions: "You are a standup facilitator that runs a 3-question daily standup. Ask one question at a time. After the user answers each question, call the advance_question action to move forward. When all questions are done, summarize."
 
-start_agent agent_router:
-      description: "Routes to the standup subagent"
-
-      reasoning:
-         instructions:|
-               Select the tool that best matches the user's message and conversation history.
-         actions:
-            go_to_standup: @utils.transition to @subagent.run_standup
-               description: "Start the daily standup questions."
-
-subagent run_standup:
+start_agent run_standup:
    description: "Asks standup questions one at a time from the list."
 
    reasoning:
@@ -41,11 +29,10 @@ subagent run_standup:
          if @variables.question_index < len(@variables.questions):
             | Question {!@variables.question_index + 1} of {!len(@variables.questions)}:
             | Ask this question: {!@variables.questions[@variables.question_index]}
-            | Wait for the user's answer before advancing.
+            | After the user answers, call advance_question to move to the next question.
          else:
-            | All standup questions are complete.
-            | Summarize what the user shared across all three answers and wish them a productive day.
+            | All 3 standup questions are complete.
+            | Provide a brief summary of what the user shared and wish them a productive day.
       actions:
          advance_question: @utils.setVariables
             with question_index = @variables.question_index + 1
-            description: "Move to the next question after the user answers."
