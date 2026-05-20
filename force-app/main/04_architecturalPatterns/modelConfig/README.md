@@ -129,14 +129,14 @@ subagent technical_support:
 
 ### The Precedence Hierarchy in Practice
 
-| Scope | Model | Why |
-| ----- | ----- | --- |
-| Org default | Set in Setup (Salesforce Default or AWS-Hosted) | Baseline for all agents in the org |
-| Agent level | `sfdc_ai__DefaultGPT4OmniMini` | Cost-efficient default for most traffic |
-| `agent_router` | `sfdc_ai__DefaultEinsteinHyperClassifier` | Fast, accurate intent classification |
-| `general_faq` | Inherits agent default | No override needed — low complexity, high volume |
-| `billing_inquiry` | `sfdc_ai__DefaultBedrockAnthropicClaude45Haiku` | Trust Boundary compliance for sensitive financial data |
-| `technical_support` | `sfdc_ai__DefaultBedrockAnthropicClaude45Opus` | Deep reasoning for complex troubleshooting |
+| Scope               | Model                                           | Why                                                    |
+| ------------------- | ----------------------------------------------- | ------------------------------------------------------ |
+| Org default         | Set in Setup (Salesforce Default or AWS-Hosted) | Baseline for all agents in the org                     |
+| Agent level         | `sfdc_ai__DefaultGPT4OmniMini`                  | Cost-efficient default for most traffic                |
+| `agent_router`      | `sfdc_ai__DefaultEinsteinHyperClassifier`       | Fast, accurate intent classification                   |
+| `general_faq`       | Inherits agent default                          | No override needed — low complexity, high volume       |
+| `billing_inquiry`   | `sfdc_ai__DefaultBedrockAnthropicClaude45Haiku` | Trust Boundary compliance for sensitive financial data |
+| `technical_support` | `sfdc_ai__DefaultBedrockAnthropicClaude45Opus`  | Deep reasoning for complex troubleshooting             |
 
 ## Key Code Snippets
 
