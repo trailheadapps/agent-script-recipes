@@ -217,6 +217,67 @@ What does the full error response body say?
 
 **Behind the Scenes:** Routes to `technical_support`, which overrides to Claude Opus 4.5 on Bedrock for multi-step diagnosis and reasoning.
 
+## Testing
+
+There are no stub flows or data dependencies in this recipe — any message will get a response. The focus is verifying that each message routes to the correct subagent.
+
+### Test 1: General FAQ — Inherits Agent Default
+
+Verifies the router sends low-complexity questions to `general_faq`, which inherits the agent-level default (GPT-4o Mini).
+
+```text
+User: What is your return policy?
+
+Agent: Our return policy allows you to return most items within a specified
+       period after purchase, as long as they are in their original condition
+       and packaging.
+```
+
+**Expected routing**: `agent_router` → `general_faq`
+
+### Test 2: Billing — Trust Boundary Override
+
+Verifies the router sends financial questions to `billing_inquiry`, which overrides to Claude Haiku 4.5 on Bedrock.
+
+```text
+User: I was charged twice for my last order
+
+Agent: I understand how frustrating a duplicate charge can be. To investigate,
+       could you provide your order number and the approximate date of the charges?
+```
+
+**Expected routing**: `agent_router` → `billing_inquiry`
+
+### Test 3: Technical Support — Capability Override
+
+Verifies the router sends complex technical questions to `technical_support`, which overrides to Claude Opus 4.5 on Bedrock.
+
+```text
+User: My API integration keeps failing with a 401 error after I rotate my API keys
+
+Agent: A 401 after a key rotation usually means the new key hasn't propagated yet,
+       or the old key is still referenced somewhere. Let's work through it step by step.
+```
+
+**Expected routing**: `agent_router` → `technical_support`
+
+### Test 4: Ambiguous Input — Router Judgment
+
+Verifies the router makes a reasonable routing decision when intent is unclear.
+
+```text
+User: I have a problem with my account
+
+Agent: I'd be happy to help. Could you tell me more — is this related to a charge
+       or payment, a technical issue, or something else?
+```
+
+**Expected routing**: `agent_router` → `billing_inquiry` or `technical_support` depending on LLM judgment. Either is acceptable. The key verification is that the router does not get stuck or error.
+
+### How to Verify Routing
+
+In the **Agent Tracer**, after each message, look for the **Subagent Transition** event. The `to_agent` field shows which subagent handled the response.
+
 ## What's Next
 
 - **multiSubagentNavigation**: Explore how to manage state and transitions across multiple subagents.
