@@ -52,10 +52,12 @@ model_config:
 Agentforce ServiceAgent templates use the Salesforce-owned **EinsteinHyperClassifier** model for subagent classification in the agent router. This is set explicitly via `model_config` on `start_agent`.
 
 EinsteinHyperClassifier advantages:
+
 - Significantly faster subagent classification than general-purpose LLMs
 - Increased accuracy, particularly for specialized classification and negative instructions
 
 EinsteinHyperClassifier limitations:
+
 - Cannot use `before_reasoning` or `after_reasoning`
 - Can only use `@utils.transition` — no other tools
 
@@ -128,7 +130,7 @@ subagent technical_support:
 ### The Precedence Hierarchy in Practice
 
 | Scope | Model | Why |
-|-------|-------|-----|
+| ----- | ----- | --- |
 | Org default | Set in Setup (Salesforce Default or AWS-Hosted) | Baseline for all agents in the org |
 | Agent level | `sfdc_ai__DefaultGPT4OmniMini` | Cost-efficient default for most traffic |
 | `agent_router` | `sfdc_ai__DefaultEinsteinHyperClassifier` | Fast, accurate intent classification |
@@ -289,7 +291,7 @@ In the **Agent Tracer**, after each message, look for the **Subagent Transition*
 - **`model://` prefix is required**: All model values use the `model://` URI prefix (e.g., `"model://sfdc_ai__DefaultGPT4OmniMini"`).
 - **Agent-level `model_config` is a top-level block**: It sits as a sibling to `system`, not nested inside `config`.
 - **Org-level model selection is separate from `model_config`**: The org default is set in Setup → Einstein Audit, Analytics, and Monitoring. `model_config` in Agent Script overrides it at the agent or subagent level.
-- **Salesforce Default is a managed mix**: When no `model_config` is set at the org level, Salesforce selects the best model automatically (currently GPT-4.1 in the new Agentforce Builder). Override only when you have a specific reason.
+- **Salesforce Default is a managed mix**: When no `model_config` is set at the org level, Salesforce selects the best model automatically. Override only when you have a specific reason.
 - **The reasoning engine is limited**: The Atlas reasoning engine is constrained to Salesforce-managed models. However, custom actions using prompt templates, Apex, or the Models API can reference any Salesforce-managed or BYO model.
 - **Beta models** are disabled by default — enable them in sandbox only. See the [supported models list](https://developer.salesforce.com/docs/ai/agentforce/guide/supported-models.html).
 - **Test after any model change**: Model behavior varies even with identical instructions. Always validate subagent responses after switching models.
