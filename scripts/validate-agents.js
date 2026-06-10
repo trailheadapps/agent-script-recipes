@@ -4,7 +4,7 @@
 //
 // Usage:
 //   npm run validate:agents
-//   node bin/validate-agents.js [--files path1 path2 ...]
+//   node scripts/validate-agents.js [--files path1 path2 ...]
 
 'use strict';
 

@@ -22,8 +22,8 @@ echo "Assigning Manage Prompt Templates permission set..."
 sf org assign permset -n EinsteinGPTPromptTemplateManager && \
 echo "" && \
 
-echo "Pushing source..." && \
-sf project deploy start && \
+echo "Deploying employee agent recipes..." && \
+sf project deploy start --source-dir force-app && \
 echo "" && \
 
 echo "Assigning Agent Script permission sets..." && \
@@ -33,6 +33,22 @@ echo "" && \
 
 echo "Importing sample data..." && \
 sf data import tree --plan data/data-plan.json && \
+echo "" && \
+
+echo "Creating agent user for service agent..." && \
+agent_user=$(node scripts/setup-service-agent.js) && \
+echo "" && \
+
+echo "Assigning base permission set to agent user..." && \
+sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of "$agent_user" && \
+echo "" && \
+
+echo "Deploying service agent recipes..." && \
+sf project deploy start --source-dir force-app-service && \
+echo "" && \
+
+echo "Assigning service agent permission set..." && \
+sf org assign permset -n Customer_Service_Agent_Data --on-behalf-of "$agent_user" && \
 echo "" && \
 
 echo "Opening org..." && \

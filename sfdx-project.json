@@ -6,6 +6,10 @@
       "package": "AgentScriptRecipes",
       "versionName": "Spring '26",
       "versionNumber": "66.0.0.NEXT"
+    },
+    {
+      "path": "force-app-service",
+      "default": false
     }
   ],
   "name": "agent-script-recipes",

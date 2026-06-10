@@ -23,8 +23,8 @@ cmd.exe /c sf org assign permset -n EinsteinGPTPromptTemplateManager
 call :checkForError
 @echo:
 
-echo Pushing source...
-cmd.exe /c sf project deploy start
+echo Deploying employee agent recipes...
+cmd.exe /c sf project deploy start --source-dir force-app
 call :checkForError
 @echo:
 
@@ -36,11 +36,28 @@ cmd.exe /c sf org assign permset -n Agent_Script_Recipes_App
 call :checkForError
 @echo:
 
+echo Importing sample data...
+cmd.exe /c sf data tree import -p data/data-plan.json
 call :checkForError
 @echo:
 
-echo Importing sample data...
-cmd.exe /c sf data tree import -p data/data-plan.json
+echo Creating agent user for service agent...
+for /f "tokens=*" %%a in ('node scripts/setup-service-agent.js') do set AGENT_USER=%%a
+call :checkForError
+@echo:
+
+echo Assigning base permission set to agent user...
+cmd.exe /c sf org assign permset -n Agent_Script_Recipes_Data --on-behalf-of %AGENT_USER%
+call :checkForError
+@echo:
+
+echo Deploying service agent recipes...
+cmd.exe /c sf project deploy start --source-dir force-app-service
+call :checkForError
+@echo:
+
+echo Assigning service agent permission set...
+cmd.exe /c sf org assign permset -n Customer_Service_Agent_Data --on-behalf-of %AGENT_USER%
 call :checkForError
 @echo:
 

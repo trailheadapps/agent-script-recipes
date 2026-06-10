@@ -1,0 +1,190 @@
+# CustomerServiceAgent
+# Service Agent recipe: demonstrates agent_type + default_agent_user config
+
+config:
+   developer_name: "CustomerService_Agent"
+   agent_label: "Customer Service Agent"
+   agent_type: "AgentforceServiceAgent"
+   default_agent_user: "__AGENT_USER_PLACEHOLDER__"
+   description: "Customer service agent that classifies issues, searches the knowledge base, and creates or escalates cases"
+
+variables:
+   customer_id: mutable string = ""
+      description: "Unique identifier for the customer"
+   customer_name: mutable string = ""
+      description: "Full name of the customer"
+   customer_tier: mutable string = "standard"
+      description: "Customer loyalty tier (standard, premium, enterprise)"
+   issue_description: mutable string = ""
+      description: "Detailed description of the issue provided by the customer"
+   issue_type: mutable string = ""
+      description: "Category of the customer's issue (billing, technical, account, product)"
+   issue_priority: mutable string = "medium"
+      description: "Priority level of the issue (low, medium, high, urgent)"
+   kb_article_found: mutable boolean = False
+      description: "Whether a relevant knowledge base article was found"
+   kb_article_content: mutable string = ""
+      description: "Content of the top knowledge base article found"
+   kb_search_complete: mutable boolean = False
+      description: "Whether the knowledge base search has been executed"
+
+system:
+   instructions: "You are a customer service agent. Identify the customer, classify their issue, search the knowledge base for solutions, and create or escalate cases as needed. Be empathetic and solution-oriented."
+
+start_agent agent_router:
+   description: "Welcome customers and route to triage"
+
+   reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+      actions:
+         begin_triage: @utils.transition to @subagent.triage
+            description: "Start the customer service triage process"
+
+# SUBAGENT 1: Triage
+subagent triage:
+   description: "Identify the customer, classify their issue, and search the knowledge base"
+
+   actions:
+      fetch_customer:
+         description: "Fetch customer information by their ID"
+         inputs:
+            customer_id: string
+               description: "The unique identifier of the customer"
+               is_required: True
+         outputs:
+            name: string
+               description: "Customer's full name"
+            email: string
+               description: "Customer's email address"
+            tier: string
+               description: "Customer tier level (standard, premium, enterprise)"
+         target: "flow://FetchCustomer"
+
+      classify_issue:
+         description: "Classify the customer's issue type and priority"
+         inputs:
+            issueDescription: string
+               description: "The customer's description of their problem"
+               is_required: True
+         outputs:
+            issueType: string
+               description: "Classified issue type (billing, technical, account, product)"
+            priority: string
+               description: "Issue priority level (low, medium, high, urgent)"
+         target: "apex://IssueClassifier"
+
+      search_knowledge_base:
+         description: "Search the knowledge base for relevant solutions"
+         inputs:
+            issue_type: string
+               description: "The classified type of issue to search for"
+               is_required: True
+            keywords: string
+               description: "Keywords from the issue description for search"
+               is_required: True
+         outputs:
+            articles: list[string]
+               description: "List of matching knowledge base articles"
+            top_article: string
+               description: "The most relevant article with solution content"
+         target: "flow://SearchKnowledgeBase"
+
+   reasoning:
+      instructions:->
+         if @variables.issue_description and @variables.customer_id and not @variables.customer_name:
+            run @actions.fetch_customer
+               with customer_id=@variables.customer_id
+               set @variables.customer_name = @outputs.name
+               set @variables.customer_tier = @outputs.tier
+         if @variables.issue_description and not @variables.issue_type:
+            run @actions.classify_issue
+               with issueDescription=@variables.issue_description
+               set @variables.issue_type = @outputs.issueType
+               set @variables.issue_priority = @outputs.priority
+         if @variables.issue_type and not @variables.kb_search_complete:
+            run @actions.search_knowledge_base
+               with issue_type=@variables.issue_type
+               with keywords=@variables.issue_description
+               set @variables.kb_article_content = @outputs.top_article
+               set @variables.kb_article_found = @outputs.top_article != ""
+               set @variables.kb_search_complete = True
+
+         if @variables.customer_name:
+            | Hello {!@variables.customer_name}! How can I help you today?
+         if not @variables.customer_name:
+            | Hello! Welcome to Customer Service. How can I help you today?
+
+         if not @variables.issue_description:
+            | You MUST call {!@actions.collect_info} immediately. Extract customer_id if mentioned (otherwise leave empty) and issue_description from the user's messages. Any mention of a problem or topic counts as an issue description — save it even if brief. Never ask clarifying questions before calling collect_info.
+         if @variables.kb_search_complete:
+            | Triage is complete. Inform the customer their issue has been identified and you are resolving it.
+
+      actions:
+         collect_info: @utils.setVariables
+            description: "Save the customer ID and issue description from the conversation"
+            available when not @variables.issue_description
+            with customer_id=...
+            with issue_description=...
+
+   after_reasoning:
+      if @variables.kb_search_complete:
+         transition to @subagent.resolution
+
+# SUBAGENT 2: Resolution
+subagent resolution:
+   description: "Create a case or escalate based on knowledge base results"
+
+   actions:
+      create_case:
+         description: "Create a support case for the customer"
+         inputs:
+            subject: string
+               description: "Brief subject line summarizing the case"
+               is_required: True
+         outputs:
+            case_number: string
+               description: "Human-readable case number for reference"
+         target: "flow://CreateCase"
+
+      escalate_case:
+         description: "Escalate a complex issue to a specialist team"
+         inputs:
+            case_id: string
+               description: "The unique identifier of the case to escalate"
+               is_required: True
+            reason: string
+               description: "Reason for escalation"
+               is_required: True
+            specialist_team: string
+               description: "The specialist team to escalate to"
+               is_required: True
+         outputs:
+            escalated: boolean
+               description: "Whether the case was escalated successfully"
+            specialist_assigned: string
+               description: "Name of the assigned specialist"
+         target: "flow://EscalateCase"
+
+   reasoning:
+      instructions:->
+         if @variables.kb_article_found:
+            | I found a knowledge base article that may help resolve your {!@variables.issue_type} issue.
+              Share this solution with the customer: {!@variables.kb_article_content}
+              Also create a case to track this.
+         if not @variables.kb_article_found:
+            | I couldn't find a matching solution. Let me escalate this to a specialist.
+
+         if @variables.customer_tier == "premium":
+            | (Priority handling for premium customer)
+
+      actions:
+         create_support_case: @actions.create_case
+            available when @variables.kb_article_found
+            with subject="{!@variables.issue_type}: {!@variables.issue_description}"
+
+         escalate_to_specialist: @actions.escalate_case
+            available when not @variables.kb_article_found
+            with case_id=""
+            with reason="No knowledge base solution found for {!@variables.issue_type} issue"
+            with specialist_team=@variables.issue_type
