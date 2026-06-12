@@ -22,7 +22,7 @@ while IFS= read -r -d '' agent_file; do
     ((FAILED++))
   fi
   echo ""
-done < <(find force-app/main -name "*.agent" -type f -print0 | sort -z)
+done < <(find force-app/main force-app-service -name "*.agent" -type f -print0 2>/dev/null | sort -z)
 
 echo "----------------------------------------"
 echo "Done: $VALIDATED passed, $FAILED failed"
