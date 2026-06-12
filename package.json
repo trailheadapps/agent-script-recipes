@@ -35,7 +35,7 @@
         "**/lwc/**": [
             "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
         ],
-        "**/*.agent$": [
+        "**/*.agent": [
             "npm run clean:service-agent --"
         ]
     },
