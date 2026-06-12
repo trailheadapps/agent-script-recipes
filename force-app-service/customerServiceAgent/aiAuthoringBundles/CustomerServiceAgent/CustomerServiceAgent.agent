@@ -10,7 +10,7 @@ config:
 
 variables:
    customer_id: mutable string = ""
-      description: "Unique identifier for the customer"
+      description: "Unique identifier for the customerd"
    customer_name: mutable string = ""
       description: "Full name of the customer"
    customer_tier: mutable string = "standard"

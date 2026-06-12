@@ -25,7 +25,7 @@ for (const filePath of agentFiles) {
         content = content.replace(AGENT_USER_REGEX, REPLACEMENT);
         fs.writeFileSync(filePath, content, 'utf8');
         execSync(`git add "${filePath}"`);
-        console.log(`Restored placeholder in: ${filePath}`);
+        console.log(`Restored placeholder in: ${path.basename(filePath)}`);
         restoredCount++;
     }
 }
