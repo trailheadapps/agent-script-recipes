@@ -2,6 +2,11 @@
 
 'use strict';
 
+console.log('Clean service agent parameters:');
+process.argv.forEach(function (val, index, array) {
+    console.log(index + ': ' + val);
+});
+/*
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
@@ -56,3 +61,4 @@ if (restoredCount > 0) {
         `\nRestored ${PLACEHOLDER} in ${restoredCount} file(s) before commit.`
     );
 }
+*/
