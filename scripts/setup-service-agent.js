@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const SERVICE_AGENT_DIR = path.resolve(__dirname, '..', 'force-app-service');
+const PROJECT_DIR = path.resolve(__dirname, '..');
 const PLACEHOLDER = '__AGENT_USER_PLACEHOLDER__';
 
 function parseArgs() {
@@ -72,18 +72,10 @@ function createAgentUser(targetOrg) {
 }
 
 function replacePlaceholders(username) {
-    if (!fs.existsSync(SERVICE_AGENT_DIR)) {
-        console.error(
-            `Service agent directory not found: ${SERVICE_AGENT_DIR}`
-        );
-        process.exit(1);
-    }
-
-    const agentFiles = findAgentFiles(SERVICE_AGENT_DIR);
-
+    const agentFiles = findAgentFiles(PROJECT_DIR);
     if (agentFiles.length === 0) {
-        console.error('No .agent files found in force-app-service/');
-        process.exit(1);
+        console.error(`No .agent files found in ${PROJECT_DIR}`);
+        process.exit(0);
     }
 
     let replacedCount = 0;
@@ -94,7 +86,7 @@ function replacePlaceholders(username) {
         if (content.includes(PLACEHOLDER)) {
             content = content.replace(PLACEHOLDER, username);
             fs.writeFileSync(filePath, content, 'utf8');
-            log(`Updated: ${path.relative(SERVICE_AGENT_DIR, filePath)}`);
+            log(`Updated: ${path.basename(filePath)}`);
             replacedCount++;
         }
     }
@@ -108,7 +100,7 @@ function replacePlaceholders(username) {
             `\nReplaced placeholder in ${replacedCount} file(s) with agent user: ${username}`
         );
         log(
-            '\nReminder: Do not commit the modified agent file(s). The pre-commit hook will restore the placeholder automatically.'
+            '\nReminder: The pre-commit hook will restore the placeholder automatically.'
         );
     }
 }

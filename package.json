@@ -21,7 +21,6 @@
         "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prepare": "husky || true",
         "precommit": "lint-staged",
-        "validate:agents": "node scripts/validate-agents.js",
         "setup:service-agent": "node scripts/setup-service-agent.js",
         "clean:service-agent": "node scripts/clean-service-agent.js"
     },
@@ -34,6 +33,9 @@
         ],
         "**/lwc/**": [
             "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
+        ],
+        "**/*.agent": [
+            "npm run clean:service-agent --"
         ]
     },
     "devDependencies": {
