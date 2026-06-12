@@ -20,7 +20,7 @@
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prepare": "husky || true",
-        "precommit": "lint-staged",
+        "precommit": "lint-staged --verbose",
         "validate:agents": "node scripts/validate-agents.js",
         "setup:service-agent": "node scripts/setup-service-agent.js",
         "clean:service-agent": "node scripts/clean-service-agent.js"
