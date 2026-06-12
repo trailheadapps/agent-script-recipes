@@ -3,7 +3,7 @@
 
 config:
    developer_name: "SubagentDelegation"
-   agent_label: "SubagentDelegation"
+   agent_label: "Subagent Delegation"
    agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates calling subagents as tools"
 

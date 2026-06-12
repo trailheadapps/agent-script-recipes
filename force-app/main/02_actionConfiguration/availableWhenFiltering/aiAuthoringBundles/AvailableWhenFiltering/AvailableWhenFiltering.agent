@@ -9,7 +9,7 @@ system:
 
 config:
 	developer_name: "AvailableWhenFiltering"
-	agent_label: "AvailableWhenFiltering"
+	agent_label: "Available When Filtering"
 	agent_type: "AgentforceEmployeeAgent"
 	description: "Manages support tickets with context-aware action filtering using available when"
 

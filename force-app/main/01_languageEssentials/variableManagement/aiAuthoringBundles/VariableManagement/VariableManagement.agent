@@ -3,7 +3,7 @@
 
 config:
    developer_name: "VariableManagement"
-   agent_label: "VariableManagement"
+   agent_label: "Variable Management"
    agent_type: "AgentforceEmployeeAgent"
    description: "Collects user information through a survey using variables"
 

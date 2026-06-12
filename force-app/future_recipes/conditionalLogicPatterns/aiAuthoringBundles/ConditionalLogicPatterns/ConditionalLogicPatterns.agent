@@ -3,7 +3,7 @@
 
 config:
    developer_name: "ConditionalLogicPatterns"
-   agent_label: "ConditionalLogicPatterns"
+   agent_label: "Conditional Logic Patterns"
    agent_type: "AgentforceEmployeeAgent"
    description: "Evaluates loan applications using complex conditional logic"
 

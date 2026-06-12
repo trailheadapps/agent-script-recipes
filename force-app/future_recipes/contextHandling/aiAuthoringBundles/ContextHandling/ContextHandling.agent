@@ -3,7 +3,7 @@
 
 config:
    developer_name: "ContextHandling"
-   agent_label: "ContextHandling"
+   agent_label: "Context Handling"
    agent_type: "AgentforceEmployeeAgent"
    description: "Uses platform context for personalized experiences"
 

@@ -3,7 +3,7 @@
 
 config:
    developer_name: "SimpleQA"
-   agent_label: "SimpleQA"
+   agent_label: "Simple QA"
    agent_type: "AgentforceEmployeeAgent"
    description: "Answers common questions about products and services"
 

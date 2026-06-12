@@ -3,7 +3,7 @@
 
 config:
    developer_name: "ComplexStateManagement"
-   agent_label: "ComplexStateManagement"
+   agent_label: "Complex State Management"
    agent_type: "AgentforceEmployeeAgent"
    description: "Manages a todo list with complex state operations"
 

@@ -3,7 +3,7 @@
 
 config:
    developer_name: "MultiSubagentOrchestration"
-   agent_label: "MultiSubagentOrchestration"
+   agent_label: "Multi Subagent Orchestration"
    agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates complex multi-subagent orchestration with specialized subagents"
 

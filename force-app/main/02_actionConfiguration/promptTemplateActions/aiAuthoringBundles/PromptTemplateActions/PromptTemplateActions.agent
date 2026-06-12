@@ -10,7 +10,7 @@ system:
 
 config:
     developer_name: "PromptTemplateActions"
-    agent_label: "PromptTemplateActions"
+    agent_label: "Prompt Template Actions"
     agent_type: "AgentforceEmployeeAgent"
     description: "Provides guidance to guests by creating personalized schedules."
 

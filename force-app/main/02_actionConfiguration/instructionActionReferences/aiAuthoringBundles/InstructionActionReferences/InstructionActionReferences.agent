@@ -3,7 +3,7 @@
 
 config:
    developer_name: "InstructionActionReferences"
-   agent_label: "InstructionActionReferences"
+   agent_label: "Instruction Action References"
    agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates embedding action references in instructions"
 

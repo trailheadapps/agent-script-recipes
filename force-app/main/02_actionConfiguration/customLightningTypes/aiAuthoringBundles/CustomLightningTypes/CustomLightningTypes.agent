@@ -3,7 +3,7 @@
 
 config:
    developer_name: "CustomLightningTypes"
-   agent_label: "CustomLightningTypes"
+   agent_label: "Custom Lightning Types"
    agent_type: "AgentforceEmployeeAgent"
    description: "Submits support cases using Custom Lightning Types for rich input and output UI"
 

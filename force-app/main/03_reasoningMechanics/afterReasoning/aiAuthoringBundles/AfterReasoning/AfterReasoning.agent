@@ -3,7 +3,7 @@
 
 config:
    developer_name: "AfterReasoning"
-   agent_label: "AfterReasoning"
+   agent_label: "After Reasoning"
    agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates reasoning lifecycle events"
 

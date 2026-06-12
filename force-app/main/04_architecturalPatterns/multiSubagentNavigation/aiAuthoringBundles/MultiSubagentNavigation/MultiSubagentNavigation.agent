@@ -3,7 +3,7 @@
 
 config:
    developer_name: "MultiSubagentNavigation"
-   agent_label: "MultiSubagentNavigation"
+   agent_label: "Multi Subagent Navigation"
    agent_type: "AgentforceEmployeeAgent"
    description: "Multi-subagent agent that handles browsing, booking, and support"
 

@@ -7,7 +7,7 @@ system:
 
 config:
     developer_name: "AdvancedReasoningPatterns"
-    agent_label: "AdvancedReasoningPatterns"
+    agent_label: "Advanced Reasoning Patterns"
     agent_type: "AgentforceEmployeeAgent"
     description: "Demonstrates advanced reasoning with dynamic instructions and complex logic"
 

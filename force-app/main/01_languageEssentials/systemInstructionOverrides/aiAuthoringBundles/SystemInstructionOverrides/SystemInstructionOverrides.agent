@@ -10,7 +10,7 @@ system:
 
 config:
    developer_name: "SystemInstructionOverrides"
-   agent_label: "SystemInstructionOverrides"
+   agent_label: "System Instruction Overrides"
    agent_type: "AgentforceEmployeeAgent"
    description: "This agent demonstrates how to override system instructions per subagent"
 

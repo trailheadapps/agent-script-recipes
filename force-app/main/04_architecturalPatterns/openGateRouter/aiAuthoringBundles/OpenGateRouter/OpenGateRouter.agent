@@ -4,7 +4,7 @@
 
 config:
 	developer_name: "OpenGateRouter"
-	agent_label: "OpenGateRouter"
+	agent_label: "Open Gate Router"
 	agent_type: "AgentforceEmployeeAgent"
 	description: "Demonstrates deterministic gate-based routing with authentication prerequisite"
 

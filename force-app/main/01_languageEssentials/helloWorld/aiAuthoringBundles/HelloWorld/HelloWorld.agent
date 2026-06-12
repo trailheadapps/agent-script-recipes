@@ -6,7 +6,7 @@
 # It's used internally to identify this agent within the system
 config:
    developer_name: "HelloWorld"
-   agent_label: "HelloWorld"
+   agent_label: "Hello World"
    agent_type: "AgentforceEmployeeAgent"
    description: "A minimal agent that greets users and engages using poems"
 

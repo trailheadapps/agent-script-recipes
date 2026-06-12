@@ -9,7 +9,7 @@ system:
 
 config:
     developer_name: "ExternalAPIIntegration"
-    agent_label: "ExternalAPIIntegration"
+    agent_label: "External API Integration"
     agent_type: "AgentforceEmployeeAgent"
     description: "Demonstrates integration with external systems using flows and Apex"
 

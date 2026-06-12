@@ -3,7 +3,7 @@
 
 config:
    developer_name: "ListVariables"
-   agent_label: "ListVariables"
+   agent_label: "List Variables"
    agent_type: "AgentforceEmployeeAgent"
    description: "Runs a daily standup by iterating through a list of questions"
 

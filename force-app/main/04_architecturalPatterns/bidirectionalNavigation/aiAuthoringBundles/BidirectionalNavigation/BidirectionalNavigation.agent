@@ -3,7 +3,7 @@
 
 config:
    developer_name: "BidirectionalNavigation"
-   agent_label: "BidirectionalNavigation"
+   agent_label: "Bidirectional Navigation"
    agent_type: "AgentforceEmployeeAgent"
    description: "Demonstrates bidirectional navigation pattern (handoff and return)"
 

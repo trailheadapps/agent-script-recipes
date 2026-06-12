@@ -3,7 +3,7 @@
 
 config:
    developer_name: "AdvancedInputBindings"
-   agent_label: "AdvancedInputBindings"
+   agent_label: "Advanced Input Bindings"
    agent_type: "AgentforceEmployeeAgent"
    description: "Generates reports using various input binding patterns"
 

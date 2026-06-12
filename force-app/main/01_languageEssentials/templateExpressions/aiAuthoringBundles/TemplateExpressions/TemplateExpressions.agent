@@ -3,7 +3,7 @@
 
 config:
    developer_name: "TemplateExpressions"
-   agent_label: "TemplateExpressions"
+   agent_label: "Template Expressions"
    agent_type: "AgentforceEmployeeAgent"
    description: "Personalized shopping assistant using template expressions for dynamic content"
 

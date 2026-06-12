@@ -3,7 +3,7 @@
 
 config:
    developer_name: "ActionDefinitions"
-   agent_label: "ActionDefinitions"
+   agent_label: "Action Definitions"
    agent_type: "AgentforceEmployeeAgent"
    description: "Provides weather information by calling external weather APIs"
 

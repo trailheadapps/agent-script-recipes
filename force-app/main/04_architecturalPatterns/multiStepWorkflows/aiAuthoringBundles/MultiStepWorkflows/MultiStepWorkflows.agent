@@ -8,7 +8,7 @@ system:
 
 config:
     developer_name: "MultiStepWorkflows"
-    agent_label: "MultiStepWorkflows"
+    agent_label: "Multi Step Workflows"
     agent_type: "AgentforceEmployeeAgent"
     description: "Handles customer onboarding through a multi-step workflow"
 
