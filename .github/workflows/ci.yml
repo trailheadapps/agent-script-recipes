@@ -18,16 +18,16 @@ jobs:
         steps:
             # Checkout the source code
             - name: 'Checkout source code'
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7.0.0
 
             # Install Volta to enforce proper node and package manager versions
             - name: 'Install Volta'
-              uses: volta-cli/action@v5
+              uses: volta-cli/action@v5.0.0
 
             # Cache node_modules to speed up the process
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v5
+              uses: actions/cache@v6.0.0
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -60,7 +60,7 @@ jobs:
             # Run Code Analyzer
             - name: 'Run Code Analyzer'
               id: run-code-analyzer
-              uses: forcedotcom/run-code-analyzer@v2
+              uses: forcedotcom/run-code-analyzer@v2.12.0
               with:
                   run-arguments: --workspace "force-app/main" --view detail --output-file "sca-results.csv" --config-file "code-analyzer.yml"
                   results-artifact-name: code-analyzer-results
@@ -83,7 +83,7 @@ jobs:
         steps:
             # Checkout the source code
             - name: 'Checkout source code'
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7.0.0
 
             # Install Salesforce CLI
             - name: 'Install Salesforce CLI'
