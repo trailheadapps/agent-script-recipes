@@ -98,6 +98,13 @@ subagent my_topic:
       ...
    reasoning:
       ...
+
+# 9. VOICE BLOCKS (optional; voice-provisioned orgs only)
+connection telephony:
+   adaptive_response_allowed: True
+modality voice:
+   voice_id: "..."
+   ...
 ```
 
 ---
@@ -233,6 +240,56 @@ system:
       Always be polite and professional.
       Never share sensitive information.
 ```
+
+### Language Block
+
+Sets the agent's locale(s). Optional for text agents (they inherit the org
+default); **required for voice agents** to pin a voice-supported locale (see
+Voice Blocks).
+
+```agentscript
+language:
+   default_locale: "en_US"              # Primary locale (e.g. en_US, es_MX, fr, de)
+   additional_locales: "es_MX,fr,de"    # Optional: comma-separated extra locales
+```
+
+### Voice Blocks
+
+Two top-level blocks turn a text agent into a **voice** agent (one that speaks
+its replies aloud over a telephony connection). They are optional and used
+together. The worked example places them **after the subagents**; the
+`language` block stays in its documented position (before `start_agent`).
+
+```agentscript
+# Wires the agent to a telephony (voice) connection. This is what makes the
+# agent "voice" rather than a text agent with terse instructions.
+connection telephony:
+   adaptive_response_allowed: True
+
+# Selects and tunes the synthesized voice. Agent Builder's Voice Settings write
+# these values back into the script when you pick a voice.
+modality voice:
+   voice_id: "hpp4J3VqNfWAUOO0d1Us"   # Platform voice id; org/platform-specific
+   outbound_speed: 1                    # Playback speed
+   outbound_stability: 0.4              # Voice stability (0-1)
+   outbound_similarity: 0.75            # Similarity to source voice (0-1)
+```
+
+**Requirements & gotchas:**
+
+- **Voice-provisioned org only.** `connection telephony` references a telephony
+  connection that exists only where **Agentforce Voice** is provisioned. A plain
+  Developer Edition org does not surface it — deploy the voice bundle only to a
+  provisioned org, and a plain text bundle everywhere else.
+- **Pin a voice-supported `default_locale`** in the `language` block. Without it
+  the agent inherits the org default; if that locale isn't voice-supported, Agent
+  Builder warns and falls back to English (US).
+- **`voice_id` is org/platform-specific.** If the voice isn't available in the
+  target org, pick one in Voice Settings and let the script round-trip, or replace
+  it with a `voice_id` valid in that org. Avoid carrying a hard-coded id across orgs.
+- Tune the subagent's `reasoning.instructions` for the ear: short replies, one
+  question per turn, no markdown/code read aloud, and spell out symbols (e.g.
+  "index plus plus" for `i++`).
 
 ### Subagent Block Structure
 
@@ -685,6 +742,9 @@ Before finalizing an Agent Script, verify:
 - [ ] `transition to` (without `@utils`) is used in directive blocks
 - [ ] Indentation is consistent (3 spaces recommended)
 - [ ] Names follow naming rules (letters, numbers, underscores; no spaces; start with letter)
+- [ ] (Voice agents) `language.default_locale` is set to a voice-supported locale
+- [ ] (Voice agents) `connection telephony` and `modality voice` blocks are present
+- [ ] (Voice agents) `voice_id` is valid in the target (voice-provisioned) org
 
 ---
 
