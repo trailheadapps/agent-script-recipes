@@ -73,11 +73,11 @@ The spoken-style bundle differs from the text bundle on **two** levels: _how it 
 
 **1. Instructions tuned for the ear.** Replies that are read aloud follow different rules than replies in a chat window:
 
-| Concern         | Text bundle             | Spoken-style bundle                     |
-| --------------- | ----------------------- | --------------------------------------- |
-| Response length | A few sentences is fine | Short - easy to follow by ear           |
-| Formatting      | Prose is fine           | No code or markdown read aloud          |
-| Symbols/IDs     | Can reference `i++`     | Say them in words: "index plus plus"    |
+| Concern         | Text bundle             | Spoken-style bundle                  |
+| --------------- | ----------------------- | ------------------------------------ |
+| Response length | A few sentences is fine | Short - easy to follow by ear        |
+| Formatting      | Prose is fine           | No code or markdown read aloud       |
+| Symbols/IDs     | Can reference `i++`     | Say them in words: "index plus plus" |
 
 The spoken-style instructions also add one thing the text version never needs: **repairing speech-to-text noise.** When a developer talks, their words reach the agent as an imperfect transcription, and technical vocabulary is the first thing to get mangled - "Agent Script" becomes "agent for script", "returns undefined" becomes "returns on the even", "async" becomes "a sink". The agent reasons over that garbled _text_, not your audio, so the instructions tell it to expect the noise and quietly repair obvious mishears in a debugging context:
 
