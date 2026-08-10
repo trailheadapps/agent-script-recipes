@@ -5,8 +5,10 @@ config:
    developer_name: "CustomerService_Agent"
    agent_label: "Customer Service Agent"
    agent_type: "AgentforceServiceAgent"
-   default_agent_user: "__AGENT_USER_PLACEHOLDER__"
    description: "Customer service agent that classifies issues, searches the knowledge base, and creates or escalates cases"
+
+access:
+    default_agent_user: "__AGENT_USER_PLACEHOLDER__"
 
 variables:
    customer_id: mutable string = ""
@@ -112,7 +114,7 @@ subagent triage:
 
          if @variables.customer_name:
             | Hello {!@variables.customer_name}! How can I help you today?
-         if not @variables.customer_name:
+         else:
             | Hello! Welcome to Customer Service. How can I help you today?
 
          if not @variables.issue_description:
@@ -172,7 +174,7 @@ subagent resolution:
             | I found a knowledge base article that may help resolve your {!@variables.issue_type} issue.
               Share this solution with the customer: {!@variables.kb_article_content}
               Also create a case to track this.
-         if not @variables.kb_article_found:
+         else:
             | I couldn't find a matching solution. Let me escalate this to a specialist.
 
          if @variables.customer_tier == "premium":
