@@ -1,8 +1,8 @@
-# RubberDuckDebugger
+# VoiceAgent
 
 ## Overview
 
-This recipe demonstrates how a focused **persona**, expressed entirely through system and reasoning instructions, shapes an agent's whole behavior - no variables, actions, or flows required. The agent is a Socratic "rubber duck" debugging buddy: instead of handing developers a fix, it helps them find the bug themselves by asking one question at a time. The recipe ships in two bundles - a **text** bundle and a **voice-enabled, spoken-style** bundle - to show both how the agent's instructions are re-tuned for a spoken medium and how a voice connection and synthesized voice are declared directly in the script.
+This recipe demonstrates how to make an agent **voice-capable** directly in the script - both by writing its instructions for a spoken medium and by declaring the voice wiring (connection, synthesized voice, and language) in the `.agent` file itself. The agent is a Socratic "rubber duck" debugging buddy: instead of handing developers a fix, it helps them find the bug themselves by asking one question at a time, spoken aloud over a voice connection. The persona is expressed entirely through system and reasoning instructions - no variables, actions, or flows required - so the recipe stays focused on what changes when an agent _speaks_.
 
 ## Agent Flow
 
@@ -11,32 +11,32 @@ This recipe demonstrates how a focused **persona**, expressed entirely through s
 graph TD
     A[Agent Starts] --> B[Load Config Block]
     B --> C[Initialize System Block]
-    C --> D[Display Welcome Message]
-    D --> E[start_agent: agent_router]
-    E --> F[Transition to debugging Subagent]
-    F --> G[Apply Socratic Reasoning Instructions]
-    G --> H[Developer describes the bug]
-    H --> I[Ask ONE focused question]
-    I --> J{Bug found?}
-    J -->|No| H
-    J -->|Yes| K[Encourage and confirm]
-    K --> L[End]
+    C --> D[Apply Language + Voice Config]
+    D --> E[Display Welcome Message]
+    E --> F[start_agent: agent_router]
+    F --> G[Transition to debugging Subagent]
+    G --> H[Apply Socratic Reasoning Instructions]
+    H --> I[Developer describes the bug]
+    I --> J[Ask ONE focused question]
+    J --> K{Bug found?}
+    K -->|No| I
+    K -->|Yes| L[Encourage and confirm]
+    L --> M[End]
 ```
 
 ## Key Concepts
 
-- **Persona-driven behavior**: Behavior comes from instructions alone - the same building blocks as HelloWorld, no actions or state
+- **Persona-driven behavior**: Behavior comes from instructions alone - no actions or state
 - **System vs. reasoning instructions**: The global persona lives in `system.instructions`; the turn-by-turn behavior lives in the subagent's `reasoning.instructions`
 - **Behavioral constraints**: Instructing the agent to _withhold_ the answer and ask questions instead - a genuine instruction-design discipline
-- **Static procedural instructions**: Using `instructions:->` with `|` template lines that don't branch (the minimal shape)
-- **Channel adaptation**: How the _same_ agent's instructions change when replies are spoken aloud vs. read in a chat window
-- **ASR-noise repair**: Instructing the agent to expect and reinterpret speech-to-text mistranscriptions of technical vocabulary (spoken-style bundle only)
-- **Voice configuration in script**: Declaring a `connection telephony` and `modality voice` block so the voice wiring and synthesized voice travel with the recipe (spoken-style bundle only)
-- **Language block for voice**: Pinning `default_locale` so voice mode has a supported language (spoken-style bundle only)
+- **Channel adaptation**: How an agent's instructions change when replies are spoken aloud vs. read in a chat window
+- **ASR-noise repair**: Instructing the agent to expect and reinterpret speech-to-text mistranscriptions of technical vocabulary
+- **Voice configuration in script**: Declaring a `connection telephony` and `modality voice` block so the voice wiring and synthesized voice travel with the recipe
+- **Language block for voice**: Pinning `default_locale` so voice mode has a supported language
 
 ## How It Works
 
-### One Persona, Two Places
+### The Persona, in Two Places
 
 The rubber-duck personality is established in two complementary spots.
 
@@ -44,42 +44,28 @@ First, globally, in the `system` block - this applies to every subagent:
 
 ```agentscript
 system:
-   instructions: "You are a friendly rubber-duck debugging buddy for software developers. You help them find bugs themselves by asking thoughtful, Socratic questions rather than handing over fixes."
+   instructions: "You are a friendly rubber-duck debugging buddy for software developers, speaking with them out loud over voice. You help them find bugs themselves by asking thoughtful, Socratic questions rather than handing over fixes."
 ```
 
 Then, specifically, in the `debugging` subagent's reasoning instructions - this governs what the agent does on each turn. The interesting part is that the instructions tell the agent what **not** to do (don't hand over the fix), which is what makes it a rubber duck rather than a generic Q&A bot.
 
 ### The Behavioral Constraint
 
-Most "useful" agents are told to _answer_. This one is deliberately told to _hold back_ and lead with questions:
+Most "useful" agents are told to _answer_. This one is deliberately told to _hold back_ and lead with questions - help the developer discover the bug on their own instead of handing over the fix. This is the whole lesson: **the value of the agent comes from the instructions, not from any code.**
 
-```agentscript
-instructions:->
-   | You are the developer's rubber duck. Your job is to help them
-     discover the bug on their own, not to solve it for them.
+### Making the Agent Speak
 
-   | Follow these principles:
-     Ask ONE focused question at a time, then wait for the answer.
-     ...
-     Resist the urge to give the fix outright. If they are truly stuck
-     after several exchanges, offer a small hint, not the full solution.
-```
-
-This is the whole lesson: **the value of the agent comes from the instructions, not from any code.**
-
-### Adapting the Same Agent for Voice
-
-The spoken-style bundle differs from the text bundle on **two** levels: _how it speaks_ (instructions) and _that it speaks at all_ (voice configuration in the script).
+An agent that talks differs from a text agent on **two** levels: _how it speaks_ (instructions) and _that it speaks at all_ (voice configuration in the script).
 
 **1. Instructions tuned for the ear.** Replies that are read aloud follow different rules than replies in a chat window:
 
-| Concern         | Text bundle             | Spoken-style bundle                  |
+| Concern         | Text                    | Spoken                               |
 | --------------- | ----------------------- | ------------------------------------ |
 | Response length | A few sentences is fine | Short - easy to follow by ear        |
 | Formatting      | Prose is fine           | No code or markdown read aloud       |
 | Symbols/IDs     | Can reference `i++`     | Say them in words: "index plus plus" |
 
-The spoken-style instructions also add one thing the text version never needs: **repairing speech-to-text noise.** When a developer talks, their words reach the agent as an imperfect transcription, and technical vocabulary is the first thing to get mangled - "Agent Script" becomes "agent for script", "returns undefined" becomes "returns on the even", "async" becomes "a sink". The agent reasons over that garbled _text_, not your audio, so the instructions tell it to expect the noise and quietly repair obvious mishears in a debugging context:
+The spoken instructions also add one thing a text agent never needs: **repairing speech-to-text noise.** When a developer talks, their words reach the agent as an imperfect transcription, and technical vocabulary is the first thing to get mangled - "Agent Script" becomes "agent for script", "returns undefined" becomes "returns on the even", "async" becomes "a sink". The agent reasons over that garbled _text_, not your audio, so the instructions tell it to expect the noise and quietly repair obvious mishears in a debugging context:
 
 ```agentscript
 | Their words reach you as speech-to-text, so technical vocabulary is
@@ -89,7 +75,7 @@ The spoken-style instructions also add one thing the text version never needs: *
   obvious mishears.
 ```
 
-**2. Voice configuration in the script.** The spoken-style bundle also carries three blocks the text bundle doesn't:
+**2. Voice configuration in the script.** The recipe carries three blocks a text agent doesn't:
 
 ```agentscript
 # Pin a voice-supported default language
@@ -113,34 +99,11 @@ modality voice:
 - **`modality voice`** selects the synthesized voice (`voice_id`) and tunes its delivery (speed, stability, similarity). These values are what Agent Builder's **Voice Settings** write back into the script when you pick a voice like "Bella".
 
 > [!IMPORTANT]
-> Because the spoken-style bundle declares a telephony connection, it must be deployed to a **voice-provisioned org** (one where that connection is available). A plain text org should use the `RubberDuckDebugger` bundle instead. See Notes.
+> Because this recipe declares a telephony connection, it must be deployed to a **voice-provisioned org** (one where that connection is available). See Notes.
 
 ## Key Code Snippets
 
-### The Text Bundle's Reasoning (RubberDuckDebugger)
-
-```agentscript
-subagent debugging:
-   description: "Guides the developer to find their own bug through Socratic questioning"
-
-   reasoning:
-      instructions:->
-         | You are the developer's rubber duck. Your job is to help them
-           discover the bug on their own, not to solve it for them.
-
-         | Follow these principles:
-           Ask ONE focused question at a time, then wait for the answer.
-           Guide with questions like "What did you expect to happen?",
-           "What actually happened?", "What changed most recently?", and
-           "Which line do you think runs right before it breaks?".
-           Reflect their explanation back to them so they hear their own logic.
-           Resist the urge to give the fix outright. If they are truly stuck
-           after several exchanges, offer a small hint, not the full solution.
-           Stay warm, encouraging, and a little playful - an occasional "quack"
-           is welcome.
-```
-
-### The Spoken-Style Bundle's Reasoning (RubberDuckDebuggerSpokenStyle)
+### The Subagent's Reasoning
 
 ```agentscript
 subagent debugging:
@@ -164,7 +127,7 @@ subagent debugging:
            playful.
 ```
 
-### The Spoken-Style Bundle's Voice Configuration
+### The Voice Configuration
 
 These top-level blocks (after `system`, before `start_agent`) are what make it an actual voice agent:
 
@@ -184,29 +147,11 @@ modality voice:
 
 ## Try It Out
 
-Deploy the recipe, then open **Agentforce Studio** and start a conversation. Describe a bug and notice that the agent asks you a question rather than solving it.
+Deploy the recipe to a voice-provisioned org, then open **Agentforce Studio** and start a conversation. Describe a bug and notice that the agent asks you a question rather than solving it.
 
-### Example Interaction (Text bundle)
+### Example Interaction
 
-```text
-Agent: Quack! I'm your rubber duck. Tell me about the bug you're chasing, and I'll help you think it through.
-
-User: My function returns undefined even though I'm returning a value.
-
-Agent: Quack! Let's dig in. What did you expect the function to return, and what are you seeing instead?
-
-User: I expect the user object, but I get undefined.
-
-Agent: Got it. Walk me through the line right before the return - is the value already set at that point, or is it being fetched asynchronously?
-
-User: ...oh. It's a fetch. I'm returning before the promise resolves.
-
-Agent: Quack quack! Sounds like you just found it. What would you change so the return waits for that promise?
-```
-
-### Example Interaction (Spoken-style bundle)
-
-The conversation is the same idea, but each turn is short enough to listen to, asks a single question, and speaks any symbols out loud.
+Each turn is short enough to listen to, asks a single question, and speaks any symbols out loud.
 
 ```text
 Agent: Quack! Tell me about the bug you're chasing.
@@ -226,13 +171,13 @@ User: ...ah. It should be less than length. Off by one.
 
 - **HelloWorld**: The minimal agent this recipe is modeled on - start there for the bare structure
 - **SystemInstructionOverrides**: Customize the persona per subagent for finer control
-- **ReasoningInstructions**: Make the duck _stateful_ - branch its questions based on what it has already asked, using procedural `instructions:->` logic
+- **LanguageSettings**: Configure multiple locales for a multi-language voice or text agent
 - **VariableManagement**: Track debugging state (e.g., which questions have been asked) across turns
 
 ## Notes
 
 > [!WARNING]
-> **The spoken-style bundle needs a voice-provisioned org.** Its `connection telephony` block references a telephony connection that only exists in an org where **Agentforce Voice** is provisioned. Deploy it to such an org (for example, a voice-enabled demo org). A plain free Developer Edition org has the underlying voice permission-set licenses but does not surface the full **Agentforce Voice Setup** experience, so deploy the plain `RubberDuckDebugger` bundle there instead. The text bundle deploys and runs anywhere.
+> **This recipe needs a voice-provisioned org.** Its `connection telephony` block references a telephony connection that only exists in an org where **Agentforce Voice** is provisioned. Deploy it to such an org (for example, a voice-enabled demo org). A plain free Developer Edition org has the underlying voice permission-set licenses but does not surface the full **Agentforce Voice Setup** experience.
 
 - **The `voice_id` is org/platform-specific.** The `modality voice` block's `voice_id` (here `hpp4J3VqNfWAUOO0d1Us`, the "Bella" voice) is a value Agent Builder writes when you pick a voice in **Voice Settings**. If you deploy to a different org and the voice isn't available, set it via Voice Settings and let the script round-trip, or replace the `voice_id` with one valid in your org.
 - **Voice mode needs a supported default locale.** The `language` block pins `default_locale: "en_US"`. Voice mode only supports certain locales, so if the agent's default language isn't one of them, Agent Builder shows a "default language isn't supported in voice mode" warning and falls back to English (US). Pinning the locale in the script avoids the manual **Language Settings** change. (See the **LanguageSettings** recipe for multi-locale config.)

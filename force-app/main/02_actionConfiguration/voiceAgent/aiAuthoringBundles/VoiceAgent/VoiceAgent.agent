@@ -1,6 +1,5 @@
-# RubberDuckDebuggerSpokenStyle - The Rubber Duck, voice-enabled and tuned for the ear
-# This is the SAME rubber-duck agent as RubberDuckDebugger, adapted for VOICE in
-# two ways:
+# VoiceAgent - The Rubber Duck, voice-enabled and tuned for the ear
+# This rubber-duck debugging agent is adapted for VOICE in two ways:
 #   1. Instructions written for a SPOKEN medium (no formatting, one idea at a
 #      time, spell out symbols) - because output read aloud has different rules
 #      than a chat window.
@@ -9,12 +8,11 @@
 #      setup travels with the recipe instead of being clicked in the UI.
 #
 # Note: the connection/modality blocks require a VOICE-PROVISIONED org (one with a
-# telephony connection available). Deploy this bundle to such an org; a plain text
-# org can use RubberDuckDebugger instead.
+# telephony connection available). Deploy this bundle to such an org.
 
 config:
-   developer_name: "RubberDuckDebuggerSpokenStyle"
-   agent_label: "Rubber Duck Debugger (Spoken-Style)"
+   developer_name: "VoiceAgent"
+   agent_label: "Voice Agent (Rubber Duck Debugger)"
    agent_type: "AgentforceEmployeeAgent"
    description: "The rubber-duck debugging buddy with instructions written for a spoken medium (read aloud over a voice connection)"
 
@@ -50,8 +48,7 @@ subagent debugging:
       # Same rubber-duck job as the text version, tuned for a spoken medium:
       # short replies, symbols spelled out, and repair of speech-to-text noise.
       # Kept lean on purpose - every extra instruction is more for the model to
-      # reason over each turn, which adds latency. Compare to RubberDuckDebugger
-      # to see what changes for voice.
+      # reason over each turn, which adds latency.
       instructions:->
          | You are the developer's rubber duck, talking with them out loud.
            Help them discover the bug on their own instead of handing over the fix.
