@@ -1,0 +1,95 @@
+# ModelConfig - Configuring Models at Agent and Subagent Level
+# This agent demonstrates how to override the default model at the agent level
+# and per subagent, matching model selection to the specific needs of each task:
+# cost efficiency for high-volume queries, trust compliance for sensitive data,
+# and reasoning capability for complex problem-solving.
+
+config:
+   developer_name: "ModelConfig"
+   agent_label: "ModelConfig"
+   agent_type: "AgentforceServiceAgent"
+   default_agent_user: "agentuser@example.com"
+   description: "A customer service agent that selects different AI models per subagent based on cost, compliance, and capability requirements"
+
+system:
+   messages:
+      welcome: "Hello! I'm here to help with your account, orders, and support requests. What can I help you with today?"
+      error: "I encountered an issue. Please try again or ask me something else."
+
+   instructions: "You are a professional customer service agent. Be helpful, empathetic, and concise. Route customers to the right area based on their needs."
+
+# Sets GPT-4o Mini as the agent-level default for all subagents without their own model_config.
+# Without this block, subagents inherit the org default set in Setup instead.
+model_config:
+   model: "model://sfdc_ai__DefaultGPT4OmniMini"
+
+start_agent agent_router:
+   description: "Determine the customer's need and route to the appropriate subagent"
+
+   # AgentforceServiceAgent templates default to EinsteinHyperClassifier for routing.
+   # Shown explicitly here so you can see where to override it if your routing logic requires a different model.
+   model_config:
+      model: "model://sfdc_ai__DefaultEinsteinHyperClassifier"
+
+   reasoning:
+      instructions:|
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+      actions:
+         general_faq: @utils.transition to @subagent.general_faq
+            description: "Answer common questions about products, policies, hours, and general information"
+
+         billing_inquiry: @utils.transition to @subagent.billing_inquiry
+            description: "Handle billing questions, payment details, invoices, and account financial information"
+
+         technical_support: @utils.transition to @subagent.technical_support
+            description: "Troubleshoot product issues, errors, and technical problems that require detailed investigation"
+
+# SUBAGENT 1: General FAQ - high volume, simple responses
+# Inherits the agent-level default (GPT-4o Mini) - fast and cost-efficient
+# for repetitive, low-complexity questions that make up the majority of traffic
+subagent general_faq:
+   description: "Answers common questions about products, policies, and general information"
+
+   reasoning:
+      instructions:->
+         | Answer the customer's question clearly and concisely.
+           For questions about store hours, return policies, product availability,
+           or other general topics, provide a direct and helpful response.
+           If the question involves account details, billing, or a technical issue,
+           let the customer know and offer to transfer them to the right area.
+
+# SUBAGENT 2: Billing - sensitive data, Trust Boundary required
+# Overrides to a Bedrock-hosted Anthropic model to ensure all LLM traffic
+# involving financial data stays within the Salesforce Trust Boundary (VPC).
+# Haiku 4.5 on Bedrock is lightweight but fully Trust Boundary compliant.
+subagent billing_inquiry:
+   description: "Handles billing questions, payment details, and account financial information"
+
+   model_config:
+      model: "model://sfdc_ai__DefaultBedrockAnthropicClaude45Haiku"
+
+   reasoning:
+      instructions:->
+         | Help the customer with their billing question.
+           You may be handling sensitive financial information such as payment methods,
+           invoices, charges, and account balances. Be precise and careful.
+           Do not speculate about charges - only confirm what is present in the data provided.
+           If you cannot resolve the issue, offer to escalate to a billing specialist.
+
+# SUBAGENT 3: Technical Support - complex reasoning required
+# Overrides to Claude Opus for multi-step troubleshooting that benefits from
+# deeper reasoning: diagnosing root causes, evaluating multiple failure modes,
+# and generating step-by-step resolution plans.
+subagent technical_support:
+   description: "Troubleshoots product issues and technical problems requiring detailed investigation"
+
+   model_config:
+      model: "model://sfdc_ai__DefaultBedrockAnthropicClaude45Opus"
+
+   reasoning:
+      instructions:->
+         | Help the customer troubleshoot their technical issue thoroughly.
+           Ask clarifying questions to understand the problem fully before suggesting solutions.
+           Walk through diagnostic steps one at a time and confirm results before proceeding.
+           If the issue cannot be resolved through conversation, summarize what was tried
+           and offer to escalate to the technical support team with a case summary.
