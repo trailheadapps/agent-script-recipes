@@ -49,8 +49,7 @@ connection messaging:
 ```
 
 The block belongs after `system` in top-level block order (`config` → `variables` →
-`system` → `connection`). Note the block is `connection messaging`, singular - a
-`connections:` block is not valid Agent Script and fails compilation.
+`system` → `connection`).
 
 `outbound_route_type` accepts `"OmniChannelFlow"`, and `outbound_route_name` must match
 an Omni-Channel routing flow in the target org.
@@ -225,6 +224,5 @@ the agent should escalate.
 
 - **Prerequisite - Omni-Channel routing flow**: `outbound_route_name` must name an Omni-Channel routing flow that exists in the target org. The name in this recipe, `AgentSupportFlow`, is a placeholder; change it to a routing flow in your org, or create one, before expecting a handoff to complete. The bundle compiles and deploys either way, but escalation cannot route without it.
 - **Escalation needs a messaging surface**: `connection messaging` describes a messaging deployment. In a preview session you can observe the gate opening and the `escalation_message` being sent, but the actual transfer to a human requires the agent to be deployed to a messaging channel with Omni-Channel routing configured.
-- **`connection`, not `connections`**: the block is singular and takes a label (`connection messaging`). `connections:` is not valid Agent Script.
 - **`@utils.escalate` takes no target**: unlike `@actions.*`, it has no `target:` and no inputs. Its destination comes entirely from `connection messaging`.
 - **Block order**: `connection` comes after `system` in top-level block order.

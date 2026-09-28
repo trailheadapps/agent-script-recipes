@@ -256,9 +256,6 @@ connection messaging:
 
 **Requirements & gotchas:**
 
-- **The block is `connection messaging`, not `connections`.** It is singular and
-  takes a label, like `connection telephony` for voice. A `connections:` block
-  fails compilation with `Unknown block: connections`.
 - **At least one field is required.** An empty block fails with
   `messaging connections require at least one configuration field`.
 - The four fields above are the valid ones. `escalation_enabled` and
