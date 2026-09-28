@@ -72,8 +72,8 @@ system:
       error: "..."
    instructions: "..."
 
-# 4. CONNECTIONS (optional) - Escalation routing
-connections:
+# 4. CONNECTION (optional) - Escalation routing
+connection messaging:
    ...
 
 # 5. KNOWLEDGE (optional) - Knowledge base config
@@ -240,6 +240,32 @@ system:
       Always be polite and professional.
       Never share sensitive information.
 ```
+
+### Messaging Connection Block
+
+Configures escalation routing - where a conversation goes when `@utils.escalate`
+runs. Without this block, `@utils.escalate` has no destination.
+
+```agentscript
+connection messaging:
+   description: "Routes escalated conversations to a human support queue"
+   escalation_message: "Connecting you with a human agent..."
+   outbound_route_type: "OmniChannelFlow"
+   outbound_route_name: "AgentSupportFlow"
+```
+
+**Requirements & gotchas:**
+
+- **At least one field is required.** An empty block fails with
+  `messaging connections require at least one configuration field`.
+- The four fields above are the valid ones. `escalation_enabled` and
+  `fallback_message` are **not** recognized.
+- **`outbound_route_type` accepts `"OmniChannelFlow"`.** Values such as `Queue`,
+  `Flow`, `OmniChannelQueue` and `Agent` are rejected at compile time.
+- **`outbound_route_name` must match an Omni-Channel routing flow in the target
+  org.** The bundle compiles and deploys without it, but escalation cannot route.
+- `@utils.escalate` takes no `target:` and no inputs - its destination comes
+  entirely from this block.
 
 ### Language Block
 
@@ -728,7 +754,7 @@ subagent customer_service:
 
 Before finalizing an Agent Script, verify:
 
-- [ ] Block ordering is correct (config → variables → system → connections → knowledge → language → start_agent → subagents)
+- [ ] Block ordering is correct (config → variables → system → connection → knowledge → language → start_agent → subagents)
 - [ ] `config` block has `developer_name` (and `default_agent_user` for service agents)
 - [ ] `system` block has `messages.welcome`, `messages.error`, and `instructions`
 - [ ] `start_agent` block exists with at least one transition action

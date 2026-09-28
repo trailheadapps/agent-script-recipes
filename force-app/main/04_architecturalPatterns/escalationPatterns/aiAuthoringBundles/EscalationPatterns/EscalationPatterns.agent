@@ -1,0 +1,96 @@
+# EscalationPatterns
+# Demonstrates human handoff: the `connection messaging` block configures WHERE the
+# conversation is routed, and `@utils.escalate` is the action that hands it over.
+#
+# The teaching point is that escalation is two separate concerns:
+#   1. Routing config (declared once, at the top level, in `connection messaging`)
+#   2. WHEN to escalate (a gate on the action, via `available when`)
+#
+# Note: `connection messaging` describes a messaging deployment. `outbound_route_name`
+# must name an Omni-Channel routing flow that exists in the target org - see the
+# Notes section of this recipe's README.
+
+config:
+   developer_name: "EscalationPatterns"
+   agent_label: "Escalation Patterns"
+   agent_type: "AgentforceEmployeeAgent"
+   description: "Demonstrates patterns for escalating a conversation to a human agent"
+
+variables:
+   user_requested_human: mutable boolean = False
+      description: "Whether the user has explicitly asked to speak with a human"
+
+   failed_attempts: mutable number = 0
+      description: "How many times the agent has failed to resolve the user's question"
+
+   issue_summary: mutable string = ""
+      description: "Short summary of the user's issue, handed to the human agent as context"
+
+system:
+   messages:
+      welcome: "Hi! I'm here to help. If you'd rather talk to a person, just ask."
+      error: "I ran into an issue. Please try again."
+
+   instructions: "You are a helpful support agent. Resolve the user's issue if you can, and hand off to a human when you cannot or when the user asks for one."
+
+# Escalation routing. This block is what makes `@utils.escalate` go somewhere:
+# without it the action has no destination. `escalation_message` is shown to the
+# user at the moment of handoff.
+connection messaging:
+   description: "Routes escalated conversations to a human support queue"
+   escalation_message: "I am connecting you with a human agent who can help you further."
+   outbound_route_type: "OmniChannelFlow"
+   outbound_route_name: "AgentSupportFlow"
+
+start_agent agent_router:
+   label: "Agent Router"
+
+   description: "Route user messages to the support subagent"
+
+   reasoning:
+      instructions: |
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         If the user is continuing an ongoing support conversation, always route to {!@actions.begin_support}.
+
+      actions:
+         begin_support: @utils.transition to @subagent.general_support
+            description: "Route to general support for any question, issue, or request to speak with a human"
+
+subagent general_support:
+   label: "General Support"
+
+   description: "Answers general questions and escalates to a human when needed"
+
+   reasoning:
+      instructions: ->
+         | Help the user with their question. Keep answers short and practical.
+         | Use {!@actions.record_issue} to save a one-line summary of what the user needs, so a human has context if this is handed off.
+         | If the user asks to speak with a person, immediately use {!@actions.note_human_request} to record that request.
+         | If you cannot resolve the question, use {!@actions.note_failed_attempt} to count the failed attempt before replying.
+
+         # Both escalation triggers below are surfaced to the user, so the handoff
+         # never feels abrupt.
+         if @variables.user_requested_human == True:
+            | The user has asked for a human. Acknowledge the request, confirm the issue as "{!@variables.issue_summary}" so the handoff carries context, then hand off with {!@actions.escalate_to_human}.
+
+         if @variables.failed_attempts > 1:
+            | You have failed to resolve this twice. Acknowledge that you are not the right help here, restate the issue as "{!@variables.issue_summary}" for the human taking over, then hand off with {!@actions.escalate_to_human}.
+
+      actions:
+         record_issue: @utils.setVariables
+            description: "Save a one-line summary of the user's issue"
+            with issue_summary = ... # One-line summary of what the user needs
+
+         note_human_request: @utils.setVariables
+            description: "Record that the user explicitly asked for a human"
+            with user_requested_human = True
+
+         note_failed_attempt: @utils.setVariables
+            description: "Record that the agent could not resolve the user's question"
+            with failed_attempts = @variables.failed_attempts + 1
+
+         # The gate is the whole point: escalation is available ONLY on an explicit
+         # request or after repeated failure, so the agent cannot bail out early.
+         escalate_to_human: @utils.escalate
+            description: "Hand the conversation to a human agent"
+            available when @variables.user_requested_human == True or @variables.failed_attempts > 1

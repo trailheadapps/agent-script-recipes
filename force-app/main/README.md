@@ -1,6 +1,6 @@
 # Agent Script Recipes
 
-A comprehensive collection of **26 recipes** for learning Agent Script - from basic concepts to production-ready patterns.
+A comprehensive collection of **27 recipes** for learning Agent Script - from basic concepts to production-ready patterns.
 
 **✅ All 3 Phases Complete!** Every recipe includes working code, comprehensive documentation, and real-world examples.
 
@@ -67,6 +67,7 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 - **ComplexStateManagement** - Handle complex objects, lists, and state patterns
 - **ErrorHandling** - Validation, guard clauses, and error handling patterns
 - **SafetyAndGuardrails** - Safety with confirmation patterns
+- **EscalationPatterns** - Hand off to a human agent with gated escalation
 - **ExternalAPIIntegration** - External system integration
 - **CustomerServiceAgent** - Complete customer service agent example
 
@@ -118,6 +119,7 @@ Production-ready patterns and real-world applications.
 | **ExternalAPIIntegration**     | API patterns           | External system integration best practices       |
 | **SystemInstructionOverrides** | Subagent customization | Per-subagent system prompts, namespace overrides |
 | **ActionDescriptionOverrides** | Contextual actions     | Context-specific action descriptions             |
+| **EscalationPatterns**         | Human handoff          | `connection messaging`, gated `@utils.escalate`  |
 | **ProductionPatterns**         | Enterprise ready       | Comprehensive error handling, maintainability    |
 | **CustomerServiceAgent**       | Real-world example     | Complete customer service implementation         |
 
