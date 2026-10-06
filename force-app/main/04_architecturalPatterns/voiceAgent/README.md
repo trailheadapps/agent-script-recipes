@@ -1,8 +1,11 @@
 # VoiceAgent
 
+> [!WARNING]
+> **This recipe needs a voice-provisioned org, so it isn't available in Developer Edition orgs or Trailhead Playgrounds.** Its `connection telephony` block references a telephony connection that only exists in an org where **Agentforce Voice** is provisioned, such as a voice-enabled demo org. Developer Edition orgs and Trailhead Playgrounds don't include the **Agentforce Voice Setup** experience, so that connection isn't available there.
+
 ## Overview
 
-This recipe demonstrates how to make an agent **voice-capable** directly in the script - both by writing its instructions for a spoken medium and by declaring the voice wiring (connection, voice model, persona, and language) in the `.agent` file itself. The agent is a Socratic "rubber duck" debugging buddy: instead of handing developers a fix, it helps them find the bug themselves by asking one question at a time, spoken aloud over a voice connection. The persona is expressed entirely through system and reasoning instructions - no variables, actions, or flows required - so the recipe stays focused on what changes when an agent _speaks_.
+This recipe demonstrates how to make an agent **voice-capable** directly in the script - both by writing its instructions for a spoken medium and by declaring the voice wiring (connection, voice model, persona, and language) in the `.agent` file itself. The agent is a Socratic "rubber duck" debugging buddy: instead of handing developers a fix, it helps them find the bug themselves by asking one question at a time. Its instructions branch on `@system_variables.current_modality`, so the same agent speaks plainly on a call and uses inline code in a chat - no variables, actions, or flows required - keeping the recipe focused on what changes when an agent _speaks_.
 
 ## Agent Flow
 
@@ -15,13 +18,16 @@ graph TD
     D --> E[Display Welcome Message]
     E --> F[start_agent: agent_router]
     F --> G[Transition to debugging Subagent]
-    G --> H[Apply Socratic Reasoning Instructions]
-    H --> I[Developer describes the bug]
-    I --> J[Ask ONE focused question]
-    J --> K{Bug found?}
-    K -->|No| I
-    K -->|Yes| L[Encourage and confirm]
-    L --> M[End]
+    G --> H{current_modality is voice?}
+    H -->|Yes| I[Apply Spoken Instructions]
+    H -->|No| J[Apply Text Instructions]
+    I --> K[Developer describes the bug]
+    J --> K
+    K --> L[Ask ONE focused question]
+    L --> M{Bug found?}
+    M -->|No| K
+    M -->|Yes| N[Encourage and confirm]
+    N --> O[End]
 ```
 
 ## Key Concepts
@@ -29,8 +35,8 @@ graph TD
 - **Persona-driven behavior**: Behavior comes from instructions alone - no actions or state
 - **System vs. reasoning instructions**: The global persona lives in `system.instructions`; the turn-by-turn behavior lives in the subagent's `reasoning.instructions`
 - **Behavioral constraints**: Instructing the agent to _withhold_ the answer and ask questions instead - a genuine instruction-design discipline
-- **Channel adaptation**: How an agent's instructions change when replies are spoken aloud vs. read in a chat window
-- **ASR-noise repair**: Instructing the agent to expect and reinterpret speech-to-text mistranscriptions of technical vocabulary
+- **Modality-aware instructions**: Branching on `@system_variables.current_modality` so spoken and typed conversations get different delivery rules
+- **ASR-noise repair**: Instructing the agent, on voice only, to expect and reinterpret speech-to-text mistranscriptions of technical vocabulary
 - **Voice configuration in script**: Declaring a `connection telephony` and `modality voice` block so the voice wiring, voice model, and persona travel with the recipe
 - **Voice model selection**: Choosing a voice model (`model.id`) - here the lower-latency English `eleven_flash_v2` - instead of the language's default
 - **Two `language` blocks**: One top-level (text modality + linter) and one nested in `modality voice` (voice modality + persona resolution)
@@ -41,11 +47,11 @@ graph TD
 
 The rubber-duck personality is established in two complementary spots.
 
-First, globally, in the `system` block - this applies to every subagent:
+First, globally, in the `system` block - this applies to every subagent, whether the conversation is spoken or typed:
 
 ```agentscript
 system:
-   instructions: "You are a friendly rubber-duck debugging buddy for software developers, speaking with them out loud over voice. You help them find bugs themselves by asking thoughtful, Socratic questions rather than handing over fixes."
+   instructions: "You are a friendly rubber-duck debugging buddy for software developers. You help them find bugs themselves by asking thoughtful, Socratic questions rather than handing over fixes."
 ```
 
 Then, specifically, in the `debugging` subagent's reasoning instructions - this governs what the agent does on each turn. The interesting part is that the instructions tell the agent what **not** to do (don't hand over the fix), which is what makes it a rubber duck rather than a generic Q&A bot.
@@ -58,15 +64,28 @@ Most "useful" agents are told to _answer_. This one is deliberately told to _hol
 
 An agent that talks differs from a text agent on **two** levels: _how it speaks_ (instructions) and _that it speaks at all_ (voice configuration in the script).
 
-**1. Instructions tuned for the ear.** Replies that are read aloud follow different rules than replies in a chat window:
+**1. Instructions that adapt to the modality.** Replies that are read aloud follow different rules than replies in a chat window:
 
 | Concern         | Text                    | Spoken                               |
 | --------------- | ----------------------- | ------------------------------------ |
 | Response length | A few sentences is fine | Short - easy to follow by ear        |
-| Formatting      | Prose is fine           | No code or markdown read aloud       |
+| Formatting      | Inline code is fine     | No code or markdown read aloud       |
 | Symbols/IDs     | Can reference `i++`     | Say them in words: "index plus plus" |
 
-The spoken instructions also add one thing a text agent never needs: **repairing speech-to-text noise.** When a developer talks, their words reach the agent as an imperfect transcription, and technical vocabulary is the first thing to get mangled - "Agent Script" becomes "agent for script", "returns undefined" becomes "returns on the even", "async" becomes "a sink". The agent reasons over that garbled _text_, not your audio, so the instructions tell it to expect the noise and quietly repair obvious mishears in a debugging context:
+Rather than pick one set of rules, the subagent checks the [`current_modality`](https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-ref-variables-system.html#current_modality) system variable and adds only the rules that fit. It's `"voice"` on a telephony connection, `"text"` on a messaging connection, and `None` when neither is bound. Testing for `"voice"` and putting the text rules in `else` covers both the text and unbound cases:
+
+```agentscript
+if @system_variables.current_modality == "voice":
+   | Keep replies short and easy to follow by ear: speak in full sentences,
+     never read code or markdown aloud, and say symbols in words (for example
+     "index plus plus" for "i++").
+else:
+   | Keep replies to a few sentences. You can refer to code directly and
+     format short snippets or symbols as inline code (for example `i++`),
+     but don't paste a corrected version of their code.
+```
+
+The voice branch also adds one thing a text agent never needs: **repairing speech-to-text noise.** When a developer talks, their words reach the agent as an imperfect transcription, and technical vocabulary is the first thing to get mangled - "Agent Script" becomes "agent for script", "returns undefined" becomes "returns on the even", "async" becomes "a sink". The agent reasons over that garbled _text_, not your audio, so the instructions tell it to expect the noise and quietly repair obvious mishears in a debugging context. A typed message has no transcription step, so this rule lives only in the voice branch:
 
 ```agentscript
 | Their words reach you as speech-to-text, so technical vocabulary is
@@ -110,38 +129,40 @@ modality voice:
 > [!NOTE]
 > The older flat `modality voice` format (`voice_id` with `outbound_speed`/`outbound_stability`/`outbound_similarity`) still works, but it cannot select a voice model - use the `outbound.model.id` structure above to choose one.
 
-> [!IMPORTANT]
-> Because this recipe declares a telephony connection, it must be deployed to a **voice-provisioned org** (one where that connection is available). See Notes.
-
 ## Key Code Snippets
 
 ### The Subagent's Reasoning
 
 ```agentscript
 subagent debugging:
-   description: "Guides the developer to find their own bug through spoken Socratic questioning"
+   description: "Guides the developer to find their own bug through Socratic questioning"
 
    reasoning:
       instructions:->
-         | You are the developer's rubber duck, talking with them out loud.
-           Help them discover the bug on their own instead of handing over the fix.
+         | You are the developer's rubber duck. Help them discover the bug on
+           their own instead of handing over the fix. Guide with simple questions
+           like "What did you expect to happen?" or "What did you change last?",
+           and stay warm and playful.
 
-         | Their words reach you as speech-to-text, so technical vocabulary is
-           often garbled - "agent for script" means "Agent Script", "returns on
-           the even" means "returns undefined", "a sink" means "async". Read every
-           message charitably in a software-debugging context and quietly repair
-           obvious mishears.
+         if @system_variables.current_modality == "voice":
+            | Their words reach you as speech-to-text, so technical vocabulary is
+              often garbled - "agent for script" means "Agent Script", "returns on
+              the even" means "returns undefined", "a sink" means "async". Read every
+              message charitably in a software-debugging context and quietly repair
+              obvious mishears.
 
-         | Keep replies short and easy to follow by ear: speak in full sentences,
-           never read code or markdown aloud, and say symbols in words (for example
-           "index plus plus" for "i++"). Guide with simple questions like "What did
-           you expect to happen?" or "What did you change last?", and stay warm and
-           playful.
+            | Keep replies short and easy to follow by ear: speak in full sentences,
+              never read code or markdown aloud, and say symbols in words (for example
+              "index plus plus" for "i++").
+         else:
+            | Keep replies to a few sentences. You can refer to code directly and
+              format short snippets or symbols as inline code (for example `i++`),
+              but don't paste a corrected version of their code.
 ```
 
 ### The Voice Configuration
 
-The top-level `language` block goes after `system` and before `start_agent`; the `connection telephony` and `modality voice` blocks sit after the subagents. Together they are what make it an actual voice agent:
+Together, these three blocks are what make it an actual voice agent:
 
 ```agentscript
 language:
@@ -163,14 +184,16 @@ modality voice:
 
 ## Try It Out
 
-Deploy the recipe to a voice-provisioned org, then open **Agentforce Studio** and start a conversation. Describe a bug and notice that the agent asks you a question rather than solving it.
+Deploy the recipe to a voice-provisioned org, then open **Agentforce Studio** and start a conversation - it's the quickest way to try the agent, with no phone setup. Describe a bug and notice that the agent asks you a question rather than solving it.
+
+Which instructions the agent follows depends on `current_modality`: the voice branch applies only when the conversation arrives over the telephony connection, and anything else gets the text branch. To exercise the voice branch end to end, call the agent over its telephony connection (see Notes for the setup).
 
 ### Example Interaction
 
-Each turn is short enough to listen to, asks a single question, and speaks any symbols out loud.
+Over voice, each turn is short enough to listen to, asks a single question, and speaks any symbols out loud.
 
 ```text
-Agent: Quack! Tell me about the bug you're chasing.
+Agent: Quack! I'm your rubber duck. Tell me about the bug you're chasing, and I'll help you think it through.
 
 User: My loop skips the last item in the array.
 
@@ -183,17 +206,29 @@ Agent: Quack - say that comparison out loud again. Should the last valid index r
 User: ...ah. It should be less than length. Off by one.
 ```
 
+Over text, the same question can point straight at the code.
+
+```text
+User: My loop skips the last item in the array.
+
+Agent: What condition are you using to stop the loop? Paste that line if it's handy.
+
+User: for (let i = 0; i < arr.length - 1; i++)
+
+Agent: Walk me through it: if `arr` has three items, what's the last value of `i` that runs?
+
+User: ...1. Oh, it should be `i < arr.length`. Off by one.
+```
+
 ## What's Next
 
 - **HelloWorld**: The minimal agent this recipe is modeled on - start there for the bare structure
+- **TemplateExpressions**: More on `if`/`else` conditionals inside instructions
 - **SystemInstructionOverrides**: Customize the persona per subagent for finer control
 - **LanguageSettings**: Configure multiple locales for a multi-language voice or text agent
 - **VariableManagement**: Track debugging state (e.g., which questions have been asked) across turns
 
 ## Notes
-
-> [!WARNING]
-> **This recipe needs a voice-provisioned org.** Its `connection telephony` block references a telephony connection that only exists in an org where **Agentforce Voice** is provisioned. Deploy it to such an org (for example, a voice-enabled demo org). A plain free Developer Edition org has the underlying voice permission-set licenses but does not surface the full **Agentforce Voice Setup** experience.
 
 - **The `persona_id` is model- and catalog-specific.** The `modality voice` block's `outbound.persona_id` (here `74752e92d40e`) is a voice hash from the [voice catalog](https://developer.salesforce.com/docs/ai/agentforce/guide/ascript-voice-catalog.html), and the same voice has a **different** hash per model - so a `persona_id` only resolves against the `model.id` it was listed under. Pick from the catalog page for your chosen model. If you deploy to a different org and the voice isn't available, pick one in **Voice Settings** and let the script round-trip.
 - **You need both `language` blocks.** The top-level `language` sets the text modality (and satisfies the linter); the `language` nested inside `modality voice` sets the voice modality and is what makes `persona_id`/`model` resolution work - drop it and the voice silently reverts to the locale's default persona (no deploy error). Both pin `default_locale: "en_US"`. Voice mode only supports certain locales, so if the agent's default language isn't one of them, Agent Builder warns and falls back to English (US). (See the **LanguageSettings** recipe for multi-locale config.)
