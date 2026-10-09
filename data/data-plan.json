@@ -112,5 +112,11 @@
         "saveRefs": false,
         "resolveRefs": false,
         "files": ["travel-cruise-experience.json"]
+    },
+    {
+        "sobject": "ASR_Task__c",
+        "saveRefs": false,
+        "resolveRefs": false,
+        "files": ["general-task.json"]
     }
 ]

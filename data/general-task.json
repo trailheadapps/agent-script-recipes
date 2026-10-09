@@ -1,0 +1,54 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "ASR_Task__c",
+                "referenceId": "task1"
+            },
+            "Title__c": "Prepare quarterly report",
+            "Status__c": "Pending",
+            "Priority__c": "High",
+            "External_ID__c": 1
+        },
+        {
+            "attributes": {
+                "type": "ASR_Task__c",
+                "referenceId": "task2"
+            },
+            "Title__c": "Review pull requests",
+            "Status__c": "Pending",
+            "Priority__c": "High",
+            "External_ID__c": 2
+        },
+        {
+            "attributes": {
+                "type": "ASR_Task__c",
+                "referenceId": "task3"
+            },
+            "Title__c": "Update onboarding docs",
+            "Status__c": "Pending",
+            "Priority__c": "Medium",
+            "External_ID__c": 3
+        },
+        {
+            "attributes": {
+                "type": "ASR_Task__c",
+                "referenceId": "task4"
+            },
+            "Title__c": "Book team offsite",
+            "Status__c": "Completed",
+            "Priority__c": "Medium",
+            "External_ID__c": 4
+        },
+        {
+            "attributes": {
+                "type": "ASR_Task__c",
+                "referenceId": "task5"
+            },
+            "Title__c": "Clean up old dashboards",
+            "Status__c": "Completed",
+            "Priority__c": "Low",
+            "External_ID__c": 5
+        }
+    ]
+}

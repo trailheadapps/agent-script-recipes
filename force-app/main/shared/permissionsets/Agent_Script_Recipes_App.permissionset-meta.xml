@@ -60,6 +60,10 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
+        <tab>ASR_Task__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>ASR_Transaction_Log__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>

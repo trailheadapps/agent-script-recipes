@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <decisions>
+        <name>Has_Priority</name>
+        <label>Has Priority</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_All_Tasks</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Priority</defaultConnectorLabel>
+        <rules>
+            <name>Priority_Provided</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>priority</leftValueReference>
+                <operator>IsBlank</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Tasks_By_Priority</targetReference>
+            </connector>
+            <label>Priority Provided</label>
+        </rules>
+    </decisions>
+    <description
+    >Loads ASR_Task__c records, optionally filtered by priority</description>
+    <environments>Default</environments>
+    <interviewLabel>LoadTasks {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Load Tasks</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_All_Tasks</name>
+        <label>Get All Tasks</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound
+        >false</assignNullValuesIfNoRecordsFound>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>ASR_Task__c</object>
+        <outputReference>tasks</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Title__c</queriedFields>
+        <queriedFields>Status__c</queriedFields>
+        <queriedFields>Priority__c</queriedFields>
+        <sortField>External_ID__c</sortField>
+        <sortOrder>Asc</sortOrder>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Tasks_By_Priority</name>
+        <label>Get Tasks By Priority</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound
+        >false</assignNullValuesIfNoRecordsFound>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Priority__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>priority</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>ASR_Task__c</object>
+        <outputReference>tasks</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Title__c</queriedFields>
+        <queriedFields>Status__c</queriedFields>
+        <queriedFields>Priority__c</queriedFields>
+        <sortField>External_ID__c</sortField>
+        <sortOrder>Asc</sortOrder>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Has_Priority</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>priority</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>tasks</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>ASR_Task__c</objectType>
+    </variables>
+</Flow>

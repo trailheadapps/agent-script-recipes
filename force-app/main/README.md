@@ -1,6 +1,6 @@
 # Agent Script Recipes
 
-A comprehensive collection of **27 recipes** for learning Agent Script - from basic concepts to production-ready patterns.
+A comprehensive collection of **30 recipes** for learning Agent Script - from basic concepts to production-ready patterns.
 
 **✅ All 3 Phases Complete!** Every recipe includes working code, comprehensive documentation, and real-world examples.
 

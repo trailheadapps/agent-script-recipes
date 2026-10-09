@@ -1,0 +1,118 @@
+# ComplexStateManagement - A list of records held in agent state
+# Loads task records into a list variable, works on them through flows,
+# and reloads the list after every change so state matches the org.
+
+config:
+   developer_name: "ComplexStateManagement"
+   agent_label: "Complex State Management"
+   agent_type: "AgentforceEmployeeAgent"
+   description: "Manages a task list held in agent state as a list of records"
+
+variables:
+   tasks: mutable list[object] = []
+      description: "Task records currently loaded, with Id, title, status and priority"
+
+   tasks_loaded: mutable boolean = False
+      description: "Whether the task list has been loaded at least once"
+
+   completed_count: mutable number = 0
+      description: "Number of completed tasks in the loaded list"
+
+   pending_count: mutable number = 0
+      description: "Number of pending tasks in the loaded list"
+
+system:
+   messages:
+      welcome: "Hi! I'm your task manager. I can show your tasks, mark them complete, and summarize your progress."
+      error: "I had trouble with that operation. Let's try again."
+
+   instructions: "You are a task management assistant. You can show and complete the user's existing tasks. New tasks are created in Salesforce, not by you."
+
+start_agent agent_router:
+   label: "Agent Router"
+
+   description: "Route user messages to task management"
+
+   reasoning:
+      instructions: |
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+
+      actions:
+         begin_task_management: @utils.transition to @subagent.task_management
+            description: "Route to task management for viewing, completing or summarizing tasks"
+
+subagent task_management:
+   label: "Task Management"
+
+   description: "Manages a list of task records held in agent state"
+
+   actions:
+      load_tasks:
+         description: "Loads task records, optionally filtered by priority"
+         inputs:
+            priority: string
+               description: "Priority to filter by: High, Medium or Low. Leave empty for all tasks"
+               is_required: False
+         outputs:
+            tasks: list[object]
+               description: "ASR_Task__c records with Id, title, status and priority"
+               complex_data_type_name: "lightning__recordInfoType"
+         target: "flow://LoadTasks"
+
+      complete_task:
+         description: "Marks one task as completed"
+         inputs:
+            task_id: string
+               description: "The Id of the task record to complete"
+               is_required: True
+         outputs:
+            success: boolean
+               description: "Whether the task was found and completed"
+         target: "flow://CompleteTask"
+
+      calculate_stats:
+         description: "Counts completed and pending tasks in a list of task records"
+         inputs:
+            tasks: list[object]
+               description: "ASR_Task__c records to summarize"
+               complex_data_type_name: "lightning__recordInfoType"
+               is_required: True
+         outputs:
+            completed_count: number
+               description: "Number of completed tasks"
+            pending_count: number
+               description: "Number of pending tasks"
+         target: "flow://CalculateTaskStats"
+
+   reasoning:
+      instructions: ->
+         # Load the list on first use, then calculate progress from it
+         if @variables.tasks_loaded == False:
+            run @actions.load_tasks
+               with priority = ""
+               set @variables.tasks = @outputs.tasks
+            set @variables.tasks_loaded = True
+            run @actions.calculate_stats
+               with tasks = @variables.tasks
+               set @variables.completed_count = @outputs.completed_count
+               set @variables.pending_count = @outputs.pending_count
+
+         | Loaded tasks: {!@variables.tasks}
+         | Show tasks as a short list with title, status and priority. Do not show record Ids.
+         | Only list tasks from Loaded tasks.
+         | Progress for the loaded tasks: {!@variables.completed_count} completed, {!@variables.pending_count} pending. Use these numbers when the user asks about progress instead of counting tasks yourself.
+         | To mark a task complete, find its Id in the loaded tasks and use {!@actions.complete_task}.
+         | If the user names a task that is not in Loaded tasks, say you could not find it and show the loaded tasks. New tasks are created in Salesforce.
+
+      actions:
+         # Reload the list after the update so state matches the org
+         complete_task: @actions.complete_task
+            available when len(@variables.tasks) > 0
+            with task_id = ...
+            run @actions.load_tasks
+               with priority = ""
+               set @variables.tasks = @outputs.tasks
+            run @actions.calculate_stats
+               with tasks = @variables.tasks
+               set @variables.completed_count = @outputs.completed_count
+               set @variables.pending_count = @outputs.pending_count
