@@ -180,9 +180,12 @@ jobs:
             - name: 'Assign Manage Prompt Template permission set'
               run: sf org assign permset -n EinsteinGPTPromptTemplateManager
 
-            # Deploy employee agent source to scratch org
+            # Deploy employee agent source to scratch org in two batches:
+            # a single deploy accepts at most 25 agent bundles
             - name: 'Deploy employee agent recipes'
-              run: sf project deploy start --source-dir force-app
+              run: |
+                  sf project deploy start --source-dir force-app/main/shared/objects --source-dir force-app/main/shared/tabs --source-dir force-app/main/01_languageEssentials --source-dir force-app/main/02_actionConfiguration --source-dir force-app/main/03_reasoningMechanics
+                  sf project deploy start --source-dir force-app/main/04_architecturalPatterns --source-dir force-app/main/shared/applications --source-dir force-app/main/shared/permissionsets
 
             # Assign permission sets
             - name: 'Assign permission sets to default user'
