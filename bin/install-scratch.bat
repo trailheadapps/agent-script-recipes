@@ -24,7 +24,9 @@ call :checkForError
 @echo:
 
 echo Deploying employee agent recipes...
-cmd.exe /c sf project deploy start --source-dir force-app
+cmd.exe /c sf project deploy start --source-dir force-app/main/shared/objects --source-dir force-app/main/shared/tabs --source-dir force-app/main/01_languageEssentials --source-dir force-app/main/02_actionConfiguration --source-dir force-app/main/03_reasoningMechanics
+call :checkForError
+cmd.exe /c sf project deploy start --source-dir force-app/main/04_architecturalPatterns --source-dir force-app/main/shared/applications --source-dir force-app/main/shared/permissionsets
 call :checkForError
 @echo:
 

@@ -59,10 +59,11 @@ If you don't have an org yet, you can sign up for a free [Developer Edition Org]
     sf org login web -s -a agent-script-recipes
     ```
 
-1. Deploy the app to your org:
+1. Deploy the app to your org. A single deploy accepts at most 25 agent bundles, so the recipes are deployed in two batches:
 
     ```bash
-    sf project deploy start -d force-app
+    sf project deploy start --source-dir force-app/main/shared/objects --source-dir force-app/main/shared/tabs --source-dir force-app/main/01_languageEssentials --source-dir force-app/main/02_actionConfiguration --source-dir force-app/main/03_reasoningMechanics
+    sf project deploy start --source-dir force-app/main/04_architecturalPatterns --source-dir force-app/main/shared/applications --source-dir force-app/main/shared/permissionsets
     ```
 
 1. Assign the `Agent_Script_Recipes_Data` and `Agent_Script_Recipes_App` permission sets to the default user:
