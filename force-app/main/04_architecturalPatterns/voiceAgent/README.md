@@ -1,11 +1,11 @@
 # VoiceAgent
 
-> [!WARNING]
-> **This recipe needs a voice-provisioned org, so it isn't available in Developer Edition orgs or Trailhead Playgrounds.** Its `connection telephony` block references a telephony connection that only exists in an org where **Agentforce Voice** is provisioned, such as a voice-enabled demo org. Developer Edition orgs and Trailhead Playgrounds don't include the **Agentforce Voice Setup** experience, so that connection isn't available there.
-
 ## Overview
 
-This recipe demonstrates how to make an agent **voice-capable** directly in the script - both by writing its instructions for a spoken medium and by declaring the voice wiring (connection, voice model, persona, and language) in the `.agent` file itself. The agent is a Socratic "rubber duck" debugging buddy: instead of handing developers a fix, it helps them find the bug themselves by asking one question at a time. Its instructions branch on `@system_variables.current_modality`, so the same agent speaks plainly on a call and uses inline code in a chat - no variables, actions, or flows required - keeping the recipe focused on what changes when an agent _speaks_.
+This recipe demonstrates how to make an agent **voice-capable** directly in the script. It writes the instructions for a spoken medium and declares the voice wiring (connection, voice model, persona, and language) in the `.agent` file itself. The agent is a Socratic "rubber duck" debugging buddy: instead of handing developers a fix, it helps them find the bug themselves by asking one question at a time. Its instructions branch on `@system_variables.current_modality`, so the same agent speaks plainly on a call and uses inline code in a chat - no variables, actions, or flows required - keeping the recipe focused on what changes when an agent _speaks_.
+
+> [!WARNING]
+> **This recipe needs a voice-provisioned org, so it isn't available in Developer Edition orgs or Trailhead Playgrounds.** Its `connection telephony` block references a telephony connection that only exists in an org where **Agentforce Voice** is provisioned, such as a voice-enabled demo org. Developer Edition orgs and Trailhead Playgrounds don't include the **Agentforce Voice Setup** experience, so that connection isn't available there.
 
 ## Agent Flow
 
