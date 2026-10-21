@@ -1,0 +1,107 @@
+# ConditionalLogicPatterns - If/Else Chains and Logical Operators
+# This agent demonstrates how to evaluate a loan application with if/else if/else chains and logical operators
+
+config:
+   developer_name: "ConditionalLogicPatterns"
+   agent_label: "Conditional Logic Patterns"
+   agent_type: "AgentforceEmployeeAgent"
+   description: "Evaluates loan applications using conditional logic"
+
+variables:
+   applicant_name: mutable string = ""
+      description: "Applicant's name"
+
+   credit_score: mutable number = 0
+      description: "Credit score (300-850)"
+
+   annual_income: mutable number = 0
+      description: "Annual income in dollars"
+
+   loan_amount: mutable number = 0
+      description: "Requested loan amount in dollars"
+
+   employment_years: mutable number = 0
+      description: "Years at current employer"
+
+   has_collateral: mutable boolean = False
+      description: "Whether the applicant has collateral"
+
+   max_loan: mutable number = 0
+      description: "Largest loan allowed: three times the annual income"
+
+   approval_status: mutable string = ""
+      description: "approved, rejected, or review_needed"
+
+   interest_rate: mutable number = 0
+      description: "Approved interest rate"
+
+system:
+   messages:
+      welcome: "Welcome! I'll help evaluate your loan application."
+      error: "Unable to process application. Please verify all information."
+
+   instructions: "You are a loan evaluation assistant. Use clear logic to assess applications fairly and consistently."
+
+start_agent agent_router:
+   label: "Agent Router"
+
+   description: "Welcome applicants and begin loan evaluation process"
+
+   reasoning:
+      instructions: |
+         Select the tool that best matches the user's message and conversation history. If it's unclear, make your best guess.
+         If the user is continuing a loan application (such as giving their details or answering a follow-up question), always route to {!@actions.start_evaluation}.
+
+      actions:
+         start_evaluation: @utils.transition to @subagent.loan_evaluation
+            description: "Route to loan evaluation for any loan request, application details, or follow-up answers"
+
+subagent loan_evaluation:
+   label: "Loan Evaluation"
+
+   description: "Evaluates loan applications with conditional logic"
+
+   reasoning:
+      instructions: ->
+         # Arithmetic supports + and -, so three times the income is added three times
+         set @variables.max_loan = @variables.annual_income + @variables.annual_income + @variables.annual_income
+
+         # The first matching branch wins, so later branches only see what earlier ones ruled out
+         if @variables.applicant_name == "" or @variables.credit_score == 0 or @variables.annual_income == 0 or @variables.loan_amount == 0:
+            set @variables.approval_status = ""
+            | Ask for any missing details: name, credit score, annual income, loan amount, years at current employer, and whether they have collateral. Save them with {!@actions.collect_application}.
+         else if @variables.credit_score < 580:
+            set @variables.approval_status = "rejected"
+            set @variables.interest_rate = 0
+         else if @variables.loan_amount > @variables.max_loan:
+            set @variables.approval_status = "rejected"
+            set @variables.interest_rate = 0
+         else if @variables.credit_score < 670 and @variables.has_collateral and @variables.employment_years >= 2:
+            set @variables.approval_status = "approved"
+            set @variables.interest_rate = 8.5
+         else if @variables.credit_score < 670:
+            set @variables.approval_status = "review_needed"
+            set @variables.interest_rate = 0
+         else if @variables.credit_score < 740:
+            set @variables.approval_status = "approved"
+            set @variables.interest_rate = 6.5
+         else:
+            set @variables.approval_status = "approved"
+            set @variables.interest_rate = 4.5
+
+         if @variables.approval_status == "approved":
+            | Tell the applicant they are approved at {!@variables.interest_rate}% interest.
+         else if @variables.approval_status == "review_needed":
+            | Tell the applicant a loan officer will review the application.
+         else if @variables.approval_status == "rejected":
+            | Tell the applicant the application was not approved.
+
+      actions:
+         collect_application: @utils.setVariables
+            description: "Save the applicant's loan application details from the conversation"
+            with applicant_name = ...
+            with credit_score = ...
+            with annual_income = ...
+            with loan_amount = ...
+            with employment_years = ...
+            with has_collateral = ...

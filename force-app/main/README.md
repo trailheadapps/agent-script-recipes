@@ -1,6 +1,6 @@
 # Agent Script Recipes
 
-A comprehensive collection of **30 recipes** for learning Agent Script - from basic concepts to production-ready patterns.
+A comprehensive collection of **31 recipes** for learning Agent Script - from basic concepts to production-ready patterns.
 
 **✅ All 3 Phases Complete!** Every recipe includes working code, comprehensive documentation, and real-world examples.
 
@@ -27,6 +27,7 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 - **HelloWorld** - Your first agent: understand `config`, `system`, and `subagent` blocks
 - **VariableManagement** - Working with state: mutable vs readonly(linked) variables, and variable types
 - **TemplateExpressions** - Dynamic content with `{!}` syntax, conditionals and expressions
+- **ConditionalLogicPatterns** - If/else if/else chains and logical operators
 - **SystemInstructionOverrides** - Customize system prompts per subagent for advanced control
 
 **Recommended order:** HelloWorld → VariableManagement → TemplateExpressions → SystemInstructionOverrides
