@@ -1,0 +1,101 @@
+# SubagentDelegation - Calling a Subagent as a Tool
+# Demonstrates delegation: one subagent calls another like a sub-routine and gets control back automatically
+
+config:
+   developer_name: "SubagentDelegation"
+   agent_label: "Subagent Delegation"
+   agent_type: "AgentforceEmployeeAgent"
+   description: "Delegates complex billing issues to a specialist subagent that returns control when done"
+
+variables:
+   customer_id: mutable string = ""
+      description: "The customer's ID, provided by the user"
+
+   issue_description: mutable string = ""
+      description: "A short description of the customer's billing issue"
+
+   # Written by the specialist, read by general_support after control returns
+   specialist_findings: mutable string = ""
+      description: "Findings returned by the billing specialist"
+
+   discrepancy_found: mutable boolean = False
+      description: "Whether the billing specialist found a discrepancy"
+
+system:
+   messages:
+      welcome: "Hi! I can help with your account. For complex billing issues, I'll consult our billing specialist."
+      error: "Sorry, something went wrong. Please try again."
+
+   instructions: "You are a friendly account support assistant. Keep answers short and clear."
+
+start_agent agent_router:
+   description: "Route every user message to general support"
+
+   reasoning:
+      instructions:|
+         ALWAYS call the go_to_general_support tool for every user message, including follow-ups such as a customer ID.
+         Do not respond directly. Route every message to the general support subagent.
+      actions:
+         go_to_general_support: @utils.transition to @subagent.general_support
+            description: "Route to the general support subagent. MUST be called for every user message. Never skip this tool."
+
+# CALLER SUBAGENT: owns the conversation and delegates complex work
+subagent general_support:
+   description: "Answers general account questions and consults the billing specialist for complex billing issues"
+
+   reasoning:
+      instructions:->
+         if @variables.specialist_findings:
+            | The billing specialist has finished. Summarize their findings for the user in plain language.
+              Use only these findings; don't add causes or details that aren't in them:
+              - Findings: {!@variables.specialist_findings}
+              - Discrepancy found: {!@variables.discrepancy_found}
+         else:
+            | Help the user with their account questions.
+              If the user describes a complex billing issue, collect their customer ID and a short description of the issue using {!@actions.collect_issue_details}.
+              Once you have both, consult the billing specialist using {!@actions.consult_billing_specialist}.
+
+      actions:
+         collect_issue_details: @utils.setVariables
+            description: "Store the customer's ID and a short description of their billing issue"
+            with customer_id=...
+            with issue_description=...
+
+         # Delegation: calls the specialist like a tool.
+         # Unlike @utils.transition to, control comes back here when the specialist finishes.
+         consult_billing_specialist: @subagent.billing_specialist
+            description: "Consult the billing specialist to analyze a complex billing issue"
+            available when @variables.customer_id != "" and @variables.issue_description != ""
+
+# DELEGATED SUBAGENT: does one job, then hands control back to the caller
+subagent billing_specialist:
+   description: "Billing specialist that analyzes a customer's billing history and reports findings"
+
+   actions:
+      analyze_billing_history:
+         description: "Reviews the customer's recent invoices for discrepancies"
+         inputs:
+            customer_id: string
+               description: "The customer's ID"
+               is_required: True
+            issue_description: string
+               description: "A short description of the billing issue"
+               is_required: True
+         outputs:
+            findings: string
+               description: "Summary of what the analysis found"
+            discrepancy_found: boolean
+               description: "Whether a discrepancy was found"
+         target: "flow://AnalyzeBillingHistory"
+
+   reasoning:
+      instructions:->
+         if not @variables.specialist_findings:
+            run @actions.analyze_billing_history
+               with customer_id=@variables.customer_id
+               with issue_description=@variables.issue_description
+               set @variables.specialist_findings = @outputs.findings
+               set @variables.discrepancy_found = @outputs.discrepancy_found
+
+         # No transition back: as a delegated subagent, control returns to the caller automatically
+         | You are the billing specialist. Your analysis is complete: {!@variables.specialist_findings}

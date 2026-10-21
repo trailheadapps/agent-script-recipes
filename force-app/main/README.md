@@ -64,6 +64,7 @@ Recipes are organized into **4 progressive categories** that mirror your learnin
 - **MultiSubagentNavigation** - Orchestrate conversations across multiple subagents
 - **MultiSubagentOrchestration** - Advanced subagent coordination strategies
 - **BidirectionalNavigation** - Implement supervision patterns with transitions
+- **SubagentDelegation** - Call a subagent as a tool and get control back automatically
 - **MultiStepWorkflows** - Chain actions and pass data between steps
 - **ComplexStateManagement** - Handle complex objects, lists, and state patterns
 - **ErrorHandling** - Validation, guard clauses, and error handling patterns
@@ -116,6 +117,7 @@ Production-ready patterns and real-world applications.
 | **AfterReasoning**             | Lifecycle events       | `after_reasoning` hook                           |
 | **MultiSubagentOrchestration** | Complex flows          | 3+ subagent coordination, handoff strategies     |
 | **BidirectionalNavigation**    | Supervision            | Transitions to specialist subagents and return   |
+| **SubagentDelegation**         | Delegation             | `@subagent.<name>` calls that return to caller   |
 | **AdvancedReasoningPatterns**  | Complex reasoning      | Multi-step flows, data aggregation               |
 | **ExternalAPIIntegration**     | API patterns           | External system integration best practices       |
 | **SystemInstructionOverrides** | Subagent customization | Per-subagent system prompts, namespace overrides |
