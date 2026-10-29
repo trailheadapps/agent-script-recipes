@@ -499,9 +499,20 @@ reasoning:
          run @actions.send_notification
             with message="Order processed"
             set @variables.notified = @outputs.sent
-         # Conditional transition
-         if @outputs.needs_review:
-            transition to @subagent.review
+```
+
+**Do not put `transition to` in a post-action block.** A `transition to` chained after an action's `with` / `set` lines compiles with no errors but emits no handoff, so it never runs (salesforce/agentscript#104, trailheadapps/agent-script-recipes#107). Wrapping it in `if @outputs...:` does compile to a handoff, but it did not execute in a live Agent Preview test, so do not rely on it either. To leave a subagent after an action, store the result in a variable and transition from `after_reasoning`:
+
+```agentscript
+reasoning:
+   actions:
+      process: @actions.process_order
+         with order_id=@variables.order_id
+         set @variables.order_status = @outputs.status
+
+after_reasoning:
+   if @variables.order_status != "":
+      transition to @subagent.review
 ```
 
 ### Utility Actions (reasoning.actions only)
@@ -558,6 +569,7 @@ transition to @subagent.target_topic
 
 - NEVER use `@utils.transition to` in directive blocks
 - NEVER use bare `transition to` in `reasoning.actions`
+- NEVER chain `transition to` after an action's `with` / `set` lines (it is silently dropped). Transition from `after_reasoning` instead
 
 ---
 
@@ -766,6 +778,7 @@ Before finalizing an Agent Script, verify:
 - [ ] `...` is used for LLM slot-filling (not as variable default values)
 - [ ] `@utils.transition to` is used in `reasoning.actions`
 - [ ] `transition to` (without `@utils`) is used in directive blocks
+- [ ] No `transition to` is chained after an action's `with` / `set` lines (use `after_reasoning`)
 - [ ] Indentation is consistent (3 spaces recommended)
 - [ ] Names follow naming rules (letters, numbers, underscores; no spaces; start with letter)
 - [ ] (Voice agents) `language.default_locale` is set to a voice-supported locale
@@ -934,3 +947,24 @@ Before finalizing an Agent Script, verify:
        with account_number=@variables.account_number
        set @variables.customer_name = @outputs.customer_name
     ```
+
+11. **Chaining `transition to` after an action (silently does nothing):**
+
+    ```agentscript
+    # WRONG - validates with 0 errors, but no handoff is compiled
+    analyze: @actions.analyze_issue
+       with issue=@variables.issue
+       set @variables.assessment = @outputs.assessment
+       transition to @subagent.general_support
+
+    # CORRECT - store the result, then transition from after_reasoning
+    analyze: @actions.analyze_issue
+       with issue=@variables.issue
+       set @variables.assessment = @outputs.assessment
+
+    after_reasoning:
+       if @variables.assessment != "":
+          transition to @subagent.general_support
+    ```
+
+    Always confirm a return transition in Agent Preview with live actions: the trace must show a `TransitionStep` after the action's `FunctionStep`.
