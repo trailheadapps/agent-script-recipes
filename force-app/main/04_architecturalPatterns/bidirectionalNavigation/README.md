@@ -93,8 +93,11 @@ subagent technical_specialist:
             with issue_description=@variables.issue_description
             set @variables.technical_assessment = @outputs.assessment
             set @variables.solution_provided = @outputs.can_resolve
-            # Return control to general support
-            transition to @subagent.general_support
+
+   # Return control to general support once the analysis is stored
+   after_reasoning:
+      if @variables.technical_assessment != "":
+         transition to @subagent.general_support
 ```
 
 ### Billing Specialist
@@ -133,8 +136,11 @@ subagent billing_specialist:
             with customer_id=@variables.customer_id
             set @variables.billing_analysis = @outputs.analysis
             set @variables.billing_resolved = @outputs.resolved
-            # Return control to general support
-            transition to @subagent.general_support
+
+   # Return control to general support once the analysis is stored
+   after_reasoning:
+      if @variables.billing_analysis != "":
+         transition to @subagent.general_support
 ```
 
 ## Key Code Snippets
@@ -168,13 +174,19 @@ actions:
 ### Specialist Returns with Results
 
 ```agentscript
-actions:
-   analyze_technical: @actions.analyze_technical_issue
-      with issue_description=@variables.issue_description
-      set @variables.technical_assessment = @outputs.assessment
-      set @variables.solution_provided = @outputs.can_resolve
+reasoning:
+   actions:
+      analyze_technical: @actions.analyze_technical_issue
+         with issue_description=@variables.issue_description
+         set @variables.technical_assessment = @outputs.assessment
+         set @variables.solution_provided = @outputs.can_resolve
+
+after_reasoning:
+   if @variables.technical_assessment != "":
       transition to @subagent.general_support
 ```
+
+The return transition lives in `after_reasoning`, not chained after the action's `set` statements. In testing, a `transition to` chained after the action did not execute in the agent runtime (the compiled action had no handoff), so the specialist never handed control back. `after_reasoning` runs once the specialist has finished reasoning, so the action has already stored its result.
 
 ## Try It Out
 
